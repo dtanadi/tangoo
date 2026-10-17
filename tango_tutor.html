@@ -1,415 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#EC4899">
-    <title>PandaLingo - Smart AI Kids Chinese Tutor</title>
-    
-    <!-- Tailwind CSS for responsive styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React and ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel for in-browser JSX compilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-        
-        * {
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #fdfbfb;
-            touch-action: manipulation;
-            overscroll-behavior: none;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        
-        .bounce-slow {
-            animation: bounceSlow 2.4s infinite ease-in-out;
-        }
-        @keyframes bounceSlow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-
-        .pop-in {
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.85); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Glassmorphism & Pastel Chat Bubbles */
-        .chat-bubble-ai {
-            background-color: rgba(255, 255, 255, 0.96);
-            border-radius: 22px 22px 22px 6px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-            border: 2px solid #FCE7F3;
-        }
-        .chat-bubble-user {
-            background: linear-gradient(135deg, #EC4899 0%, #F43F5E 100%);
-            border-radius: 22px 22px 6px 22px;
-            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.25);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-        }
-        
-        .glass-header {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 2px solid rgba(252, 231, 243, 0.8);
-        }
-        .glass-footer {
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-top: 2px solid rgba(252, 231, 243, 0.9);
-        }
-
-        /* Talking Head Animation */
-        .talking-head {
-            animation: talk 0.22s infinite alternate ease-in-out;
-        }
-        @keyframes talk {
-            0% { transform: scaleY(1) scaleX(1) translateY(0); }
-            100% { transform: scaleY(1.09) scaleX(0.95) translateY(-4px); }
-        }
-
-        .avatar-img {
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #F472B6;
-            background-color: white;
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-</head>
-<body class="h-[100dvh] w-screen overflow-hidden flex flex-col bg-pink-50">
-
-    <div id="root" class="h-full w-full"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-
-        // Global reference to prevent iOS Safari from garbage-collecting active SpeechSynthesisUtterance
-        window.__activeUtterance = null;
-
-        // Open Model & AI Provider Presets
-        const OPEN_MODEL_PRESETS = [
-            {
-                id: 'auto',
-                name: '⚡ Smart Auto (Gemini 3 + Open AI Cloud)',
-                endpoint: '',
-                model: 'gemini-3-flash-preview',
-                needsKey: false,
-                desc: 'Automatically uses Gemini 3 Flash or zero-key Open AI Cloud on iPad/Android.'
-            },
-            {
-                id: 'openrouter-qwen',
-                name: '🌐 OpenRouter: Qwen 2.5 72B (Bilingual Master)',
-                endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-                model: 'qwen/qwen-2.5-72b-instruct',
-                needsKey: true,
-                desc: 'Top-tier open-weights bilingual Mandarin + English model via OpenRouter.'
-            },
-            {
-                id: 'openrouter-llama',
-                name: '🦙 OpenRouter: Meta Llama 3.3 70B (Free Tier)',
-                endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-                model: 'meta-llama/llama-3.3-70b-instruct:free',
-                needsKey: true,
-                desc: 'Fast, creative open model from Meta on OpenRouter.'
-            },
-            {
-                id: 'deepseek',
-                name: '🐳 DeepSeek V3 (Official / OpenRouter)',
-                endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-                model: 'deepseek/deepseek-chat',
-                needsKey: true,
-                desc: 'Natural Mandarin nuances and playful storytelling.'
-            },
-            {
-                id: 'openai',
-                name: '🧠 OpenAI: GPT-4o Mini',
-                endpoint: 'https://api.openai.com/v1/chat/completions',
-                model: 'gpt-4o-mini',
-                needsKey: true,
-                desc: 'Direct connection to OpenAI API.'
-            }
-        ];
-
-        // 3 Interactive Conversation Styles to keep chats fresh and non-monotonous
-        const CONVERSATION_MODES = [
-            {
-                id: 'adventure',
-                label: '🎭 Story Adventure',
-                instruction: 'Act as an imaginative, playful story companion. Introduce fun surprises, sound effects (like 哗啦啦, 叮咚, 嗷呜), and plot twists in our setting! Never repeat the same question structure twice.'
-            },
-            {
-                id: 'freechat',
-                label: '💬 Free Chat',
-                instruction: 'Have a natural, curious, open-ended conversation like a real human friend and teacher. Follow the child\'s interests (dinosaurs, games, food, feelings, anything!) and naturally weave in Mandarin words.'
-            },
-            {
-                id: 'riddle',
-                label: '🧩 Guessing Game',
-                instruction: 'Play an interactive "Guess What I Am thinking of!" game (猜一猜) using simple Chinese clues and playful gestures/descriptions. Celebrate wildly when the child guesses or tries!'
-            }
-        ];
-
-        // Free Talk + 11 Singapore Lower Primary Contexts
-        const SCENARIOS_DATA = [
-            {
-                id: 'freetalk',
-                icon: '🌟',
-                name: 'Free Talk (Anything!)',
-                style: 'bg-fuchsia-100 text-fuchsia-900 border-fuchsia-300',
-                bg: 'linear-gradient(135deg, rgba(250,232,255,0.75), rgba(254,240,138,0.75)), url(https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "Let's have an open, fun chat about anything I like—dinosaurs, space, cartoons, ice cream, or superpowers! Ask me an exciting question to start.",
-                vocab: [
-                    { hz: '喜欢', py: 'xǐ huān', en: 'Like' },
-                    { hz: '恐龙', py: 'kǒng lóng', en: 'Dinosaur' },
-                    { hz: '冰淇淋', py: 'bīng qí lín', en: 'Ice Cream' },
-                    { hz: '超能力', py: 'chāo néng lì', en: 'Superpower' }
-                ],
-                hints: [
-                    "我喜欢大恐龙! (I like big dinosaurs!)",
-                    "我想吃冰淇淋! (I want to eat ice cream!)",
-                    "Let's play a guessing game! (我们玩猜谜语吧!)"
-                ]
-            },
-            {
-                id: 'zoo',
-                icon: '🦒',
-                name: 'Zoo Trip',
-                style: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-                bg: 'linear-gradient(135deg, rgba(209,250,229,0.7), rgba(254,243,199,0.7)), url(https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We just arrived at the Singapore Zoo! Make an animal sound, describe something funny an animal is doing right now, and ask what we should do!",
-                vocab: [
-                    { hz: '老虎', py: 'lǎo hǔ', en: 'Tiger' },
-                    { hz: '大象', py: 'dà xiàng', en: 'Elephant' },
-                    { hz: '猴子', py: 'hóu zi', en: 'Monkey' },
-                    { hz: '香蕉', py: 'xiāng jiāo', en: 'Banana' }
-                ],
-                hints: [
-                    "猴子在吃香蕉! (The monkey is eating a banana!)",
-                    "大象用鼻子喷水! (The elephant sprays water!)",
-                    "Listen! Is that a tiger roaring? (是老虎吗?)"
-                ]
-            },
-            {
-                id: 'hawker',
-                icon: '🍜',
-                name: 'Hawker Centre',
-                style: 'bg-orange-100 text-orange-900 border-orange-300',
-                bg: 'linear-gradient(135deg, rgba(255,237,213,0.75), rgba(254,215,170,0.75)), url(https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are at a lively Singapore Hawker Centre! Pretend to be a cheerful chef cooking something delicious and ask what secret ingredient or dish I want today.",
-                vocab: [
-                    { hz: '鸡饭', py: 'jī fàn', en: 'Chicken Rice' },
-                    { hz: '水', py: 'shuǐ', en: 'Water' },
-                    { hz: '好吃', py: 'hǎo chī', en: 'Delicious' },
-                    { hz: '冰美禄', py: 'bīng Měi lù', en: 'Iced Milo' }
-                ],
-                hints: [
-                    "我要一盘鸡饭! (I want a plate of chicken rice!)",
-                    "我要喝冰美禄! (I want to drink Iced Milo!)",
-                    "哇，好香啊! (Wow, it smells so good!)"
-                ]
-            },
-            {
-                id: 'mrt',
-                icon: '🚆',
-                name: 'Taking MRT',
-                style: 'bg-teal-100 text-teal-900 border-teal-300',
-                bg: 'linear-gradient(135deg, rgba(204,251,241,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1570125909232-eb263c05f4dc?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are boarding the MRT train in Singapore! Ask me which coloured MRT line we should take and where our secret adventure destination is!",
-                vocab: [
-                    { hz: '地铁', py: 'dì tiě', en: 'MRT Train' },
-                    { hz: '车卡', py: 'chē kǎ', en: 'EZ-Link Card' },
-                    { hz: '快', py: 'kuài', en: 'Fast' },
-                    { hz: '人', py: 'rén', en: 'Person / People' }
-                ],
-                hints: [
-                    "哔！我刷车卡了! (Beep! I tapped my card!)",
-                    "地铁跑得好快! (The MRT train goes so fast!)",
-                    "Let's sit by the window! (我们坐窗口边!)"
-                ]
-            },
-            {
-                id: 'playground',
-                icon: '🛝',
-                name: 'HDB Playground',
-                style: 'bg-pink-100 text-pink-900 border-pink-300',
-                bg: 'linear-gradient(135deg, rgba(252,231,243,0.75), rgba(254,249,195,0.75)), url(https://images.unsplash.com/photo-1575783970733-1aaedde1db74?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are at the HDB Dragon Playground! Pretend we are playing hide-and-seek or climbing the tall slide and ask where I am hiding!",
-                vocab: [
-                    { hz: '滑梯', py: 'huá tī', en: 'Slide' },
-                    { hz: '跑', py: 'pǎo', en: 'Run' },
-                    { hz: '朋友', py: 'péng yǒu', en: 'Friend' },
-                    { hz: '捉迷藏', py: 'zhuō mí cáng', en: 'Hide and Seek' }
-                ],
-                hints: [
-                    "我们来玩捉迷藏! (Let's play hide and seek!)",
-                    "我在滑梯上面! (I am on top of the slide!)",
-                    "You can't catch me! 我跑得很快!"
-                ]
-            },
-            {
-                id: 'supermarket',
-                icon: '🛒',
-                name: 'Supermarket',
-                style: 'bg-sky-100 text-sky-900 border-sky-300',
-                bg: 'linear-gradient(135deg, rgba(224,242,254,0.75), rgba(240,253,244,0.75)), url(https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are pushing a trolley at FairPrice Supermarket to prepare for a surprise party! Ask what snacks and fruits we should toss into our cart.",
-                vocab: [
-                    { hz: '苹果', py: 'píng guǒ', en: 'Apple' },
-                    { hz: '西瓜', py: 'xī guā', en: 'Watermelon' },
-                    { hz: '买', py: 'mǎi', en: 'Buy' },
-                    { hz: '甜', py: 'tián', en: 'Sweet' }
-                ],
-                hints: [
-                    "我们要买大西瓜! (Let's buy a big watermelon!)",
-                    "红苹果很甜! (Red apples are very sweet!)",
-                    "Can we buy chocolate too? (可以买巧克力吗?)"
-                ]
-            },
-            {
-                id: 'canteen',
-                icon: '🍱',
-                name: 'School Canteen',
-                style: 'bg-amber-100 text-amber-900 border-amber-300',
-                bg: 'linear-gradient(135deg, rgba(254,243,199,0.75), rgba(255,228,230,0.75)), url(https://images.unsplash.com/photo-1504387432042-8aca549e4729?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "Riiiing! The school recess bell just rang! Ask me what happened in class today and what yummy snack we are sharing at the canteen table.",
-                vocab: [
-                    { hz: '饿', py: 'è', en: 'Hungry' },
-                    { hz: '喝水', py: 'hē shuǐ', en: 'Drink Water' },
-                    { hz: '面', py: 'miàn', en: 'Noodles' },
-                    { hz: '分享', py: 'fēn xiǎng', en: 'Share' }
-                ],
-                hints: [
-                    "我的肚子咕噜噜叫! (My tummy is rumbling!)",
-                    "我先喝水，再吃面! (I drink water first, then eat noodles!)",
-                    "Let's share our snacks! (我们一起分享!)"
-                ]
-            },
-            {
-                id: 'botanic',
-                icon: '🌺',
-                name: 'Botanic Gardens',
-                style: 'bg-lime-100 text-lime-900 border-lime-300',
-                bg: 'linear-gradient(135deg, rgba(236,252,203,0.75), rgba(209,250,229,0.75)), url(https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are exploring the Singapore Botanic Gardens and just spotted a tiny creature near a giant tree! Ask me what I think it is.",
-                vocab: [
-                    { hz: '花', py: 'huā', en: 'Flower' },
-                    { hz: '树', py: 'shù', en: 'Tree' },
-                    { hz: '蝴蝶', py: 'hú dié', en: 'Butterfly' },
-                    { hz: '美', py: 'měi', en: 'Beautiful' }
-                ],
-                hints: [
-                    "看！是一只漂亮的蝴蝶! (Look! A pretty butterfly!)",
-                    "这棵大树好高啊! (This big tree is so tall!)",
-                    "What colour are the flowers? (花是什么颜色的?)"
-                ]
-            },
-            {
-                id: 'library',
-                icon: '📚',
-                name: 'Public Library',
-                style: 'bg-violet-100 text-violet-900 border-violet-300',
-                bg: 'linear-gradient(135deg, rgba(237,233,254,0.75), rgba(224,231,255,0.75)), url(https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We found a magical glowing storybook at the library! Ask me what happens when we open the first page.",
-                vocab: [
-                    { hz: '书', py: 'shū', en: 'Book' },
-                    { hz: '故事', py: 'gù shi', en: 'Story' },
-                    { hz: '安静', py: 'ān jìng', en: 'Quiet' },
-                    { hz: '魔法', py: 'mó fǎ', en: 'Magic' }
-                ],
-                hints: [
-                    "嘘！这是一本魔法书! (Shh! This is a magic book!)",
-                    "书里面有一条飞龙! (There's a flying dragon in the book!)",
-                    "Read me a funny story! (给我讲个好笑的故事!)"
-                ]
-            },
-            {
-                id: 'airport',
-                icon: '✈️',
-                name: 'Changi Airport',
-                style: 'bg-cyan-100 text-cyan-900 border-cyan-300',
-                bg: 'linear-gradient(135deg, rgba(207,250,254,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1544015759-224ae4a8b792?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are standing in front of the giant Jewel Changi Airport waterfall and boarding a plane! Ask where in the world we are flying today!",
-                vocab: [
-                    { hz: '飞机', py: 'fēi jī', en: 'Airplane' },
-                    { hz: '水', py: 'shuǐ', en: 'Water' },
-                    { hz: '天上', py: 'tiān shàng', en: 'In the Sky' },
-                    { hz: '飞', py: 'fēi', en: 'Fly' }
-                ],
-                hints: [
-                    "飞机飞到云上面了! (The plane flew above the clouds!)",
-                    "瀑布的水哗啦啦流! (The waterfall water rushes down!)",
-                    "Let's fly to see snow! (我们飞去看雪吧!)"
-                ]
-            },
-            {
-                id: 'merlion',
-                icon: '🦁',
-                name: 'Merlion Park',
-                style: 'bg-rose-100 text-rose-900 border-rose-300',
-                bg: 'linear-gradient(135deg, rgba(255,228,230,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "We are at Merlion Park! The Merlion just winked at us and sprayed a rainbow! Ask me to strike a funny pose for a photo.",
-                vocab: [
-                    { hz: '口', py: 'kǒu', en: 'Mouth' },
-                    { hz: '水', py: 'shuǐ', en: 'Water' },
-                    { hz: '拍照', py: 'pāi zhào', en: 'Take Photo' },
-                    { hz: '新加坡', py: 'Xīn jiā pō', en: 'Singapore' }
-                ],
-                hints: [
-                    "一、二、三，茄子! (1, 2, 3, Cheese!)",
-                    "鱼尾狮张大口喷水! (Merlion opens its mouth to spray water!)",
-                    "Look at the boats on the river! (看河上的船!)"
-                ]
-            },
-            {
-                id: 'rainy',
-                icon: '☔',
-                name: 'Rainy Day',
-                style: 'bg-indigo-100 text-indigo-900 border-indigo-300',
-                bg: 'linear-gradient(135deg, rgba(224,231,255,0.75), rgba(243,232,255,0.75)), url(https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1080&auto=format&fit=crop)',
-                prompt: "Splash! A sudden tropical rainstorm started outside and little frogs are hopping out! Ask what colour umbrella or rainboots I am wearing.",
-                vocab: [
-                    { hz: '下雨', py: 'xià yǔ', en: 'Rain' },
-                    { hz: '雨伞', py: 'yǔ sǎn', en: 'Umbrella' },
-                    { hz: '青蛙', py: 'qīng wā', en: 'Frog' },
-                    { hz: '水', py: 'shuǐ', en: 'Water' }
-                ],
-                hints: [
-                    "呱呱！小青蛙在跳! (Ribbit! The little frog is jumping!)",
-                    "我有一把彩虹雨伞! (I have a rainbow umbrella!)",
-                    "Let's jump in puddles! (我们踩水坑吧!)"
-                ]
-            }
-        ];
-
+<!-- ... existing code ... -->
         const CORE_PRACTICE_WORDS = [
             { hz: '人', py: 'rén', en: 'Person' },
             { hz: '水', py: 'shuǐ', en: 'Water' },
@@ -424,216 +13,18 @@
                     role: 'ai', 
                     mood: '🤩',
                     chinese: '嗨！我是你的AI中文伙伴！今天你想聊恐龙、玩猜谜，还是去动物园冒险？',
-                    pinyin: 'Hāi! Wǒ shì nǐ de AI Zhōngwén huǒbàn! Jīntiān nǐ xiǎng liáo kǒnglóng, wán cāimí, háishì qù dòngwùyuán màoxiǎn?',
+                    replyTokens: [
+                        {hz: '嗨', py: 'hāi'}, {hz: '！', py: ''},
+                        {hz: '我', py: 'wǒ'}, {hz: '是', py: 'shì'}, {hz: '你', py: 'nǐ'}, {hz: '的', py: 'de'}, {hz: 'A', py: ''}, {hz: 'I', py: ''}, {hz: '中', py: 'zhōng'}, {hz: '文', py: 'wén'}, {hz: '伙', py: 'huǒ'}, {hz: '伴', py: 'bàn'}, {hz: '！', py: ''},
+                        {hz: '今', py: 'jīn'}, {hz: '天', py: 'tiān'}, {hz: '你', py: 'nǐ'}, {hz: '想', py: 'xiǎng'}, {hz: '聊', py: 'liáo'}, {hz: '恐', py: 'kǒng'}, {hz: '龙', py: 'lóng'}, {hz: '、', py: ''}, {hz: '玩', py: 'wán'}, {hz: '猜', py: 'cāi'}, {hz: '谜', py: 'mí'}, {hz: '，', py: ''}, {hz: '还', py: 'hái'}, {hz: '是', py: 'shì'}, {hz: '去', py: 'qù'}, {hz: '动', py: 'dòng'}, {hz: '物', py: 'wù'}, {hz: '园', py: 'yuán'}, {hz: '冒', py: 'mào'}, {hz: '险', py: 'xiǎn'}, {hz: '？', py: ''}
+                    ],
                     english: 'Hi there! I am your smart AI Chinese buddy! Today, do you want to chat about dinosaurs, play a guessing riddle, or go on a Zoo adventure?',
                     mnemonic: '💡 Tip: Tap any Chinese character to hear it spoken clearly, or tap a blue reply below to jump right in!'
                 }
             ]);
 
             // Dynamic Conversation Coaching State (Updates every turn!)
-            const [activeScenario, setActiveScenario] = useState(SCENARIOS_DATA[0]);
-            const [conversationMode, setConversationMode] = useState('adventure');
-            const [dynamicVocab, setDynamicVocab] = useState(SCENARIOS_DATA[0].vocab);
-            const [dynamicHints, setDynamicHints] = useState(SCENARIOS_DATA[0].hints);
-            const [teacherMood, setTeacherMood] = useState('🤩');
-            const [activeEngineLabel, setActiveEngineLabel] = useState('Smart AI Ready');
-
-            // Speech & Karaoke Highlighting State
-            const [activeSpeechId, setActiveSpeechId] = useState(null);
-            const [activeCharIndex, setActiveCharIndex] = useState(-1);
-            const [isSpeaking, setIsSpeaking] = useState(false);
-            const [availableVoices, setAvailableVoices] = useState([]);
-            const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
-
-            // Microphone & Hybrid Recording State
-            const [isRecording, setIsRecording] = useState(false);
-            const [liveTranscript, setLiveTranscript] = useState('');
-            const [micVolume, setMicVolume] = useState(0);
-            const [micLang, setMicLang] = useState('zh-CN');
-            const [micError, setMicError] = useState(null);
-            const [textInput, setTextInput] = useState('');
-
-            // AI & Gamification State
-            const [isLoading, setIsLoading] = useState(false);
-            const [bambooCount, setBambooCount] = useState(0);
-            const [showRewardAnimation, setShowRewardAnimation] = useState(false);
-
-            // Settings & Open Model Configuration State
-            const [showSettings, setShowSettings] = useState(false);
-            const [teacherName, setTeacherName] = useState('Panda');
-            const [teacherPic, setTeacherPic] = useState(null);
-            const [selectedPresetId, setSelectedPresetId] = useState('auto');
-            const [customApiKey, setCustomApiKey] = useState('');
-            const [customEndpoint, setCustomEndpoint] = useState('https://openrouter.ai/api/v1/chat/completions');
-            const [customModelName, setCustomModelName] = useState('qwen/qwen-2.5-72b-instruct');
-
-            // Hardware & timer refs
-            const chatEndRef = useRef(null);
-            const karaokeTimerRef = useRef(null);
-            const recognitionRef = useRef(null);
-            const mediaRecorderRef = useRef(null);
-            const mediaStreamRef = useRef(null);
-            const audioChunksRef = useRef([]);
-            const volumeIntervalRef = useRef(null);
-            const audioContextRef = useRef(null);
-            const maxRecordTimerRef = useRef(null);
-            const liveTranscriptRef = useRef('');
-
-            // Environment API key (auto-injected by Canvas)
-            const apiKey = "";
-
-            useEffect(() => {
-                chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }, [messages, isLoading, liveTranscript, micError]);
-
-            useEffect(() => {
-                if (!window.speechSynthesis) return;
-
-                const loadVoices = () => {
-                    const voices = window.speechSynthesis.getVoices() || [];
-                    const mandarinVoices = voices.filter(v => {
-                        const lang = (v.lang || '').toLowerCase();
-                        const name = (v.name || '').toLowerCase();
-                        const isCantonese = lang.includes('hk') || lang.includes('mo') || lang.includes('yue') || name.includes('cantonese') || name.includes('sin-ji');
-                        const isChinese = lang.includes('zh') || lang.includes('cmn') || name.includes('chinese') || name.includes('mandarin') || name.includes('ting-ting') || name.includes('meijia') || name.includes('li-mu') || name.includes('yu-shu');
-                        return isChinese && !isCantonese;
-                    });
-
-                    setAvailableVoices(mandarinVoices);
-
-                    if (!selectedVoiceURI && mandarinVoices.length > 0) {
-                        const best =
-                            mandarinVoices.find(v => (v.lang === 'zh-CN' || v.lang === 'zh_CN') && (v.name.includes('Enhanced') || v.name.includes('Premium') || v.name.includes('Ting-Ting') || v.name.includes('Li-Mu'))) ||
-                            mandarinVoices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN') ||
-                            mandarinVoices.find(v => v.lang === 'zh-SG' || v.lang === 'zh_SG') ||
-                            mandarinVoices.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') ||
-                            mandarinVoices[0];
-                        if (best) setSelectedVoiceURI(best.voiceURI);
-                    }
-                };
-
-                loadVoices();
-                window.speechSynthesis.onvoiceschanged = loadVoices;
-
-                return () => {
-                    stopSpeaking();
-                    cleanupMicrophone();
-                };
-            }, []);
-
-            const clearKaraokeTimer = () => {
-                if (karaokeTimerRef.current) {
-                    clearInterval(karaokeTimerRef.current);
-                    karaokeTimerRef.current = null;
-                }
-            };
-
-            const stopSpeaking = () => {
-                clearKaraokeTimer();
-                if (window.speechSynthesis) {
-                    window.speechSynthesis.cancel();
-                }
-                setIsSpeaking(false);
-                setActiveSpeechId(null);
-                setActiveCharIndex(-1);
-            };
-
-            const unlockAudioForIOS = () => {
-                try {
-                    if (window.speechSynthesis) {
-                        window.speechSynthesis.cancel();
-                        const warmUp = new SpeechSynthesisUtterance('');
-                        warmUp.volume = 0;
-                        window.speechSynthesis.speak(warmUp);
-                    }
-                } catch (e) {}
-            };
-
-            const speakText = (rawText, messageId = null) => {
-                if (!window.speechSynthesis || !rawText) return;
-
-                stopSpeaking();
-
-                const cleanText = rawText.trim();
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                window.__activeUtterance = utterance;
-
-                const voices = window.speechSynthesis.getVoices() || [];
-                let chosenVoice = voices.find(v => v.voiceURI === selectedVoiceURI);
-
-                if (!chosenVoice) {
-                    chosenVoice =
-                        voices.find(v => (v.lang === 'zh-CN' || v.lang === 'zh_CN') && !v.lang.includes('HK')) ||
-                        voices.find(v => v.lang === 'zh-SG' || v.lang === 'zh_SG') ||
-                        voices.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') ||
-                        voices.find(v => v.lang.toLowerCase().includes('zh') && !v.lang.toLowerCase().includes('hk') && !v.lang.toLowerCase().includes('mo'));
-                }
-
-                if (chosenVoice) {
-                    utterance.voice = chosenVoice;
-                }
-
-                utterance.lang = 'zh-CN';
-                utterance.rate = 0.84;
-                utterance.pitch = 1.0; // Natural pitch preserves accurate 3rd tone (e.g. 水 shuǐ)
-
-                let boundaryFired = false;
-                const totalChars = cleanText.length;
-
-                const startHighlightLoop = () => {
-                    clearKaraokeTimer();
-                    setIsSpeaking(true);
-                    if (messageId) {
-                        setActiveSpeechId(messageId);
-                        setActiveCharIndex(0);
-                    }
-
-                    let currentIdx = 0;
-                    const msPerChar = 300;
-                    karaokeTimerRef.current = setInterval(() => {
-                        if (!boundaryFired) {
-                            currentIdx += 1;
-                            if (currentIdx < totalChars) {
-                                if (messageId) setActiveCharIndex(currentIdx);
-                            } else {
-                                clearKaraokeTimer();
-                            }
-                        }
-                    }, msPerChar);
-                };
-
-                utterance.onstart = startHighlightLoop;
-
-                utterance.onboundary = (event) => {
-                    if (typeof event.charIndex === 'number' && messageId) {
-                        boundaryFired = true;
-                        setActiveCharIndex(event.charIndex);
-                    }
-                };
-
-                utterance.onend = () => {
-                    clearKaraokeTimer();
-                    setIsSpeaking(false);
-                    setActiveSpeechId(null);
-                    setActiveCharIndex(-1);
-                };
-
-                utterance.onerror = () => {
-                    clearKaraokeTimer();
-                    setIsSpeaking(false);
-                    setActiveSpeechId(null);
-                    setActiveCharIndex(-1);
-                };
-
-                window.speechSynthesis.speak(utterance);
-            };
-
-            const awardBamboo = () => {
-                setBambooCount(prev => prev + 1);
-                setShowRewardAnimation(true);
-                setTimeout(() => setShowRewardAnimation(false), 2000);
-            };
-
+<!-- ... existing code ... -->
             const extractJsonObject = (rawText) => {
                 if (!rawText) throw new Error("Empty model output");
                 const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
@@ -655,20 +46,26 @@
 Current Setting: ${scen.name} (${scen.icon}).
 Conversation Style: ${modeObj.label} — ${modeObj.instruction}
 
-CRITICAL RULES TO PREVENT MONOTONOUS CONVERSATION:
+CRITICAL RULES TO PREVENT MONOTONOUS CONVERSATION (STRICTLY ENFORCED):
 1. NEVER use generic, repetitive praise templates every turn. React specifically and playfully to the exact meaning of what the child just said!
-2. Keep the story or topic moving forward: introduce a funny mini-event, a choice between two silly or exciting things, a sound effect (e.g. 轰隆隆, 喵呜, 叮咚), or a playful riddle.
-3. Speak natural, vivid Mandarin in "chinese" (1 to 2 lively sentences), with accurate full "pinyin", and a warm, natural "english" translation.
-4. Provide 1 short visual character memory trick or fun discovery in "mnemonic" (e.g. "🔥 火 (huǒ - fire) looks like flames dancing upward!").
-5. Generate 3 brand-new, natural follow-up phrases in "nextReplies" that the child can click or say next to answer your specific question (format: "中文句子! (English meaning)").
-6. Optionally include 1 or 2 fresh vocabulary words from your reply in "newVocab" ({ "hz": "...", "py": "...", "en": "..." }).
+2. NEVER repeat the same question structure or the same vocabulary words from your previous turns. Force yourself to introduce completely new ideas.
+3. Keep the story or topic moving forward: introduce a funny mini-event, a choice between two silly or exciting things, a sound effect (e.g. 轰隆隆, 喵呜, 叮咚), or a playful riddle.
+4. Speak natural, vivid Mandarin in "chinese" (1 to 2 lively sentences) and provide a warm, natural "english" translation.
+5. CRITICAL: Break down your Mandarin sentence EXACTLY character-by-character into the "replyTokens" array so we can place Pinyin directly below each character! Every single Chinese character and punctuation mark MUST be its own item in the array.
+6. Provide 1 short visual character memory trick or fun discovery in "mnemonic" (e.g. "🔥 火 (huǒ - fire) looks like flames dancing upward!").
+7. Generate 3 brand-new, natural follow-up phrases in "nextReplies" that the child can click or say next to answer your specific question (format: "中文句子! (English meaning)").
+8. Optionally include 1 or 2 fresh vocabulary words from your reply in "newVocab" ({ "hz": "...", "py": "...", "en": "..." }).
 
 Respond strictly in valid JSON with this exact structure:
 {
   "heardText": "transcription if audio was sent, else repeat user text",
   "mood": "single expressive emoji like 🤩, 🥳, 🧐, 😮, or 😄",
-  "chinese": "Vivid Mandarin reply",
-  "pinyin": "Accurate Pinyin with tone marks",
+  "chinese": "Vivid Mandarin reply string",
+  "replyTokens": [
+    { "hz": "中", "py": "zhōng" },
+    { "hz": "文", "py": "wén" },
+    { "hz": "！", "py": "" }
+  ],
   "english": "Natural English translation",
   "mnemonic": "Fun character visual tip or mini cultural fact",
   "nextReplies": [
@@ -684,71 +81,7 @@ Respond strictly in valid JSON with this exact structure:
             };
 
             // Call OpenAI-Compatible Open Model Endpoint (OpenRouter, Groq, DeepSeek, OpenAI, or Zero-Key Pollinations Cloud)
-            const callOpenAICompatibleModel = async ({ endpointUrl, modelName, bearerKey, systemPrompt, historyMessages, userPromptText }) => {
-                const formattedMessages = [
-                    { role: 'system', content: systemPrompt },
-                    ...historyMessages.map(m => ({
-                        role: m.role === 'ai' ? 'assistant' : 'user',
-                        content: m.role === 'ai'
-                            ? JSON.stringify({ chinese: m.chinese, pinyin: m.pinyin, english: m.english })
-                            : (m.text || '')
-                    })),
-                    { role: 'user', content: userPromptText }
-                ];
-
-                const headers = { 'Content-Type': 'application/json' };
-                if (bearerKey) {
-                    headers['Authorization'] = `Bearer ${bearerKey}`;
-                }
-
-                const res = await fetch(endpointUrl, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify({
-                        model: modelName,
-                        messages: formattedMessages,
-                        temperature: 0.85,
-                        response_format: { type: 'json_object' }
-                    })
-                });
-
-                if (!res.ok) {
-                    throw new Error(`Open model HTTP ${res.status}`);
-                }
-
-                const data = await res.json();
-                const rawContent = data?.choices?.[0]?.message?.content || '';
-                return extractJsonObject(rawContent);
-            };
-
-            // Call Gemini 3 Flash API (Supports native multimodal audio + structured JSON schema)
-            const callGeminiModel = async ({ geminiKey, systemPrompt, historyMessages, userPromptText, audioBase64, audioMimeType }) => {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiKey}`;
-
-                const chatHistory = historyMessages.map(m => ({
-                    role: m.role === 'ai' ? 'model' : 'user',
-                    parts: [{ text: m.role === 'ai' ? `${m.chinese || ''} (${m.english || ''})` : (m.text || '') }]
-                }));
-
-                const userParts = [];
-                if (audioBase64) {
-                    userParts.push({
-                        inlineData: {
-                            mimeType: audioMimeType,
-                            data: audioBase64
-                        }
-                    });
-                    userParts.push({
-                        text: userPromptText
-                            ? `The child spoke into the microphone (draft transcript: "${userPromptText}"). Transcribe what the child said into heardText and respond naturally as their Chinese tutor.`
-                            : `The child spoke into the microphone in Mandarin or English. Transcribe what they said into heardText and respond naturally as their Chinese tutor.`
-                    });
-                } else {
-                    userParts.push({ text: userPromptText });
-                }
-
-                chatHistory.push({ role: 'user', parts: userParts });
-
+<!-- ... existing code ... -->
                 const payload = {
                     contents: chatHistory,
                     systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -761,7 +94,17 @@ Respond strictly in valid JSON with this exact structure:
                                 heardText: { type: "STRING" },
                                 mood: { type: "STRING" },
                                 chinese: { type: "STRING" },
-                                pinyin: { type: "STRING" },
+                                replyTokens: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            hz: { type: "STRING" },
+                                            py: { type: "STRING" }
+                                        },
+                                        propertyOrdering: ["hz", "py"]
+                                    }
+                                },
                                 english: { type: "STRING" },
                                 mnemonic: { type: "STRING" },
                                 nextReplies: {
@@ -786,7 +129,7 @@ Respond strictly in valid JSON with this exact structure:
                                 "heardText",
                                 "mood",
                                 "chinese",
-                                "pinyin",
+                                "replyTokens",
                                 "english",
                                 "mnemonic",
                                 "nextReplies",
@@ -798,72 +141,7 @@ Respond strictly in valid JSON with this exact structure:
                 };
 
                 const res = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!res.ok) {
-                    throw new Error(`Gemini HTTP ${res.status}`);
-                }
-
-                const result = await res.json();
-                const rawJson = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                return extractJsonObject(rawJson);
-            };
-
-            // Smart AI Orchestrator: Routes across Custom Open Models, Gemini 3 Flash, and Zero-Key Open Cloud LLM
-            const sendToAI = async ({ userText = '', audioBase64 = null, audioMimeType = 'audio/mp4', tempMsgId = null, scenarioOverride = null, modeOverride = null }) => {
-                setIsLoading(true);
-                const currentScen = scenarioOverride || activeScenario || SCENARIOS_DATA[0];
-                const currentMode = modeOverride || conversationMode;
-                const systemPrompt = buildSystemPrompt(currentScen, currentMode);
-                const recentHistory = messages.slice(-10);
-
-                let parsedResponse = null;
-                let usedEngine = '';
-
-                try {
-                    const preset = OPEN_MODEL_PRESETS.find(p => p.id === selectedPresetId) || OPEN_MODEL_PRESETS[0];
-
-                    // 1. If user explicitly chose an OpenRouter / OpenAI preset with key
-                    if (preset.id !== 'auto' && customApiKey.trim()) {
-                        parsedResponse = await callOpenAICompatibleModel({
-                            endpointUrl: customEndpoint.trim() || preset.endpoint,
-                            modelName: customModelName.trim() || preset.model,
-                            bearerKey: customApiKey.trim(),
-                            systemPrompt,
-                            historyMessages: recentHistory,
-                            userPromptText: userText || 'Hello!'
-                        });
-                        usedEngine = preset.name.split(':')[0];
-                    } else {
-                        // 2. Try Gemini 3 Flash first (works natively in Canvas or with Gemini API key)
-                        try {
-                            const effectiveGeminiKey = customApiKey.trim() || apiKey;
-                            parsedResponse = await callGeminiModel({
-                                geminiKey: effectiveGeminiKey,
-                                systemPrompt,
-                                historyMessages: recentHistory,
-                                userPromptText: userText,
-                                audioBase64,
-                                audioMimeType
-                            });
-                            usedEngine = '⚡ Gemini 3 Flash';
-                        } catch (geminiErr) {
-                            // 3. Automatic Zero-Key Open Model Cloud Fallback (ideal when opened on iPad via Netlify/GitHub without a key!)
-                            console.info("Switching to Zero-Key Open AI Cloud:", geminiErr.message);
-                            parsedResponse = await callOpenAICompatibleModel({
-                                endpointUrl: 'https://text.pollinations.ai/openai',
-                                modelName: 'openai',
-                                bearerKey: '',
-                                systemPrompt,
-                                historyMessages: recentHistory,
-                                userPromptText: userText || 'Let\'s continue our Chinese adventure!'
-                            });
-                            usedEngine = '🌐 Open AI Cloud';
-                        }
-                    }
+<!-- ... existing code ... -->
                 } catch (allErr) {
                     console.warn("All cloud AI endpoints unreachable, using dynamic local response:", allErr);
                     usedEngine = '📴 Offline Backup';
@@ -871,9 +149,12 @@ Respond strictly in valid JSON with this exact structure:
                     parsedResponse = {
                         heardText: userText || '你好!',
                         mood: '🐼',
-                        chinese: `哇，你说得真有趣！在${currentScen.name}里，我刚刚看到了“${v.hz}”！你猜猜它会做什么？`,
-                        pinyin: `Wā, nǐ shuō de zhēn yǒuqù! Zài ${currentScen.name} lǐ, wǒ gānggāng kàndào le "${v.py}"! Nǐ cāicai tā huì zuò shénme?`,
-                        english: `Wow, what an interesting idea! Right here in ${currentScen.name}, I just spotted "${v.hz}" (${v.en})! What do you think happens next?`,
+                        chinese: `哇，你说得真有趣！`,
+                        replyTokens: [
+                            {hz: '哇', py: 'wā'}, {hz: '，', py: ''},
+                            {hz: '你', py: 'nǐ'}, {hz: '说', py: 'shuō'}, {hz: '得', py: 'de'}, {hz: '真', py: 'zhēn'}, {hz: '有', py: 'yǒu'}, {hz: '趣', py: 'qù'}, {hz: '！', py: ''}
+                        ],
+                        english: `Wow, what an interesting idea! What do you think happens next?`,
                         mnemonic: `💡 Spot Word: ${v.hz} (${v.py}) means ${v.en}! Tap the word to hear its tone.`,
                         nextReplies: [
                             `我也看到${v.hz}了! (I see ${v.en} too!)`,
@@ -886,694 +167,21 @@ Respond strictly in valid JSON with this exact structure:
                 }
 
                 setActiveEngineLabel(usedEngine);
-
-                if (tempMsgId) {
-                    const finalTranscript = parsedResponse.heardText || userText || '🎤 (Spoke to teacher)';
-                    setMessages(prev => prev.map(m => m.id === tempMsgId ? { ...m, text: finalTranscript } : m));
-                }
-
-                if (parsedResponse.mood) {
-                    setTeacherMood(parsedResponse.mood);
-                }
-
-                if (parsedResponse.bambooEarned !== false) {
-                    awardBamboo();
-                }
-
-                // Update Dynamic "Try Saying" Hints so every turn has fresh, relevant replies!
-                if (Array.isArray(parsedResponse.nextReplies) && parsedResponse.nextReplies.length > 0) {
-                    setDynamicHints(parsedResponse.nextReplies.slice(0, 4));
-                }
-
-                // Merge any newly taught vocabulary into the active vocab strip
-                if (Array.isArray(parsedResponse.newVocab) && parsedResponse.newVocab.length > 0) {
-                    setDynamicVocab(prev => {
-                        const existingHz = new Set(prev.map(item => item.hz));
-                        const additions = parsedResponse.newVocab.filter(item => item && item.hz && !existingHz.has(item.hz));
-                        return [...additions, ...prev].slice(0, 8);
-                    });
-                }
-
+<!-- ... existing code ... -->
                 const newMsgId = 'msg-' + Date.now();
                 setMessages(prev => [...prev, {
                     id: newMsgId,
                     role: 'ai',
                     mood: parsedResponse.mood || '🤩',
                     chinese: parsedResponse.chinese,
+                    replyTokens: parsedResponse.replyTokens,
                     pinyin: parsedResponse.pinyin,
                     english: parsedResponse.english,
                     mnemonic: parsedResponse.mnemonic
                 }]);
 
                 if (parsedResponse.chinese) {
-                    speakText(parsedResponse.chinese, newMsgId);
-                }
-
-                setIsLoading(false);
-            };
-
-            const cleanupMicrophone = () => {
-                if (maxRecordTimerRef.current) {
-                    clearTimeout(maxRecordTimerRef.current);
-                    maxRecordTimerRef.current = null;
-                }
-                if (volumeIntervalRef.current) {
-                    clearInterval(volumeIntervalRef.current);
-                    volumeIntervalRef.current = null;
-                }
-                if (recognitionRef.current) {
-                    try {
-                        recognitionRef.current.onend = null;
-                        recognitionRef.current.onerror = null;
-                        recognitionRef.current.stop();
-                    } catch (e) {}
-                    recognitionRef.current = null;
-                }
-                if (mediaStreamRef.current) {
-                    mediaStreamRef.current.getTracks().forEach(track => track.stop());
-                    mediaStreamRef.current = null;
-                }
-                if (audioContextRef.current) {
-                    try {
-                        audioContextRef.current.close();
-                    } catch (e) {}
-                    audioContextRef.current = null;
-                }
-                setMicVolume(0);
-            };
-
-            const blobToBase64 = (blob) => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        const dataUrl = reader.result || '';
-                        const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : '';
-                        resolve(base64);
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            };
-
-            const stopRecordingAndSend = () => {
-                if (!isRecording) return;
-                setIsRecording(false);
-
-                if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-                    try {
-                        mediaRecorderRef.current.stop();
-                        return;
-                    } catch (e) {}
-                }
-
-                const capturedText = (liveTranscriptRef.current || '').trim();
-                cleanupMicrophone();
-                setLiveTranscript('');
-                liveTranscriptRef.current = '';
-
-                if (capturedText) {
-                    const userMsgId = 'usr-' + Date.now();
-                    setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: capturedText }]);
-                    sendToAI({ userText: capturedText });
-                } else {
-                    setMicError('No voice was detected. Try speaking closer to the microphone, or tap any blue phrase chip below!');
-                }
-            };
-
-            const handleMicToggle = async () => {
-                if (isRecording) {
-                    stopRecordingAndSend();
-                    return;
-                }
-
-                stopSpeaking();
-                unlockAudioForIOS();
-                setMicError(null);
-                setLiveTranscript('');
-                liveTranscriptRef.current = '';
-
-                if (window.location.protocol === 'file:') {
-                    setMicError('iPad Safari blocks the microphone when opened directly as a local file (file://). Please use HTTPS (like Netlify Drop) or use the text/phrase buttons below!');
-                    return;
-                }
-
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-
-                const startParallelSpeechRecognition = (standaloneMode = false) => {
-                    if (!SpeechRecognition) return false;
-                    try {
-                        const recognition = new SpeechRecognition();
-                        recognition.lang = micLang;
-                        recognition.interimResults = true;
-                        recognition.continuous = true;
-                        recognition.maxAlternatives = 1;
-
-                        recognition.onresult = (event) => {
-                            let combined = '';
-                            for (let i = 0; i < event.results.length; i++) {
-                                combined += event.results[i][0].transcript;
-                            }
-                            if (combined.trim()) {
-                                liveTranscriptRef.current = combined.trim();
-                                setLiveTranscript(combined.trim());
-                            }
-                        };
-
-                        recognition.onerror = (event) => {
-                            if (standaloneMode) {
-                                setIsRecording(false);
-                                cleanupMicrophone();
-                                setMicError(`Voice recognition (${event.error}) paused. Try speaking again or tap a phrase below!`);
-                            }
-                        };
-
-                        recognition.onend = () => {
-                            if (standaloneMode && recognitionRef.current) {
-                                const text = (liveTranscriptRef.current || '').trim();
-                                setIsRecording(false);
-                                cleanupMicrophone();
-                                setLiveTranscript('');
-                                liveTranscriptRef.current = '';
-                                if (text) {
-                                    setMessages(prev => [...prev, { id: 'usr-' + Date.now(), role: 'user', text }]);
-                                    sendToAI({ userText: text });
-                                }
-                            }
-                        };
-
-                        recognitionRef.current = recognition;
-                        recognition.start();
-                        return true;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-
-                if (hasMediaDevices && window.MediaRecorder) {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({
-                            audio: {
-                                echoCancellation: true,
-                                noiseSuppression: true,
-                                autoGainControl: true
-                            }
-                        });
-
-                        mediaStreamRef.current = stream;
-                        setIsRecording(true);
-
-                        try {
-                            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                            const audioCtx = new AudioCtx();
-                            audioContextRef.current = audioCtx;
-                            const source = audioCtx.createMediaStreamSource(stream);
-                            const analyser = audioCtx.createAnalyser();
-                            analyser.fftSize = 256;
-                            source.connect(analyser);
-
-                            const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                            let hasSpoken = false;
-                            let silentFrames = 0;
-
-                            volumeIntervalRef.current = setInterval(() => {
-                                analyser.getByteFrequencyData(dataArray);
-                                let sum = 0;
-                                for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-                                const avg = sum / dataArray.length;
-                                const normalized = Math.min(100, Math.round((avg / 65) * 100));
-                                setMicVolume(normalized);
-
-                                if (normalized > 18) {
-                                    hasSpoken = true;
-                                    silentFrames = 0;
-                                } else if (hasSpoken) {
-                                    silentFrames += 1;
-                                    if (silentFrames >= 18 && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-                                        try {
-                                            mediaRecorderRef.current.stop();
-                                        } catch (e) {}
-                                    }
-                                }
-                            }, 100);
-                        } catch (audioErr) {}
-
-                        const preferredTypes = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
-                        let selectedMime = '';
-                        for (const t of preferredTypes) {
-                            if (window.MediaRecorder.isTypeSupported && window.MediaRecorder.isTypeSupported(t)) {
-                                selectedMime = t;
-                                break;
-                            }
-                        }
-
-                        const recorder = selectedMime
-                            ? new MediaRecorder(stream, { mimeType: selectedMime })
-                            : new MediaRecorder(stream);
-
-                        audioChunksRef.current = [];
-                        mediaRecorderRef.current = recorder;
-
-                        recorder.ondataavailable = (e) => {
-                            if (e.data && e.data.size > 0) {
-                                audioChunksRef.current.push(e.data);
-                            }
-                        };
-
-                        recorder.onstop = async () => {
-                            const draftText = (liveTranscriptRef.current || '').trim();
-                            const actualMime = (recorder.mimeType || selectedMime || 'audio/mp4').split(';')[0];
-                            const audioBlob = new Blob(audioChunksRef.current, { type: actualMime });
-
-                            setIsRecording(false);
-                            cleanupMicrophone();
-                            setLiveTranscript('');
-                            liveTranscriptRef.current = '';
-
-                            if (audioBlob.size < 400 && !draftText) {
-                                setMicError('Recording was too short. Tap the mic, speak your phrase, and tap Stop!');
-                                return;
-                            }
-
-                            const tempId = 'usr-' + Date.now();
-                            setMessages(prev => [
-                                ...prev,
-                                { id: tempId, role: 'user', text: draftText || '🎤 Speaking to teacher...' }
-                            ]);
-
-                            try {
-                                const base64Audio = await blobToBase64(audioBlob);
-                                await sendToAI({
-                                    userText: draftText,
-                                    audioBase64: base64Audio,
-                                    audioMimeType: actualMime,
-                                    tempMsgId: tempId
-                                });
-                            } catch (err) {
-                                if (draftText) {
-                                    await sendToAI({ userText: draftText, tempMsgId: tempId });
-                                }
-                            }
-                        };
-
-                        recorder.start();
-                        startParallelSpeechRecognition(false);
-
-                        maxRecordTimerRef.current = setTimeout(() => {
-                            if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-                                try {
-                                    mediaRecorderRef.current.stop();
-                                } catch (e) {}
-                            }
-                        }, 9000);
-
-                        return;
-                    } catch (err) {}
-                }
-
-                if (SpeechRecognition) {
-                    const started = startParallelSpeechRecognition(true);
-                    if (started) {
-                        setIsRecording(true);
-                        maxRecordTimerRef.current = setTimeout(() => {
-                            stopRecordingAndSend();
-                        }, 7000);
-                        return;
-                    }
-                }
-
-                setMicError(
-                    'Microphone access is blocked on this browser/preview. On iPad Safari, tap "AA" in the address bar → Website Settings → Microphone → Allow, or use the interactive phrases & keyboard below!'
-                );
-            };
-
-            const handleScenario = (scenarioObj) => {
-                unlockAudioForIOS();
-                setActiveScenario(scenarioObj);
-                setDynamicVocab(scenarioObj.vocab);
-                setDynamicHints(scenarioObj.hints);
-                setMicError(null);
-
-                const userMsgId = 'usr-' + Date.now();
-                setMessages(prev => [
-                    ...prev,
-                    { id: userMsgId, role: 'user', text: `${scenarioObj.icon} Let's explore: ${scenarioObj.name}!` }
-                ]);
-
-                // Trigger a live, varied AI opening for the chosen scenario!
-                sendToAI({
-                    userText: scenarioObj.prompt,
-                    scenarioOverride: scenarioObj
-                });
-            };
-
-            const handleModeChange = (newModeId) => {
-                unlockAudioForIOS();
-                setConversationMode(newModeId);
-                const modeObj = CONVERSATION_MODES.find(m => m.id === newModeId);
-                if (!modeObj) return;
-
-                const promptByMode = {
-                    adventure: `Let's switch to Story Adventure mode in ${activeScenario.name}! Give me an exciting plot twist or funny situation right now!`,
-                    freechat: `Let's switch to Free Chat mode! Ask me something fun about my favourite things, hobbies, or imagination!`,
-                    riddle: `Let's play a Chinese Guessing Riddle (猜一猜) right now! Give me 2 fun clues in simple Mandarin and ask me to guess what it is!`
-                };
-
-                setMessages(prev => [
-                    ...prev,
-                    { id: 'usr-' + Date.now(), role: 'user', text: `Switch to ${modeObj.label}!` }
-                ]);
-
-                sendToAI({
-                    userText: promptByMode[newModeId],
-                    modeOverride: newModeId
-                });
-            };
-
-            const handleHintClick = (hintText) => {
-                unlockAudioForIOS();
-                setMicError(null);
-                const msgId = 'usr-' + Date.now();
-                setMessages(prev => [...prev, { id: msgId, role: 'user', text: hintText }]);
-                sendToAI({ userText: hintText });
-            };
-
-            const handleVocabClick = (vocabItem) => {
-                unlockAudioForIOS();
-                speakText(vocabItem.hz, null);
-            };
-
-            const handleTextSubmit = (e) => {
-                e.preventDefault();
-                const trimmed = textInput.trim();
-                if (!trimmed || isLoading) return;
-                unlockAudioForIOS();
-                setTextInput('');
-                setMicError(null);
-                setMessages(prev => [...prev, { id: 'usr-' + Date.now(), role: 'user', text: trimmed }]);
-                sendToAI({ userText: trimmed });
-            };
-
-            const handlePresetChange = (presetId) => {
-                setSelectedPresetId(presetId);
-                const found = OPEN_MODEL_PRESETS.find(p => p.id === presetId);
-                if (found && found.id !== 'auto') {
-                    setCustomEndpoint(found.endpoint);
-                    setCustomModelName(found.model);
-                }
-            };
-
-            const handlePhotoUpload = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        setTeacherPic(reader.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-
-            const renderAvatar = (sizeClass = "text-3xl", moodBadge = null) => {
-                return (
-                    <div className="relative inline-block">
-                        {teacherPic ? (
-                            <img src={teacherPic} alt={teacherName} className="avatar-img w-10 h-10 shadow-sm" />
-                        ) : (
-                            <div className={`${sizeClass} select-none`}>🐼</div>
-                        )}
-                        {moodBadge && (
-                            <span className="absolute -bottom-1 -right-1 text-xs bg-white rounded-full px-0.5 shadow border border-pink-200">
-                                {moodBadge}
-                            </span>
-                        )}
-                    </div>
-                );
-            };
-
-            const currentBg = activeScenario?.bg || 'linear-gradient(135deg, #fbcfe8 0%, #fef08a 100%)';
-
-            return (
-                <div 
-                    className="flex flex-col h-full max-w-2xl mx-auto w-full shadow-2xl relative transition-all duration-700 ease-in-out overflow-hidden"
-                    style={{ backgroundImage: currentBg, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                >
-                    <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px] z-0 pointer-events-none"></div>
-
-                    <div className="relative z-10 flex flex-col h-full overflow-hidden">
-                        {/* Header Bar */}
-                        <div className="glass-header text-gray-800 px-3.5 py-2 rounded-b-3xl shadow-sm flex justify-between items-center z-20 flex-shrink-0">
-                            <div className="flex items-center gap-2.5">
-                                <div className={isSpeaking ? "talking-head" : "bounce-slow"}>
-                                    {renderAvatar("text-4xl", teacherMood)}
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-1.5">
-                                        <h1 className="text-lg md:text-xl font-black tracking-wide text-pink-600 leading-tight">
-                                            {teacherName}Lingo
-                                        </h1>
-                                        <button
-                                            onClick={() => setShowSettings(true)}
-                                            className="bg-gradient-to-r from-violet-100 to-pink-100 text-violet-800 border border-violet-200 px-2 py-0.5 rounded-full text-[10px] font-black shadow-sm hover:scale-105 transition-transform"
-                                            title="Configure Open Model AI"
-                                        >
-                                            {activeEngineLabel}
-                                        </button>
-                                    </div>
-                                    <p className="text-[11px] font-bold text-gray-500">
-                                        Interactive AI Chinese Companion
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-1.5">
-                                {/* Quick Core Word Pronouncer (人 & 水) */}
-                                <div className="hidden sm:flex items-center gap-1 bg-emerald-50/90 px-2 py-1 rounded-full border border-emerald-200">
-                                    {CORE_PRACTICE_WORDS.map((cw, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => handleVocabClick(cw)}
-                                            className="bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-black px-2 py-0.5 rounded-full border border-emerald-200 shadow-sm active:scale-90 transition-transform"
-                                            title={`Hear ${cw.hz} (${cw.py})`}
-                                        >
-                                            🔊 {cw.hz}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Bamboo Reward Counter */}
-                                <div className="bg-white/90 rounded-full px-2.5 py-1 flex items-center gap-1 border-2 border-pink-200 text-pink-600 shadow-sm">
-                                    <span className="text-sm font-black">{bambooCount}</span>
-                                    <span className="text-base">🎋</span>
-                                </div>
-                                
-                                {/* Settings Gear Button */}
-                                <button
-                                    onClick={() => setShowSettings(true)}
-                                    className="bg-white/90 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center transition-colors text-gray-600 hover:text-pink-500 shadow-sm border border-pink-100"
-                                    aria-label="Settings & AI Models"
-                                >
-                                    <i className="fa-solid fa-sliders"></i>
-                                </button>
-                            </div>
-
-                            {showRewardAnimation && (
-                                <div className="absolute right-10 top-12 text-5xl pop-in z-50 pointer-events-none">
-                                    🎋✨
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Conversation Style Switcher + Scenario Strip */}
-                        <div className="z-20 flex-shrink-0 pt-1.5 px-3 space-y-1.5">
-                            {/* 3 Interactive Modes */}
-                            <div className="flex items-center justify-between gap-1.5 bg-white/80 backdrop-blur-md p-1 rounded-2xl border border-pink-200 shadow-sm">
-                                {CONVERSATION_MODES.map((m) => {
-                                    const active = conversationMode === m.id;
-                                    return (
-                                        <button
-                                            key={m.id}
-                                            onClick={() => handleModeChange(m.id)}
-                                            disabled={isLoading}
-                                            className={`flex-1 py-1 px-2 rounded-xl text-xs font-black transition-all active:scale-95 ${
-                                                active
-                                                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm'
-                                                    : 'text-gray-600 hover:bg-pink-50'
-                                            }`}
-                                        >
-                                            {m.label}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {/* 12 Scenarios Strip (Free Talk + 11 Singapore Contexts) */}
-                            <div className="flex gap-2 pb-1 overflow-x-auto no-scrollbar snap-x">
-                                {SCENARIOS_DATA.map((scen) => {
-                                    const isSelected = activeScenario?.id === scen.id;
-                                    return (
-                                        <button 
-                                            key={scen.id}
-                                            onClick={() => handleScenario(scen)}
-                                            disabled={isLoading}
-                                            className={`flex-shrink-0 snap-center font-extrabold text-xs py-1.5 px-3 rounded-2xl shadow-sm active:scale-95 transition-all border-b-4 ${scen.style} ${isSelected ? 'ring-2 ring-pink-500 scale-105' : 'opacity-90 hover:opacity-100'}`}
-                                        >
-                                            {scen.icon} {scen.name}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {}
-                        {showSettings && (
-                            <div className="absolute inset-0 bg-black/45 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                                <div className="bg-white rounded-3xl p-5 w-full max-w-md shadow-2xl pop-in border-4 border-pink-100 max-h-[90vh] overflow-y-auto">
-                                    <div className="flex justify-between items-center mb-3">
-                                        <h2 className="text-lg font-black text-pink-600 flex items-center gap-2">
-                                            <i className="fa-solid fa-robot"></i> Teacher & Open Model AI
-                                        </h2>
-                                        <button onClick={() => setShowSettings(false)} className="text-gray-400 hover:text-red-500 text-2xl px-2">
-                                            <i className="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    <div className="space-y-4 text-sm">
-                                        {/* Open Model Selector */}
-                                        <div className="bg-violet-50/80 p-3 rounded-2xl border border-violet-200 space-y-2.5">
-                                            <label className="block text-violet-900 font-black text-xs uppercase tracking-wider">
-                                                🧠 Choose AI Brain (Open Models & Gemini)
-                                            </label>
-                                            <select
-                                                value={selectedPresetId}
-                                                onChange={(e) => handlePresetChange(e.target.value)}
-                                                className="w-full px-3 py-2 border-2 border-violet-200 rounded-xl bg-white font-extrabold text-gray-800 text-xs"
-                                            >
-                                                {OPEN_MODEL_PRESETS.map(preset => (
-                                                    <option key={preset.id} value={preset.id}>
-                                                        {preset.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <p className="text-[11px] text-violet-700 font-semibold leading-snug">
-                                                {(OPEN_MODEL_PRESETS.find(p => p.id === selectedPresetId) || {}).desc}
-                                            </p>
-
-                                            {selectedPresetId !== 'auto' && (
-                                                <div className="space-y-2 pt-1">
-                                                    <div>
-                                                        <label className="block text-[11px] font-extrabold text-gray-600">OpenAI-Compatible Endpoint URL</label>
-                                                        <input
-                                                            type="text"
-                                                            value={customEndpoint}
-                                                            onChange={(e) => setCustomEndpoint(e.target.value)}
-                                                            className="w-full px-2.5 py-1.5 border border-violet-200 rounded-lg text-xs font-mono bg-white"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-[11px] font-extrabold text-gray-600">Model ID (e.g. qwen/qwen-2.5-72b-instruct)</label>
-                                                        <input
-                                                            type="text"
-                                                            value={customModelName}
-                                                            onChange={(e) => setCustomModelName(e.target.value)}
-                                                            className="w-full px-2.5 py-1.5 border border-violet-200 rounded-lg text-xs font-mono bg-white"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div>
-                                                <label className="block text-[11px] font-extrabold text-gray-700 mb-1">
-                                                    {selectedPresetId === 'auto'
-                                                        ? 'Optional Gemini API Key (Auto-falls back to Zero-Key Open AI Cloud if blank)'
-                                                        : 'API Key (OpenRouter / OpenAI / DeepSeek Key)'}
-                                                </label>
-                                                <input 
-                                                    type="password" 
-                                                    placeholder={selectedPresetId === 'auto' ? "Works automatically! Optional key for external hosting" : "Paste your sk-... or OpenRouter key here"}
-                                                    value={customApiKey} 
-                                                    onChange={(e) => setCustomApiKey(e.target.value)}
-                                                    className="w-full px-3 py-2 border-2 border-violet-200 rounded-xl focus:outline-none focus:border-pink-400 bg-white text-xs font-bold"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Teacher Persona */}
-                                        <div className="grid grid-cols-1 gap-3">
-                                            <div>
-                                                <label className="block text-gray-700 font-extrabold mb-1 text-xs">Teacher Name</label>
-                                                <input 
-                                                    type="text" 
-                                                    value={teacherName} 
-                                                    onChange={(e) => setTeacherName(e.target.value)}
-                                                    className="w-full px-3 py-2 border-2 border-pink-100 rounded-xl focus:outline-none focus:border-pink-400 bg-pink-50/50 font-bold text-xs"
-                                                />
-                                            </div>
-                                            
-                                            <div>
-                                                <label className="block text-gray-700 font-extrabold mb-1 text-xs">Teacher Talking Head Photo</label>
-                                                <div className="flex items-center gap-3">
-                                                    {teacherPic ? (
-                                                        <img src={teacherPic} alt="Preview" className="w-12 h-12 avatar-img border-pink-400" />
-                                                    ) : (
-                                                        <div className="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center text-2xl border-2 border-dashed border-pink-200">🐼</div>
-                                                    )}
-                                                    <label className="bg-pink-100 text-pink-700 px-3 py-1.5 rounded-xl font-extrabold text-xs cursor-pointer hover:bg-pink-200 transition-colors">
-                                                        Upload Face Photo
-                                                        <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-                                                    </label>
-                                                    {teacherPic && (
-                                                        <button onClick={() => setTeacherPic(null)} className="text-xs text-red-500 font-bold underline">
-                                                            Reset
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Mandarin Voice Selector */}
-                                        <div>
-                                            <label className="block text-gray-700 font-extrabold mb-1 text-xs">
-                                                Mandarin Voice ({availableVoices.length} detected)
-                                            </label>
-                                            <select
-                                                value={selectedVoiceURI}
-                                                onChange={(e) => setSelectedVoiceURI(e.target.value)}
-                                                className="w-full px-3 py-2 border-2 border-pink-100 rounded-xl bg-pink-50/50 font-bold text-gray-700 text-xs"
-                                            >
-                                                {availableVoices.length === 0 && (
-                                                    <option value="">System Default Mandarin (zh-CN)</option>
-                                                )}
-                                                {availableVoices.map((v, i) => (
-                                                    <option key={i} value={v.voiceURI}>
-                                                        {v.name} ({v.lang})
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <div className="flex gap-2 mt-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => speakText('人，水，我们一起玩吧！', null)}
-                                                    className="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-extrabold px-3 py-1.5 rounded-xl text-xs transition-colors"
-                                                >
-                                                    🔊 Test "人 (rén)" & "水 (shuǐ)"
-                                                </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <button
-                                            onClick={() => setShowSettings(false)}
-                                            className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-black text-sm py-2.5 rounded-xl shadow-md hover:opacity-95 transition-opacity"
-                                        >
-                                            Save & Continue Chatting!
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {}
-                        <div className="flex-1 overflow-y-auto px-3.5 py-2.5 space-y-3.5 z-10">
+<!-- ... existing code ... -->
                             {messages.map((msg, idx) => {
                                 const isSpeakingThisMsg = activeSpeechId === msg.id && isSpeaking;
                                 return (
@@ -1590,43 +198,64 @@ Respond strictly in valid JSON with this exact structure:
                                                 <div>{msg.text}</div>
                                             ) : (
                                                 <div className="flex flex-col gap-1.5">
-                                                    {/* Chinese Characters with Karaoke Highlighting + Click-to-Hear Character */}
-                                                    {msg.chinese && (
-                                                        <div className="text-xl md:text-2xl font-black tracking-wide leading-snug text-gray-800 flex flex-wrap items-center gap-y-1">
-                                                            {Array.from(msg.chinese).map((char, cIdx) => {
+                                                    {/* Chinese Characters with Pinyin Aligned Below (Ruby Text) */}
+                                                    {msg.replyTokens ? (
+                                                        <div className="flex flex-wrap items-end gap-x-0.5 gap-y-3 pt-1 pb-1">
+                                                            {msg.replyTokens.map((token, cIdx) => {
                                                                 const isRead = isSpeakingThisMsg && cIdx < activeCharIndex;
                                                                 const isCurrent = isSpeakingThisMsg && (cIdx === activeCharIndex || cIdx === activeCharIndex + 1);
                                                                 
-                                                                let charClass = "cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
+                                                                let charClass = "flex flex-col items-center justify-end cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
                                                                 if (isSpeakingThisMsg) {
                                                                     if (isCurrent) {
-                                                                        charClass += "text-pink-600 bg-yellow-300 scale-115 shadow-sm -translate-y-0.5";
+                                                                        charClass += "text-pink-600 bg-yellow-300 scale-110 shadow-sm -translate-y-1 rounded-md";
                                                                     } else if (isRead) {
-                                                                        charClass += "text-pink-400";
+                                                                        charClass += "opacity-60";
                                                                     }
                                                                 }
                                                                 return (
-                                                                    <span
+                                                                    <div
                                                                         key={cIdx}
-                                                                        onClick={() => speakText(char, null)}
-                                                                        title={`Tap to hear "${char}"`}
+                                                                        onClick={() => speakText(token.hz, null)}
+                                                                        title={`Tap to hear "${token.hz}"`}
                                                                         className={charClass}
                                                                     >
-                                                                        {char}
-                                                                    </span>
+                                                                        <span className="text-xl md:text-2xl font-black tracking-wide text-gray-900 leading-none">{token.hz}</span>
+                                                                        {token.py ? (
+                                                                            <span className="text-pink-600 text-[10px] md:text-[11.5px] font-extrabold leading-none mt-1.5 tracking-tighter">{token.py}</span>
+                                                                        ) : (
+                                                                            <span className="min-h-[10px] md:min-h-[11.5px] mt-1.5 w-full"></span>
+                                                                        )}
+                                                                    </div>
                                                                 );
                                                             })}
                                                         </div>
+                                                    ) : (
+                                                        /* Fallback for unstructured older messages without replyTokens */
+                                                        msg.chinese && (
+                                                            <div className="text-xl md:text-2xl font-black tracking-wide leading-snug text-gray-800 flex flex-wrap items-center gap-y-1">
+                                                                {Array.from(msg.chinese).map((char, cIdx) => {
+                                                                    const isRead = isSpeakingThisMsg && cIdx < activeCharIndex;
+                                                                    const isCurrent = isSpeakingThisMsg && (cIdx === activeCharIndex || cIdx === activeCharIndex + 1);
+                                                                    let charClass = "cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
+                                                                    if (isSpeakingThisMsg) {
+                                                                        if (isCurrent) charClass += "text-pink-600 bg-yellow-300 scale-115 shadow-sm -translate-y-0.5";
+                                                                        else if (isRead) charClass += "text-pink-400";
+                                                                    }
+                                                                    return <span key={cIdx} onClick={() => speakText(char, null)} className={charClass}>{char}</span>;
+                                                                })}
+                                                            </div>
+                                                        )
                                                     )}
                                                     
-                                                    {/* Pinyin & English Translation */}
-                                                    {msg.pinyin && (
+                                                    {/* Pinyin (Hidden if Ruby Text is active) & English Translation */}
+                                                    {msg.pinyin && !msg.replyTokens && (
                                                         <div className="text-xs md:text-sm text-pink-600 font-extrabold tracking-wide">
                                                             {msg.pinyin}
                                                         </div>
                                                     )}
                                                     {msg.english && (
-                                                        <div className="text-xs md:text-sm text-gray-600 font-bold leading-snug">
+                                                        <div className="text-xs md:text-sm text-gray-600 font-bold leading-snug mt-1">
                                                             {msg.english}
                                                         </div>
                                                     )}
@@ -1637,47 +266,11 @@ Respond strictly in valid JSON with this exact structure:
                                                             {msg.mnemonic}
                                                         </div>
                                                     )}
-                                                    
-                                                    {/* Replay Full Sentence Audio Button */}
-                                                    {msg.chinese && (
-                                                        <div className="flex items-center gap-2 mt-1">
-                                                            <button
-                                                                onClick={() => speakText(msg.chinese, msg.id)}
-                                                                className="bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-full px-3 py-1 text-xs font-extrabold flex items-center gap-1.5 transition-colors shadow-sm border border-pink-200 active:scale-95"
-                                                            >
-                                                                <i className="fa-solid fa-volume-high"></i>
-                                                                {isSpeakingThisMsg ? 'Speaking...' : 'Listen Again'}
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            
-                            {isLoading && (
-                                <div className="flex justify-start items-end">
-                                    <div className="mr-2 mb-1">
-                                        {renderAvatar("text-3xl", "💭")}
-                                    </div>
-                                    <div className="chat-bubble-ai px-4 py-3 text-gray-400 flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce"></div>
-                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.15s'}}></div>
-                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.3s'}}></div>
-                                        <span className="text-xs font-bold text-pink-500 ml-1">{teacherName} is thinking of something fun...</span>
-                                    </div>
-                                </div>
-                            )}
-                            <div ref={chatEndRef} />
-                        </div>
-
-                        {}
-                        <div className="mx-3 mb-1.5 bg-white/92 backdrop-blur-md border-2 border-pink-200 rounded-2xl p-2 shadow-md z-20 flex-shrink-0">
+<!-- ... existing code ... -->
+                        <div className="mx-3 mb-1.5 bg-white/92 backdrop-blur-md border-2 border-pink-200 rounded-2xl p-2.5 shadow-md z-20 flex-shrink-0">
                             <div className="flex flex-col gap-1.5">
                                 {/* Live Vocabulary Tray (Grows as the AI introduces new words!) */}
-                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
                                     <span className="text-[11px] font-black text-pink-600 uppercase whitespace-nowrap mr-0.5">
                                         📚 Words:
                                     </span>
@@ -1685,7 +278,7 @@ Respond strictly in valid JSON with this exact structure:
                                         <button
                                             key={i}
                                             onClick={() => handleVocabClick(v)}
-                                            className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 active:scale-95 text-gray-800 px-2.5 py-0.5 rounded-xl text-xs border border-pink-200 font-extrabold transition-all flex items-center gap-1 shadow-sm"
+                                            className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 active:scale-95 text-gray-800 px-2.5 py-1 rounded-xl text-xs border border-pink-200 font-extrabold transition-all flex items-center gap-1 shadow-sm"
                                         >
                                             <i className="fa-solid fa-volume-high text-pink-500 text-[10px]"></i>
                                             <span className="text-pink-700">{v.hz}</span>
@@ -1695,120 +288,27 @@ Respond strictly in valid JSON with this exact structure:
                                     ))}
                                 </div>
                                 
-                                {/* Dynamic Turn-by-Turn "Try Saying" Suggestions */}
-                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-pink-100">
-                                    <span className="text-[11px] font-black text-sky-600 uppercase whitespace-nowrap mr-0.5">
-                                        💡 Reply:
+                                {/* Dynamic Turn-by-Turn "Try Saying" Suggestions - Stacked into 3 large buttons! */}
+                                <div className="pt-2 mt-1 border-t border-pink-100 flex flex-col gap-1.5">
+                                    <span className="text-[11px] font-black text-sky-600 uppercase">
+                                        <i className="fa-solid fa-lightbulb"></i> You can reply:
                                     </span>
-                                    {dynamicHints.map((hint, i) => (
-                                        <button 
-                                            key={i} 
-                                            onClick={() => handleHintClick(hint)}
-                                            disabled={isLoading}
-                                            className="flex-shrink-0 bg-sky-50 hover:bg-sky-100 text-sky-900 px-2.5 py-1 rounded-xl text-xs border border-sky-200 font-extrabold transition-all active:scale-95 shadow-sm"
-                                        >
-                                            {hint}
-                                        </button>
-                                    ))}
+                                    <div className="grid grid-cols-1 gap-1.5">
+                                        {dynamicHints.slice(0, 3).map((hint, i) => (
+                                            <button 
+                                                key={i} 
+                                                onClick={() => handleHintClick(hint)}
+                                                disabled={isLoading}
+                                                className="text-left w-full bg-gradient-to-r from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100 text-sky-900 px-3 py-2.5 rounded-xl text-sm border border-sky-200 font-extrabold transition-all active:scale-95 shadow-sm leading-snug whitespace-normal"
+                                            >
+                                                <span className="mr-1.5 text-sky-500"><i className="fa-solid fa-comment-dots"></i></span>
+                                                {hint}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {}
-                        <div className="glass-footer px-3.5 py-2.5 rounded-t-3xl shadow-[0_-8px_20px_rgba(0,0,0,0.04)] flex flex-col items-center z-20 flex-shrink-0">
-                            
-                            {micError && (
-                                <div className="w-full mb-2 bg-amber-50 border-2 border-amber-300 text-amber-900 rounded-xl px-3 py-1.5 text-xs font-bold flex items-center justify-between gap-2 pop-in">
-                                    <div className="flex items-center gap-2">
-                                        <i className="fa-solid fa-circle-info text-amber-500 text-sm"></i>
-                                        <span>{micError}</span>
-                                    </div>
-                                    <button onClick={() => setMicError(null)} className="text-amber-600 hover:text-amber-900 px-1">
-                                        <i className="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                            )}
-
-                            {isRecording && (
-                                <div className="w-full mb-2 bg-rose-50 border-2 border-rose-200 rounded-xl px-3 py-1.5 flex items-center justify-between pop-in">
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
-                                        <span className="text-xs font-black text-rose-700 truncate max-w-[210px] sm:max-w-xs">
-                                            {liveTranscript ? `"${liveTranscript}"` : 'Listening... Speak & tap Stop when done!'}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-end gap-1 h-4">
-                                        {[0.4, 0.7, 1.0, 0.8, 0.5].map((mult, idx) => {
-                                            const barHeight = Math.max(4, Math.min(16, Math.round((micVolume * mult) / 5)));
-                                            return (
-                                                <div
-                                                    key={idx}
-                                                    style={{ height: `${barHeight}px` }}
-                                                    className="w-1 bg-rose-500 rounded-full transition-all duration-75"
-                                                ></div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="w-full flex items-center gap-2">
-                                {/* Mic Recognition Language Toggle */}
-                                <button
-                                    type="button"
-                                    onClick={() => setMicLang(prev => prev === 'zh-CN' ? 'en-SG' : 'zh-CN')}
-                                    className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 text-pink-700 border-2 border-pink-200 rounded-2xl px-2.5 py-2 text-xs font-black flex flex-col items-center justify-center shadow-sm active:scale-95 transition-transform"
-                                    title="Switch primary listening language"
-                                >
-                                    <span className="text-[9px] text-gray-400 uppercase">Mic Mode</span>
-                                    <span>{micLang === 'zh-CN' ? '🇨🇳 中文+EN' : '🇸🇬 EN+中文'}</span>
-                                </button>
-
-                                {/* Giant Tap-to-Talk / Tap-to-Stop Microphone Button */}
-                                <button 
-                                    type="button"
-                                    onClick={handleMicToggle}
-                                    disabled={isLoading}
-                                    className={`flex-shrink-0 w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-200 active:scale-90 border-4 border-white ${
-                                        isRecording
-                                            ? 'bg-red-500 text-white animate-pulse shadow-red-300'
-                                            : 'bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-pink-200 hover:from-pink-600 hover:to-rose-600'
-                                    } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                >
-                                    <i className={`fa-solid ${isRecording ? 'fa-stop text-lg' : 'fa-microphone text-xl'}`}></i>
-                                    <span className="text-[8px] font-black uppercase tracking-wider mt-0.5">
-                                        {isRecording ? 'Stop' : 'Speak'}
-                                    </span>
-                                </button>
-
-                                {/* Free-Form Type-to-Talk Input */}
-                                <form onSubmit={handleTextSubmit} className="flex-1 flex items-center gap-1.5">
-                                    <input
-                                        type="text"
-                                        value={textInput}
-                                        onChange={(e) => setTextInput(e.target.value)}
-                                        placeholder={`Ask ${teacherName} anything in EN or 中文...`}
-                                        disabled={isLoading}
-                                        className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-pink-200 bg-white/95 text-sm font-bold text-gray-700 focus:outline-none focus:border-pink-400 shadow-inner"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!textInput.trim() || isLoading}
-                                        className="flex-shrink-0 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-200 text-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm transition-colors active:scale-95"
-                                        aria-label="Send message"
-                                    >
-                                        <i className="fa-solid fa-paper-plane text-sm"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+                        {/* Footer (Microphone and Input) */}
+<!-- ... existing code ... -->
