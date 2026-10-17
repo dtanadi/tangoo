@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#EC4899">
+    <title>PandaLingo - Kids Chinese Tutor</title>
+    
+    <!-- Tailwind CSS for responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for in-browser JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #fdfbfb;
+            touch-action: manipulation;
+            overscroll-behavior: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .bounce-slow {
+            animation: bounceSlow 2.4s infinite ease-in-out;
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .pop-in {
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Glassmorphism & Pastel Chat Bubbles */
+        .chat-bubble-ai {
+            background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 22px 22px 22px 6px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            border: 2px solid #FCE7F3;
+        }
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #EC4899 0%, #F43F5E 100%);
+            border-radius: 22px 22px 6px 22px;
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 2px solid rgba(252, 231, 243, 0.8);
+        }
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-top: 2px solid rgba(252, 231, 243, 0.9);
+        }
+
+        /* Talking Head Animation */
+        .talking-head {
+            animation: talk 0.22s infinite alternate ease-in-out;
+        }
+        @keyframes talk {
+            0% { transform: scaleY(1) scaleX(1) translateY(0); }
+            100% { transform: scaleY(1.09) scaleX(0.95) translateY(-4px); }
+        }
+
+        .avatar-img {
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #F472B6;
+            background-color: white;
+        }
+
+        /* Custom thin scrollbar for scenario strip */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-[100dvh] w-screen overflow-hidden flex flex-col bg-pink-50">
+
+    <div id="root" class="h-full w-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Global reference to prevent iOS Safari from garbage-collecting active SpeechSynthesisUtterance
+        window.__activeUtterance = null;
+
+        // 11 Complete Singapore Lower Primary Contexts
+        const SCENARIOS_DATA = [
+            {
+                id: 'zoo',
+                icon: '🦒',
+                name: 'Zoo Trip',
+                style: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+                bg: 'linear-gradient(135deg, rgba(209,250,229,0.7), rgba(254,243,199,0.7)), url(https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay going to the Singapore Zoo! Greet me warmly and ask what animal I want to see first.",
+                vocab: [
+                    { hz: '老虎', py: 'lǎo hǔ', en: 'Tiger' },
+                    { hz: '大象', py: 'dà xiàng', en: 'Elephant' },
+                    { hz: '猴子', py: 'hóu zi', en: 'Monkey' },
+                    { hz: '看', py: 'kàn', en: 'Look / See' }
+                ],
+                hints: ["我想看老虎 (I want to see the tiger)", "大象很大! (The elephant is big!)", "Hello teacher! Let's see the monkeys!"],
+                localReply: {
+                    chinese: '欢迎来到新加坡动物园！你想看老虎还是大象？',
+                    pinyin: 'Huānyíng lái dào Xīnjiāpō Dòngwùyuán! Nǐ xiǎng kàn lǎohǔ háishì dàxiàng?',
+                    english: 'Welcome to the Singapore Zoo! Notice how 大 (dà - big) looks like a person stretching their arms wide! Do you want to see the tiger (老虎) or the elephant (大象)?'
+                }
+            },
+            {
+                id: 'hawker',
+                icon: '🍜',
+                name: 'Hawker Centre',
+                style: 'bg-orange-100 text-orange-900 border-orange-300',
+                bg: 'linear-gradient(135deg, rgba(255,237,213,0.75), rgba(254,215,170,0.75)), url(https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay buying food at a Singapore Hawker Centre. You be the friendly hawker uncle/auntie and ask what I want to eat.",
+                vocab: [
+                    { hz: '鸡饭', py: 'jī fàn', en: 'Chicken Rice' },
+                    { hz: '水', py: 'shuǐ', en: 'Water' },
+                    { hz: '好吃', py: 'hǎo chī', en: 'Delicious' },
+                    { hz: '多少钱', py: 'duō shǎo qián', en: 'How much?' }
+                ],
+                hints: ["我要鸡饭 (I want chicken rice)", "我要喝水 (I want to drink water)", "Uncle, how much is it? (多少钱?)"],
+                localReply: {
+                    chinese: '小朋友你好！今天想吃香喷喷的鸡饭吗？',
+                    pinyin: 'Xiǎopéngyǒu nǐ hǎo! Jīntiān xiǎng chī xiāngpēnpēn de jīfàn ma?',
+                    english: 'Hello little friend! Welcome to the Hawker Centre! Would you like to eat fragrant Chicken Rice (鸡饭) or drink some water (水)?'
+                }
+            },
+            {
+                id: 'mrt',
+                icon: '🚆',
+                name: 'Taking MRT',
+                style: 'bg-teal-100 text-teal-900 border-teal-300',
+                bg: 'linear-gradient(135deg, rgba(204,251,241,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1570125909232-eb263c05f4dc?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay taking the MRT train in Singapore! Ask me if I brought my EZ-Link card and where we are going.",
+                vocab: [
+                    { hz: '地铁', py: 'dì tiě', en: 'MRT Train' },
+                    { hz: '车卡', py: 'chē kǎ', en: 'EZ-Link Card' },
+                    { hz: '坐', py: 'zuò', en: 'Sit / Ride' },
+                    { hz: '人', py: 'rén', en: 'Person / People' }
+                ],
+                hints: ["我们坐地铁吧! (Let's take the MRT!)", "我有车卡 (I have my card)", "There are many people (很多人)!"],
+                localReply: {
+                    chinese: '叮咚！地铁来了！你带车卡了吗？',
+                    pinyin: 'Dīng dōng! Dìtiě lái le! Nǐ dài chēkǎ le ma?',
+                    english: 'Ding dong! The MRT train (地铁) is here! Look at 人 (rén - person)—it looks like two legs walking onto the train! Did you bring your EZ-Link card (车卡)?'
+                }
+            },
+            {
+                id: 'playground',
+                icon: '🛝',
+                name: 'HDB Playground',
+                style: 'bg-pink-100 text-pink-900 border-pink-300',
+                bg: 'linear-gradient(135deg, rgba(252,231,243,0.75), rgba(254,249,195,0.75)), url(https://images.unsplash.com/photo-1575783970733-1aaedde1db74?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay playing at the HDB downstairs playground! Ask me what game we should play together.",
+                vocab: [
+                    { hz: '玩', py: 'wán', en: 'Play' },
+                    { hz: '跑', py: 'pǎo', en: 'Run' },
+                    { hz: '朋友', py: 'péng yǒu', en: 'Friend' },
+                    { hz: '开心', py: 'kāi xīn', en: 'Happy' }
+                ],
+                hints: ["我们一起玩吧! (Let's play together!)", "我跑得很快! (I run very fast!)", "I am very happy (我很开心)!"],
+                localReply: {
+                    chinese: '走！我们去组屋楼下玩！你想玩什么？',
+                    pinyin: 'Zǒu! Wǒmen qù zǔwū lóuxià wán! Nǐ xiǎng wán shénme?',
+                    english: 'Let\'s go downstairs to the HDB playground to play (玩)! Do you want to run (跑) or play on the slide with your friends (朋友)?'
+                }
+            },
+            {
+                id: 'supermarket',
+                icon: '🛒',
+                name: 'Supermarket',
+                style: 'bg-sky-100 text-sky-900 border-sky-300',
+                bg: 'linear-gradient(135deg, rgba(224,242,254,0.75), rgba(240,253,244,0.75)), url(https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay shopping at NTUC FairPrice supermarket! Ask me what fruits we should put into the trolley.",
+                vocab: [
+                    { hz: '苹果', py: 'píng guǒ', en: 'Apple' },
+                    { hz: '牛奶', py: 'niú nǎi', en: 'Milk' },
+                    { hz: '买', py: 'mǎi', en: 'Buy' },
+                    { hz: '水果', py: 'shuǐ guǒ', en: 'Fruit' }
+                ],
+                hints: ["我要买苹果 (I want to buy apples)", "我要喝牛奶 (I want milk)", "Let's buy juicy fruit (水果)!"],
+                localReply: {
+                    chinese: '我们去超市买水果吧！你喜欢吃红红的苹果吗？',
+                    pinyin: 'Wǒmen qù chāoshì mǎi shuǐguǒ ba! Nǐ xǐhuān chī hónghóng de píngguǒ ma?',
+                    english: 'Let\'s go to the supermarket to buy (买) fruit (水果)! Notice how 水果 has 水 (shuǐ - water) in it because fruits are juicy! Do you like eating red apples (苹果)?'
+                }
+            },
+            {
+                id: 'canteen',
+                icon: '🍱',
+                name: 'School Canteen',
+                style: 'bg-amber-100 text-amber-900 border-amber-300',
+                bg: 'linear-gradient(135deg, rgba(254,243,199,0.75), rgba(255,228,230,0.75)), url(https://images.unsplash.com/photo-1504387432042-8aca549e4729?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay recess time at the Primary School Canteen! Ask me if I am hungry or thirsty.",
+                vocab: [
+                    { hz: '饿', py: 'è', en: 'Hungry' },
+                    { hz: '喝水', py: 'hē shuǐ', en: 'Drink Water' },
+                    { hz: '面', py: 'miàn', en: 'Noodles' },
+                    { hz: '谢谢', py: 'xiè xie', en: 'Thank You' }
+                ],
+                hints: ["我肚子饿了 (I am hungry)", "我要喝水 (I want to drink water)", "我要吃面, 谢谢! (I want noodles, thank you!)"],
+                localReply: {
+                    chinese: '下课了！你的肚子饿不饿？要不要喝水？',
+                    pinyin: 'Xiàkè le! Nǐ de dùzi è bu è? Yào bu yào hē shuǐ?',
+                    english: 'It\'s recess time at the school canteen! Are you hungry (饿)? Remember to drink water (喝水 - hē shuǐ) first! What would you like to eat?'
+                }
+            },
+            {
+                id: 'botanic',
+                icon: '🌺',
+                name: 'Botanic Gardens',
+                style: 'bg-lime-100 text-lime-900 border-lime-300',
+                bg: 'linear-gradient(135deg, rgba(236,252,203,0.75), rgba(209,250,229,0.75)), url(https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay a walk at the Singapore Botanic Gardens! Ask me what colors of flowers and trees I can see.",
+                vocab: [
+                    { hz: '花', py: 'huā', en: 'Flower' },
+                    { hz: '树', py: 'shù', en: 'Tree' },
+                    { hz: '木', py: 'mù', en: 'Wood / Tree' },
+                    { hz: '美', py: 'měi', en: 'Beautiful' }
+                ],
+                hints: ["花很美! (The flowers are beautiful!)", "我看到大树 (I see a big tree)", "Let's walk in the park!"],
+                localReply: {
+                    chinese: '植物园里的花好美啊！你看到高高的大树了吗？',
+                    pinyin: 'Zhíwùyuán lǐ de huā hǎo měi a! Nǐ kàndào gāogāo de dàshù le ma?',
+                    english: 'The flowers (花) in the Botanic Gardens are so beautiful (美)! Look at 木 (mù)—it looks like a tree with branches and roots! Can you see the tall trees (树)?'
+                }
+            },
+            {
+                id: 'library',
+                icon: '📚',
+                name: 'Public Library',
+                style: 'bg-violet-100 text-violet-900 border-violet-300',
+                bg: 'linear-gradient(135deg, rgba(237,233,254,0.75), rgba(224,231,255,0.75)), url(https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay visiting the National Library (NLB)! Remind me softly to be quiet and ask what storybook I want to borrow.",
+                vocab: [
+                    { hz: '书', py: 'shū', en: 'Book' },
+                    { hz: '看书', py: 'kàn shū', en: 'Read a Book' },
+                    { hz: '安静', py: 'ān jìng', en: 'Quiet' },
+                    { hz: '故事', py: 'gù shi', en: 'Story' }
+                ],
+                hints: ["我要看书 (I want to read a book)", "嘘，要安静! (Shh, be quiet!)", "I like animal stories (故事)!"],
+                localReply: {
+                    chinese: '嘘！我们在图书馆要安静哦。你想看什么故事书？',
+                    pinyin: 'Xū! Wǒmen zài túshūguǎn yào ānjìng ó. Nǐ xiǎng kàn shénme gùshishū?',
+                    english: 'Shh! In the library we need to be quiet (安静). What kind of storybook (故事书) would you like to read (看书) today?'
+                }
+            },
+            {
+                id: 'airport',
+                icon: '✈️',
+                name: 'Changi Airport',
+                style: 'bg-cyan-100 text-cyan-900 border-cyan-300',
+                bg: 'linear-gradient(135deg, rgba(207,250,254,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1544015759-224ae4a8b792?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay visiting Jewel Changi Airport! Talk about the big waterfall and airplanes flying in the sky.",
+                vocab: [
+                    { hz: '飞机', py: 'fēi jī', en: 'Airplane' },
+                    { hz: '水', py: 'shuǐ', en: 'Water' },
+                    { hz: '大', py: 'dà', en: 'Big' },
+                    { hz: '飞', py: 'fēi', en: 'Fly' }
+                ],
+                hints: ["飞机在天上飞! (The airplane flies in the sky!)", "瀑布的水很大! (The waterfall water is huge!)", "I love Changi Airport!"],
+                localReply: {
+                    chinese: '哇！樟宜机场的瀑布好多水！你看到大飞机了吗？',
+                    pinyin: 'Wā! Zhāngyí Jīchǎng de pùbù hǎo duō shuǐ! Nǐ kàndào dà fēijī le ma?',
+                    english: 'Wow! The Jewel Changi Airport waterfall has so much water (水 - shuǐ)! Can you see the big (大) airplane (飞机) getting ready to fly (飞)?'
+                }
+            },
+            {
+                id: 'merlion',
+                icon: '🦁',
+                name: 'Merlion Park',
+                style: 'bg-rose-100 text-rose-900 border-rose-300',
+                bg: 'linear-gradient(135deg, rgba(255,228,230,0.75), rgba(224,242,254,0.75)), url(https://images.unsplash.com/photo-1565967511849-76a60a516170?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay visiting Merlion Park in Singapore! Explain how the Merlion sprays water from its mouth.",
+                vocab: [
+                    { hz: '口', py: 'kǒu', en: 'Mouth' },
+                    { hz: '水', py: 'shuǐ', en: 'Water' },
+                    { hz: '拍照', py: 'pāi zhào', en: 'Take Photo' },
+                    { hz: '新加坡', py: 'Xīn jiā pō', en: 'Singapore' }
+                ],
+                hints: ["鱼尾狮在喷水! (The Merlion is spraying water!)", "我们一起拍照吧 (Let's take a photo)", "I love Singapore (我爱新加坡)!"],
+                localReply: {
+                    chinese: '看！新加坡的鱼尾狮张开大口在喷水呢！我们一起拍照吧？',
+                    pinyin: 'Kàn! Xīnjiāpō de Yúwěishī zhāngkāi dà kǒu zài pēn shuǐ ne! Wǒmen yīqǐ pāizhào ba?',
+                    english: 'Look! Singapore\'s Merlion has its big mouth (口 - kǒu, which looks just like an open square mouth!) spraying water (水 - shuǐ)! Shall we take a photo (拍照)?'
+                }
+            },
+            {
+                id: 'rainy',
+                icon: '☔',
+                name: 'Rainy Day',
+                style: 'bg-indigo-100 text-indigo-900 border-indigo-300',
+                bg: 'linear-gradient(135deg, rgba(224,231,255,0.75), rgba(243,232,255,0.75)), url(https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1080&auto=format&fit=crop)',
+                prompt: "Let's roleplay a rainy afternoon in Singapore! Ask me if I have an umbrella before we walk home.",
+                vocab: [
+                    { hz: '下雨', py: 'xià yǔ', en: 'Rain' },
+                    { hz: '雨伞', py: 'yǔ sǎn', en: 'Umbrella' },
+                    { hz: '家', py: 'jiā', en: 'Home' },
+                    { hz: '水', py: 'shuǐ', en: 'Water' }
+                ],
+                hints: ["外面下雨了! (It is raining outside!)", "我有雨伞 (I have an umbrella)", "Let's go home (我们回家吧)!"],
+                localReply: {
+                    chinese: '哎呀，外面下雨了！你有带雨伞回家吗？',
+                    pinyin: 'Āiyā, wàimiàn xiàyǔ le! Nǐ yǒu dài yǔsǎn huí jiā ma?',
+                    english: 'Oh my, it is raining (下雨) outside! Look at 雨 (yǔ - rain)—it looks like raindrops falling from a cloud! Did you bring an umbrella (雨伞) to go home (家)?'
+                }
+            }
+        ];
+
+        // Core starter words always available for quick pronunciation check
+        const CORE_PRACTICE_WORDS = [
+            { hz: '人', py: 'rén', en: 'Person' },
+            { hz: '水', py: 'shuǐ', en: 'Water' },
+            { hz: '口', py: 'kǒu', en: 'Mouth' },
+            { hz: '大', py: 'dà', en: 'Big' },
+            { hz: '你好', py: 'nǐ hǎo', en: 'Hello' },
+            { hz: '谢谢', py: 'xiè xie', en: 'Thanks' }
+        ];
+
+        const App = () => {
+            const [messages, setMessages] = useState([
+                { 
+                    id: 'init-1',
+                    role: 'ai', 
+                    chinese: '你好！我们一起学中文吧！',
+                    pinyin: 'Nǐ hǎo! Wǒmen yīqǐ xué Zhōngwén ba!',
+                    english: 'Hello! Let\'s learn Chinese together! Tap any green/pink word to hear it, or tap the Microphone to talk to me!'
+                }
+            ]);
+
+            // Speech & Karaoke Highlighting State
+            const [activeSpeechId, setActiveSpeechId] = useState(null);
+            const [activeCharIndex, setActiveCharIndex] = useState(-1);
+            const [isSpeaking, setIsSpeaking] = useState(false);
+            const [availableVoices, setAvailableVoices] = useState([]);
+            const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
+
+            // Microphone & Hybrid Recording State
+            const [isRecording, setIsRecording] = useState(false);
+            const [liveTranscript, setLiveTranscript] = useState('');
+            const [micVolume, setMicVolume] = useState(0);
+            const [micLang, setMicLang] = useState('zh-CN'); // 'zh-CN' or 'en-SG'
+            const [micError, setMicError] = useState(null);
+            const [textInput, setTextInput] = useState('');
+
+            // AI & Gamification State
+            const [isLoading, setIsLoading] = useState(false);
+            const [bambooCount, setBambooCount] = useState(0);
+            const [showRewardAnimation, setShowRewardAnimation] = useState(false);
+
+            // Scenario & Teacher Customization State
+            const [sceneId, setSceneId] = useState('default');
+            const [activeScenario, setActiveScenario] = useState(SCENARIOS_DATA[0]);
+            const [showSettings, setShowSettings] = useState(false);
+            const [teacherName, setTeacherName] = useState('Panda');
+            const [teacherPic, setTeacherPic] = useState(null);
+            const [customApiKey, setCustomApiKey] = useState('');
+
+            // Refs for managing hardware timers and streams cleanly on iPad/Android
+            const chatEndRef = useRef(null);
+            const karaokeTimerRef = useRef(null);
+            const recognitionRef = useRef(null);
+            const mediaRecorderRef = useRef(null);
+            const mediaStreamRef = useRef(null);
+            const audioChunksRef = useRef([]);
+            const volumeIntervalRef = useRef(null);
+            const audioContextRef = useRef(null);
+            const maxRecordTimerRef = useRef(null);
+            const liveTranscriptRef = useRef('');
+
+            // Environment API key (auto-injected by Canvas, or overridden in Settings for external Netlify hosting)
+            const apiKey = "";
+
+            // Scroll to bottom when new messages arrive
+            useEffect(() => {
+                chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [messages, isLoading, liveTranscript, micError]);
+
+            // Preload Mandarin voices on iPadOS / Android (voices load asynchronously)
+            useEffect(() => {
+                if (!window.speechSynthesis) return;
+
+                const loadVoices = () => {
+                    const voices = window.speechSynthesis.getVoices() || [];
+                    // Filter Chinese voices, strictly excluding Cantonese (HK/MO) so 水 (shuǐ) is always pronounced in Mandarin
+                    const mandarinVoices = voices.filter(v => {
+                        const lang = (v.lang || '').toLowerCase();
+                        const name = (v.name || '').toLowerCase();
+                        const isCantonese = lang.includes('hk') || lang.includes('mo') || lang.includes('yue') || name.includes('cantonese') || name.includes('sin-ji');
+                        const isChinese = lang.includes('zh') || lang.includes('cmn') || name.includes('chinese') || name.includes('mandarin') || name.includes('ting-ting') || name.includes('meijia') || name.includes('li-mu') || name.includes('yu-shu');
+                        return isChinese && !isCantonese;
+                    });
+
+                    setAvailableVoices(mandarinVoices);
+
+                    if (!selectedVoiceURI && mandarinVoices.length > 0) {
+                        // Rank voices: Enhanced/Premium Ting-Ting or zh-CN / zh-SG first
+                        const best =
+                            mandarinVoices.find(v => (v.lang === 'zh-CN' || v.lang === 'zh_CN') && (v.name.includes('Enhanced') || v.name.includes('Premium') || v.name.includes('Ting-Ting') || v.name.includes('Li-Mu'))) ||
+                            mandarinVoices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN') ||
+                            mandarinVoices.find(v => v.lang === 'zh-SG' || v.lang === 'zh_SG') ||
+                            mandarinVoices.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') ||
+                            mandarinVoices[0];
+                        if (best) setSelectedVoiceURI(best.voiceURI);
+                    }
+                };
+
+                loadVoices();
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+
+                return () => {
+                    stopSpeaking();
+                    cleanupMicrophone();
+                };
+            }, []);
+
+            const clearKaraokeTimer = () => {
+                if (karaokeTimerRef.current) {
+                    clearInterval(karaokeTimerRef.current);
+                    karaokeTimerRef.current = null;
+                }
+            };
+
+            const stopSpeaking = () => {
+                clearKaraokeTimer();
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+                setIsSpeaking(false);
+                setActiveSpeechId(null);
+                setActiveCharIndex(-1);
+            };
+
+            // Warm up iPad Safari audio synthesis inside synchronous user click gesture
+            const unlockAudioForIOS = () => {
+                try {
+                    if (window.speechSynthesis) {
+                        window.speechSynthesis.cancel();
+                        const warmUp = new SpeechSynthesisUtterance('');
+                        warmUp.volume = 0;
+                        window.speechSynthesis.speak(warmUp);
+                    }
+                } catch (e) {
+                    // Ignore warmup errors
+                }
+            };
+
+            // Accurate Mandarin TTS with dual-sync Karaoke Highlighting (works on iPad Safari & Android)
+            const speakText = (rawText, messageId = null) => {
+                if (!window.speechSynthesis || !rawText) return;
+
+                // Stop any existing speech first
+                stopSpeaking();
+
+                const cleanText = rawText.trim();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                // Store globally so iPad Safari never garbage-collects the utterance mid-sentence
+                window.__activeUtterance = utterance;
+
+                const voices = window.speechSynthesis.getVoices() || [];
+                let chosenVoice = voices.find(v => v.voiceURI === selectedVoiceURI);
+
+                if (!chosenVoice) {
+                    chosenVoice =
+                        voices.find(v => (v.lang === 'zh-CN' || v.lang === 'zh_CN') && !v.lang.includes('HK')) ||
+                        voices.find(v => v.lang === 'zh-SG' || v.lang === 'zh_SG') ||
+                        voices.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') ||
+                        voices.find(v => v.lang.toLowerCase().includes('zh') && !v.lang.toLowerCase().includes('hk') && !v.lang.toLowerCase().includes('mo'));
+                }
+
+                if (chosenVoice) {
+                    utterance.voice = chosenVoice;
+                }
+
+                // Strictly use Standard Mandarin locale and natural 1.0 pitch so 3rd tone words like 水 (shuǐ) are never distorted!
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.82; // Clear, steady teacher pace for children
+                utterance.pitch = 1.0; // Natural pitch preserves accurate Mandarin 4-tone contours
+
+                let boundaryFired = false;
+                const totalChars = cleanText.length;
+
+                const startHighlightLoop = () => {
+                    clearKaraokeTimer();
+                    setIsSpeaking(true);
+                    if (messageId) {
+                        setActiveSpeechId(messageId);
+                        setActiveCharIndex(0);
+                    }
+
+                    // Fallback timer for iPad Safari where Chinese voices often omit onboundary events
+                    let currentIdx = 0;
+                    const msPerChar = 310; // Matches rate 0.82 for Chinese characters
+                    karaokeTimerRef.current = setInterval(() => {
+                        if (!boundaryFired) {
+                            currentIdx += 1;
+                            if (currentIdx < totalChars) {
+                                if (messageId) setActiveCharIndex(currentIdx);
+                            } else {
+                                clearKaraokeTimer();
+                            }
+                        }
+                    }, msPerChar);
+                };
+
+                utterance.onstart = startHighlightLoop;
+
+                utterance.onboundary = (event) => {
+                    if (typeof event.charIndex === 'number' && messageId) {
+                        boundaryFired = true;
+                        setActiveCharIndex(event.charIndex);
+                    }
+                };
+
+                utterance.onend = () => {
+                    clearKaraokeTimer();
+                    setIsSpeaking(false);
+                    setActiveSpeechId(null);
+                    setActiveCharIndex(-1);
+                };
+
+                utterance.onerror = () => {
+                    clearKaraokeTimer();
+                    setIsSpeaking(false);
+                    setActiveSpeechId(null);
+                    setActiveCharIndex(-1);
+                };
+
+                window.speechSynthesis.speak(utterance);
+            };
+
+            const awardBamboo = () => {
+                setBambooCount(prev => prev + 1);
+                setShowRewardAnimation(true);
+                setTimeout(() => setShowRewardAnimation(false), 2000);
+            };
+
+            // Smart local tutor fallback so the app works even if tested offline or without an API key
+            const generateLocalTutorResponse = (userText) => {
+                const currentScen = activeScenario || SCENARIOS_DATA[0];
+                const randomVocab = currentScen.vocab[Math.floor(Math.random() * currentScen.vocab.length)];
+                
+                // Check if user mentioned specific words
+                if (userText && userText.includes('水')) {
+                    return {
+                        chinese: '太棒了！水，shuǐ，我们要多喝水哦！你还想学什么词？',
+                        pinyin: 'Tài bàng le! Shuǐ, wǒmen yào duō hē shuǐ ó! Nǐ hái xiǎng xué shénme cí?',
+                        english: 'Awesome job saying 水 (shuǐ - water)! Notice how 水 looks like a flowing river with splashes on both sides! What else would you like to try saying?',
+                        bambooEarned: true
+                    };
+                }
+                if (userText && userText.includes('人')) {
+                    return {
+                        chinese: '读得很准！人，rén，就像两条腿在走路！我们继续练习吧！',
+                        pinyin: 'Dú de hěn zhǔn! Rén, jiù xiàng liǎng tiáo tuǐ zài zǒulù! Wǒmen jìxù liànxí ba!',
+                        english: 'Great pronunciation of 人 (rén - person)! It looks just like two legs walking! Let\'s keep practicing!',
+                        bambooEarned: true
+                    };
+                }
+
+                return {
+                    chinese: `太棒了！我们一起来读：${randomVocab.hz}。你喜欢${randomVocab.hz}吗？`,
+                    pinyin: `Tài bàng le! Wǒmen yīqǐ lái dú: ${randomVocab.py}. Nǐ xǐhuān ${randomVocab.py} ma?`,
+                    english: `Well done! In our ${currentScen.name} adventure, let's practice "${randomVocab.hz}" (${randomVocab.py} - ${randomVocab.en}). Can you try saying "${randomVocab.hz}" out loud?`,
+                    bambooEarned: true
+                };
+            };
+
+            // Helper for exponential backoff fetch calls
+            const fetchWithRetry = async (url, options, retries = 2) => {
+                for (let i = 0; i <= retries; i++) {
+                    try {
+                        const res = await fetch(url, options);
+                        if (res.ok) return await res.json();
+                        if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+                            throw new Error(`API status ${res.status}`);
+                        }
+                    } catch (err) {
+                        if (i === retries) throw err;
+                        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
+                    }
+                }
+            };
+
+            // Send text or recorded audio to Gemini 3 Flash
+            const sendToAI = async ({ userText = '', audioBase64 = null, audioMimeType = 'audio/mp4', tempMsgId = null }) => {
+                setIsLoading(true);
+                const effectiveKey = customApiKey.trim() || apiKey;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${effectiveKey}`;
+
+                const chatHistory = messages.slice(-8).map(m => ({
+                    role: m.role === 'ai' ? 'model' : 'user',
+                    parts: [{ text: m.role === 'ai' ? `${m.chinese || ''} (${m.english || ''})` : (m.text || '') }]
+                }));
+
+                const userParts = [];
+                if (audioBase64) {
+                    userParts.push({
+                        inlineData: {
+                            mimeType: audioMimeType,
+                            data: audioBase64
+                        }
+                    });
+                    userParts.push({
+                        text: userText
+                            ? `The child spoke into the microphone (draft transcript: "${userText}"). Listen to the audio, transcribe what the child said into heardText, and reply as their encouraging Chinese tutor.`
+                            : `The child spoke into the microphone in English or Mandarin Chinese. Listen carefully to the audio, transcribe what the child said into heardText, and reply as their encouraging Chinese tutor.`
+                    });
+                } else {
+                    userParts.push({ text: userText });
+                }
+
+                chatHistory.push({ role: 'user', parts: userParts });
+
+                const scenarioContext = activeScenario
+                    ? `Current Singapore Scenario: ${activeScenario.name}. Target words: ${activeScenario.vocab.map(v => `${v.hz} (${v.py} - ${v.en})`).join(', ')}.`
+                    : 'General Chat';
+
+                const systemPrompt = `You are an enthusiastic, warm Chinese tutor named ${teacherName} teaching Mandarin Chinese to a 6-8 year old lower primary student in Singapore.
+                ${scenarioContext}
+
+                Follow these pedagogical rules:
+                1. Guided Roleplay: Keep the conversation natural, cheerful, and step-by-step.
+                2. Contextual Vocabulary: Use simple Mandarin phrases suitable for lower primary kids.
+                3. Visual Character Mnemonics: Briefly mention a fun visual tip for 1 character when helpful (e.g., "水 looks like splashing water!", "口 looks like an open mouth!", "人 looks like two legs walking!").
+                4. Always end with a simple, fun question to invite the child to reply!
+
+                Respond ONLY in JSON matching the exact schema.`;
+
+                const payload = {
+                    contents: chatHistory,
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                heardText: { type: "STRING" },
+                                chinese: { type: "STRING" },
+                                pinyin: { type: "STRING" },
+                                english: { type: "STRING" },
+                                bambooEarned: { type: "BOOLEAN" }
+                            },
+                            propertyOrdering: ["heardText", "chinese", "pinyin", "english", "bambooEarned"]
+                        }
+                    }
+                };
+
+                try {
+                    const result = await fetchWithRetry(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const rawJson = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!rawJson) throw new Error("Empty AI response");
+
+                    const parsed = JSON.parse(rawJson);
+
+                    // Update temporary audio bubble with what Gemini heard
+                    if (tempMsgId) {
+                        const finalTranscript = parsed.heardText || userText || '🎤 (Spoke to teacher)';
+                        setMessages(prev => prev.map(m => m.id === tempMsgId ? { ...m, text: finalTranscript } : m));
+                    }
+
+                    if (parsed.bambooEarned !== false) {
+                        awardBamboo();
+                    }
+
+                    const newMsgId = 'msg-' + Date.now();
+                    setMessages(prev => [...prev, {
+                        id: newMsgId,
+                        role: 'ai',
+                        chinese: parsed.chinese,
+                        pinyin: parsed.pinyin,
+                        english: parsed.english
+                    }]);
+
+                    if (parsed.chinese) {
+                        speakText(parsed.chinese, newMsgId);
+                    }
+                } catch (error) {
+                    console.warn("Using local tutor fallback:", error);
+                    const fallbackText = userText || 'Hello!';
+                    if (tempMsgId) {
+                        setMessages(prev => prev.map(m => m.id === tempMsgId ? { ...m, text: userText || '🎤 我说了中文! (I spoke to teacher!)' } : m));
+                    }
+                    const fallback = generateLocalTutorResponse(fallbackText);
+                    awardBamboo();
+                    const newMsgId = 'msg-' + Date.now();
+                    setMessages(prev => [...prev, {
+                        id: newMsgId,
+                        role: 'ai',
+                        chinese: fallback.chinese,
+                        pinyin: fallback.pinyin,
+                        english: fallback.english
+                    }]);
+                    speakText(fallback.chinese, newMsgId);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const cleanupMicrophone = () => {
+                if (maxRecordTimerRef.current) {
+                    clearTimeout(maxRecordTimerRef.current);
+                    maxRecordTimerRef.current = null;
+                }
+                if (volumeIntervalRef.current) {
+                    clearInterval(volumeIntervalRef.current);
+                    volumeIntervalRef.current = null;
+                }
+                if (recognitionRef.current) {
+                    try {
+                        recognitionRef.current.onend = null;
+                        recognitionRef.current.onerror = null;
+                        recognitionRef.current.stop();
+                    } catch (e) {}
+                    recognitionRef.current = null;
+                }
+                if (mediaStreamRef.current) {
+                    mediaStreamRef.current.getTracks().forEach(track => track.stop());
+                    mediaStreamRef.current = null;
+                }
+                if (audioContextRef.current) {
+                    try {
+                        audioContextRef.current.close();
+                    } catch (e) {}
+                    audioContextRef.current = null;
+                }
+                setMicVolume(0);
+            };
+
+            const blobToBase64 = (blob) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const dataUrl = reader.result || '';
+                        const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : '';
+                        resolve(base64);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            };
+
+            // Stop active recording and send captured audio/speech to the AI
+            const stopRecordingAndSend = () => {
+                if (!isRecording) return;
+                setIsRecording(false);
+
+                // If MediaRecorder is active, stopping it triggers its onstop handler which sends the audio
+                if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+                    try {
+                        mediaRecorderRef.current.stop();
+                        return;
+                    } catch (e) {
+                        console.warn("MediaRecorder stop error:", e);
+                    }
+                }
+
+                // Otherwise, if only SpeechRecognition was used
+                const capturedText = (liveTranscriptRef.current || '').trim();
+                cleanupMicrophone();
+                setLiveTranscript('');
+                liveTranscriptRef.current = '';
+
+                if (capturedText) {
+                    const userMsgId = 'usr-' + Date.now();
+                    setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: capturedText }]);
+                    sendToAI({ userText: capturedText });
+                } else {
+                    setMicError('No voice was detected. Try tapping the mic and speaking closer to the iPad, or tap a blue phrase below!');
+                }
+            };
+
+            const handleMicToggle = async () => {
+                // 1. If already recording, tapping again stops & sends immediately!
+                if (isRecording) {
+                    stopRecordingAndSend();
+                    return;
+                }
+
+                // 2. Release iPad TTS audio lock and warm up audio session
+                stopSpeaking();
+                unlockAudioForIOS();
+                setMicError(null);
+                setLiveTranscript('');
+                liveTranscriptRef.current = '';
+
+                // Check if opened over insecure file:// or http:// (which iPadOS blocks)
+                if (window.location.protocol === 'file:') {
+                    setMicError('iPad Safari blocks the microphone when opened directly as a local file (file://). Please use HTTPS (like Netlify Drop) or use the text/phrase buttons below!');
+                    return;
+                }
+
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                let hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+                // Start optional SpeechRecognition in parallel for live caption preview
+                const startParallelSpeechRecognition = (standaloneMode = false) => {
+                    if (!SpeechRecognition) return false;
+                    try {
+                        const recognition = new SpeechRecognition();
+                        recognition.lang = micLang; // 'zh-CN' or 'en-SG'
+                        recognition.interimResults = true;
+                        recognition.continuous = true;
+                        recognition.maxAlternatives = 1;
+
+                        recognition.onresult = (event) => {
+                            let combined = '';
+                            for (let i = 0; i < event.results.length; i++) {
+                                combined += event.results[i][0].transcript;
+                            }
+                            if (combined.trim()) {
+                                liveTranscriptRef.current = combined.trim();
+                                setLiveTranscript(combined.trim());
+                            }
+                        };
+
+                        recognition.onerror = (event) => {
+                            if (standaloneMode) {
+                                console.warn("SpeechRecognition error:", event.error);
+                                setIsRecording(false);
+                                cleanupMicrophone();
+                                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                                    setMicError('Microphone or Siri Dictation permission was blocked on this iPad. Check Safari Settings > Microphone, or tap a phrase chip below!');
+                                } else {
+                                    setMicError(`Voice recognition (${event.error}) paused. Try speaking again or tap a phrase below!`);
+                                }
+                            }
+                        };
+
+                        recognition.onend = () => {
+                            if (standaloneMode && recognitionRef.current) {
+                                const text = (liveTranscriptRef.current || '').trim();
+                                setIsRecording(false);
+                                cleanupMicrophone();
+                                setLiveTranscript('');
+                                liveTranscriptRef.current = '';
+                                if (text) {
+                                    setMessages(prev => [...prev, { id: 'usr-' + Date.now(), role: 'user', text }]);
+                                    sendToAI({ userText: text });
+                                }
+                            }
+                        };
+
+                        recognitionRef.current = recognition;
+                        recognition.start();
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                };
+
+                // Primary Engine: MediaRecorder + WebAudio Volume Meter + Gemini Native Audio
+                if (hasMediaDevices && window.MediaRecorder) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            audio: {
+                                echoCancellation: true,
+                                noiseSuppression: true,
+                                autoGainControl: true
+                            }
+                        });
+
+                        mediaStreamRef.current = stream;
+                        setIsRecording(true);
+
+                        // Setup live volume meter + smart silence detection for iPad
+                        try {
+                            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                            const audioCtx = new AudioCtx();
+                            audioContextRef.current = audioCtx;
+                            const source = audioCtx.createMediaStreamSource(stream);
+                            const analyser = audioCtx.createAnalyser();
+                            analyser.fftSize = 256;
+                            source.connect(analyser);
+
+                            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                            let hasSpoken = false;
+                            let silentFrames = 0;
+
+                            volumeIntervalRef.current = setInterval(() => {
+                                analyser.getByteFrequencyData(dataArray);
+                                let sum = 0;
+                                for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                                const avg = sum / dataArray.length;
+                                const normalized = Math.min(100, Math.round((avg / 65) * 100));
+                                setMicVolume(normalized);
+
+                                if (normalized > 18) {
+                                    hasSpoken = true;
+                                    silentFrames = 0;
+                                } else if (hasSpoken) {
+                                    silentFrames += 1;
+                                    // Auto-stop after ~1.8 seconds of silence once child finishes speaking
+                                    if (silentFrames >= 18 && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+                                        try {
+                                            mediaRecorderRef.current.stop();
+                                        } catch (e) {}
+                                    }
+                                }
+                            }, 100);
+                        } catch (audioErr) {
+                            console.warn("Audio visualizer init skipped:", audioErr);
+                        }
+
+                        // Pick best supported audio mimeType for iPad Safari (audio/mp4) vs Android Chrome (audio/webm)
+                        const preferredTypes = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
+                        let selectedMime = '';
+                        for (const t of preferredTypes) {
+                            if (window.MediaRecorder.isTypeSupported && window.MediaRecorder.isTypeSupported(t)) {
+                                selectedMime = t;
+                                break;
+                            }
+                        }
+
+                        const recorder = selectedMime
+                            ? new MediaRecorder(stream, { mimeType: selectedMime })
+                            : new MediaRecorder(stream);
+
+                        audioChunksRef.current = [];
+                        mediaRecorderRef.current = recorder;
+
+                        recorder.ondataavailable = (e) => {
+                            if (e.data && e.data.size > 0) {
+                                audioChunksRef.current.push(e.data);
+                            }
+                        };
+
+                        recorder.onstop = async () => {
+                            const draftText = (liveTranscriptRef.current || '').trim();
+                            const actualMime = (recorder.mimeType || selectedMime || 'audio/mp4').split(';')[0];
+                            const audioBlob = new Blob(audioChunksRef.current, { type: actualMime });
+
+                            setIsRecording(false);
+                            cleanupMicrophone();
+                            setLiveTranscript('');
+                            liveTranscriptRef.current = '';
+
+                            if (audioBlob.size < 400 && !draftText) {
+                                setMicError('Recording was too short. Tap the mic, speak your phrase, and tap Stop!');
+                                return;
+                            }
+
+                            const tempId = 'usr-' + Date.now();
+                            setMessages(prev => [
+                                ...prev,
+                                { id: tempId, role: 'user', text: draftText || '🎤 Processing your voice...' }
+                            ]);
+
+                            try {
+                                const base64Audio = await blobToBase64(audioBlob);
+                                await sendToAI({
+                                    userText: draftText,
+                                    audioBase64: base64Audio,
+                                    audioMimeType: actualMime,
+                                    tempMsgId: tempId
+                                });
+                            } catch (err) {
+                                if (draftText) {
+                                    await sendToAI({ userText: draftText, tempMsgId: tempId });
+                                }
+                            }
+                        };
+
+                        recorder.start();
+                        // Also run SpeechRecognition in parallel if supported for live preview
+                        startParallelSpeechRecognition(false);
+
+                        // Safety max recording timeout (9 seconds)
+                        maxRecordTimerRef.current = setTimeout(() => {
+                            if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+                                try {
+                                    mediaRecorderRef.current.stop();
+                                } catch (e) {}
+                            }
+                        }, 9000);
+
+                        return;
+                    } catch (err) {
+                        console.warn("getUserMedia fallback to SpeechRecognition:", err);
+                        // If getUserMedia failed, try standalone SpeechRecognition before showing error
+                    }
+                }
+
+                // Fallback to standalone SpeechRecognition if MediaRecorder was unavailable
+                if (SpeechRecognition) {
+                    const started = startParallelSpeechRecognition(true);
+                    if (started) {
+                        setIsRecording(true);
+                        maxRecordTimerRef.current = setTimeout(() => {
+                            stopRecordingAndSend();
+                        }, 7000);
+                        return;
+                    }
+                }
+
+                // If both engines were blocked by iPad permissions or iframe sandbox
+                setMicError(
+                    'Microphone access is blocked on this browser/preview. On iPad Safari, tap the "AA" or site icon in the address bar → Website Settings → Microphone → Allow, or use the quick phrases & keyboard below!'
+                );
+            };
+
+            const handleScenario = (scenarioObj) => {
+                unlockAudioForIOS();
+                setSceneId(scenarioObj.id);
+                setActiveScenario(scenarioObj);
+                setMicError(null);
+
+                const userMsgId = 'usr-' + Date.now();
+                const aiMsgId = 'ai-' + (Date.now() + 1);
+
+                // Instant response using curated Singapore scenario greeting so the child never waits when switching scenes!
+                setMessages(prev => [
+                    ...prev,
+                    { id: userMsgId, role: 'user', text: `${scenarioObj.icon} Let's practice: ${scenarioObj.name}!` },
+                    {
+                        id: aiMsgId,
+                        role: 'ai',
+                        chinese: scenarioObj.localReply.chinese,
+                        pinyin: scenarioObj.localReply.pinyin,
+                        english: scenarioObj.localReply.english
+                    }
+                ]);
+
+                speakText(scenarioObj.localReply.chinese, aiMsgId);
+            };
+
+            const handleHintClick = (hintText) => {
+                unlockAudioForIOS();
+                setMicError(null);
+                const msgId = 'usr-' + Date.now();
+                setMessages(prev => [...prev, { id: msgId, role: 'user', text: hintText }]);
+                sendToAI({ userText: hintText });
+            };
+
+            const handleVocabClick = (vocabItem) => {
+                unlockAudioForIOS();
+                speakText(vocabItem.hz, null);
+            };
+
+            const handleTextSubmit = (e) => {
+                e.preventDefault();
+                const trimmed = textInput.trim();
+                if (!trimmed || isLoading) return;
+                unlockAudioForIOS();
+                setTextInput('');
+                setMicError(null);
+                setMessages(prev => [...prev, { id: 'usr-' + Date.now(), role: 'user', text: trimmed }]);
+                sendToAI({ userText: trimmed });
+            };
+
+            const handlePhotoUpload = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setTeacherPic(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const renderAvatar = (sizeClass = "text-3xl") => {
+                if (teacherPic) {
+                    return <img src={teacherPic} alt={teacherName} className="avatar-img w-10 h-10 shadow-sm" />;
+                }
+                return <div className={`${sizeClass} select-none`}>🐼</div>;
+            };
+
+            const currentBg = activeScenario?.bg || 'linear-gradient(135deg, #fbcfe8 0%, #fef08a 100%)';
+
+            return (
+                <div 
+                    className="flex flex-col h-full max-w-2xl mx-auto w-full shadow-2xl relative transition-all duration-700 ease-in-out overflow-hidden"
+                    style={{ backgroundImage: currentBg, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                >
+                    {/* Soft pastel backdrop layer for high legibility */}
+                    <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px] z-0 pointer-events-none"></div>
+
+                    <div className="relative z-10 flex flex-col h-full overflow-hidden">
+                        {/* Header Bar */}
+                        <div className="glass-header text-gray-800 px-4 py-2.5 rounded-b-3xl shadow-sm flex justify-between items-center z-20 flex-shrink-0">
+                            <div className="flex items-center gap-2.5">
+                                <div className={isSpeaking ? "talking-head" : "bounce-slow"}>
+                                    {teacherPic ? (
+                                        <img src={teacherPic} alt="Teacher" className="avatar-img w-11 h-11" />
+                                    ) : (
+                                        <div className="text-4xl">🐼</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <h1 className="text-lg md:text-xl font-black tracking-wide text-pink-600 leading-tight">
+                                        {teacherName}Lingo
+                                    </h1>
+                                    <p className="text-[11px] font-bold text-gray-500">
+                                        Singapore Kids Mandarin Tutor
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                                {/* Quick Core Word Pronouncer (人 & 水) */}
+                                <div className="hidden sm:flex items-center gap-1 bg-emerald-50/90 px-2.5 py-1 rounded-full border border-emerald-200">
+                                    <span className="text-[11px] font-extrabold text-emerald-700 mr-1">Quick Tap:</span>
+                                    {CORE_PRACTICE_WORDS.slice(0, 4).map((cw, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => handleVocabClick(cw)}
+                                            className="bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-black px-2 py-0.5 rounded-full border border-emerald-200 shadow-sm active:scale-90 transition-transform"
+                                            title={`Hear ${cw.hz} (${cw.py})`}
+                                        >
+                                            🔊 {cw.hz}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Bamboo Reward Counter */}
+                                <div className="bg-white/90 rounded-full px-3 py-1 flex items-center gap-1 border-2 border-pink-200 text-pink-600 shadow-sm">
+                                    <span className="text-base font-black">{bambooCount}</span>
+                                    <span className="text-lg">🎋</span>
+                                </div>
+                                
+                                {/* Settings Gear Button */}
+                                <button
+                                    onClick={() => setShowSettings(true)}
+                                    className="bg-white/90 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center transition-colors text-gray-500 hover:text-pink-500 shadow-sm border border-pink-100"
+                                    aria-label="Settings"
+                                >
+                                    <i className="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+
+                            {/* Reward Animation Overlay */}
+                            {showRewardAnimation && (
+                                <div className="absolute right-10 top-12 text-5xl pop-in z-50 pointer-events-none">
+                                    🎋✨
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 11 Singapore Contextual Scenarios Strip */}
+                        <div className="flex gap-2 px-3 py-2 overflow-x-auto no-scrollbar snap-x z-20 flex-shrink-0">
+                            {SCENARIOS_DATA.map((scen) => {
+                                const isSelected = activeScenario?.id === scen.id;
+                                return (
+                                    <button 
+                                        key={scen.id}
+                                        onClick={() => handleScenario(scen)} 
+                                        className={`flex-shrink-0 snap-center font-extrabold text-xs md:text-sm py-2 px-3.5 rounded-2xl shadow-sm active:scale-95 transition-all border-b-4 ${scen.style} ${isSelected ? 'ring-2 ring-pink-500 scale-105' : 'opacity-90 hover:opacity-100'}`}
+                                    >
+                                        {scen.icon} {scen.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Settings & Voice Configuration Modal */}
+                        {showSettings && (
+                            <div className="absolute inset-0 bg-black/45 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                                <div className="bg-white rounded-3xl p-5 w-full max-w-md shadow-2xl pop-in border-4 border-pink-100 max-h-[90vh] overflow-y-auto">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h2 className="text-xl font-black text-pink-600">Teacher & Voice Settings</h2>
+                                        <button onClick={() => setShowSettings(false)} className="text-gray-400 hover:text-red-500 text-2xl px-2">
+                                            <i className="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="space-y-4 text-sm">
+                                        <div>
+                                            <label className="block text-gray-700 font-extrabold mb-1">Teacher Name</label>
+                                            <input 
+                                                type="text" 
+                                                value={teacherName} 
+                                                onChange={(e) => setTeacherName(e.target.value)}
+                                                className="w-full px-3.5 py-2 border-2 border-pink-100 rounded-xl focus:outline-none focus:border-pink-400 bg-pink-50/50 font-bold"
+                                            />
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="block text-gray-700 font-extrabold mb-1">Teacher Photo (Talking Head)</label>
+                                            <div className="flex items-center gap-3">
+                                                {teacherPic ? (
+                                                    <img src={teacherPic} alt="Preview" className="w-14 h-14 avatar-img border-pink-400" />
+                                                ) : (
+                                                    <div className="w-14 h-14 bg-pink-50 rounded-full flex items-center justify-center text-3xl border-2 border-dashed border-pink-200">🐼</div>
+                                                )}
+                                                <label className="bg-pink-100 text-pink-700 px-3.5 py-2 rounded-xl font-extrabold cursor-pointer hover:bg-pink-200 transition-colors">
+                                                    Upload Face Photo
+                                                    <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                                                </label>
+                                                {teacherPic && (
+                                                    <button onClick={() => setTeacherPic(null)} className="text-xs text-red-500 font-bold underline">
+                                                        Reset
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-gray-700 font-extrabold mb-1">
+                                                Mandarin Voice ({availableVoices.length} detected)
+                                            </label>
+                                            <select
+                                                value={selectedVoiceURI}
+                                                onChange={(e) => setSelectedVoiceURI(e.target.value)}
+                                                className="w-full px-3 py-2 border-2 border-pink-100 rounded-xl bg-pink-50/50 font-bold text-gray-700"
+                                            >
+                                                {availableVoices.length === 0 && (
+                                                    <option value="">System Default Mandarin (zh-CN)</option>
+                                                )}
+                                                {availableVoices.map((v, i) => (
+                                                    <option key={i} value={v.voiceURI}>
+                                                        {v.name} ({v.lang})
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="flex gap-2 mt-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => speakText('人，水，你好！', null)}
+                                                    className="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-extrabold px-3 py-1.5 rounded-xl text-xs transition-colors"
+                                                >
+                                                    🔊 Test "人 (rén)" & "水 (shuǐ)"
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-gray-700 font-extrabold mb-1">
+                                                Optional Gemini API Key (For external Netlify/GitHub hosting)
+                                            </label>
+                                            <input 
+                                                type="password" 
+                                                placeholder="Leave blank in Canvas preview"
+                                                value={customApiKey} 
+                                                onChange={(e) => setCustomApiKey(e.target.value)}
+                                                className="w-full px-3.5 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-pink-400 bg-gray-50 text-xs"
+                                            />
+                                        </div>
+                                        
+                                        <button
+                                            onClick={() => setShowSettings(false)}
+                                            className="w-full bg-pink-500 text-white font-black text-base py-2.5 rounded-xl shadow-md hover:bg-pink-600 transition-colors"
+                                        >
+                                            Save & Continue!
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {}
+                        <div className="flex-1 overflow-y-auto px-3.5 py-3 space-y-4 z-10">
+                            {messages.map((msg, idx) => {
+                                const isSpeakingThisMsg = activeSpeechId === msg.id && isSpeaking;
+                                return (
+                                    <div key={msg.id || idx} className={`flex ${msg.role === 'ai' ? 'justify-start' : 'justify-end'} items-end`}>
+                                        {msg.role === 'ai' && (
+                                            <div className="mr-2 mb-1 flex-shrink-0">
+                                                <div className={isSpeakingThisMsg ? "talking-head" : ""}>
+                                                    {renderAvatar()}
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className={`p-3.5 max-w-[85%] leading-relaxed ${msg.role === 'ai' ? 'chat-bubble-ai text-gray-800' : 'chat-bubble-user text-white font-extrabold text-base md:text-lg'}`}>
+                                            {msg.role === 'user' ? (
+                                                <div>{msg.text}</div>
+                                            ) : (
+                                                <div className="flex flex-col gap-1.5">
+                                                    {/* Chinese Characters with Karaoke Highlighting + Click-to-Hear Character */}
+                                                    {msg.chinese && (
+                                                        <div className="text-2xl md:text-3xl font-black tracking-wide leading-snug text-gray-800 flex flex-wrap items-center gap-y-1">
+                                                            {Array.from(msg.chinese).map((char, cIdx) => {
+                                                                const isRead = isSpeakingThisMsg && cIdx < activeCharIndex;
+                                                                const isCurrent = isSpeakingThisMsg && (cIdx === activeCharIndex || cIdx === activeCharIndex + 1);
+                                                                
+                                                                let charClass = "cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
+                                                                if (isSpeakingThisMsg) {
+                                                                    if (isCurrent) {
+                                                                        charClass += "text-pink-600 bg-yellow-300 scale-115 shadow-sm -translate-y-0.5";
+                                                                    } else if (isRead) {
+                                                                        charClass += "text-pink-400";
+                                                                    }
+                                                                }
+                                                                return (
+                                                                    <span
+                                                                        key={cIdx}
+                                                                        onClick={() => speakText(char, null)}
+                                                                        title={`Tap to hear "${char}"`}
+                                                                        className={charClass}
+                                                                    >
+                                                                        {char}
+                                                                    </span>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Pinyin & English Translation */}
+                                                    {msg.pinyin && (
+                                                        <div className="text-sm md:text-base text-pink-600 font-extrabold tracking-wide">
+                                                            {msg.pinyin}
+                                                        </div>
+                                                    )}
+                                                    {msg.english && (
+                                                        <div className="text-sm md:text-base text-gray-600 font-semibold leading-snug">
+                                                            {msg.english}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Replay Full Sentence Audio Button */}
+                                                    {msg.chinese && (
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <button
+                                                                onClick={() => speakText(msg.chinese, msg.id)}
+                                                                className="bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-full px-3 py-1 text-xs font-extrabold flex items-center gap-1.5 transition-colors shadow-sm border border-pink-200 active:scale-95"
+                                                            >
+                                                                <i className="fa-solid fa-volume-high"></i>
+                                                                {isSpeakingThisMsg ? 'Speaking...' : 'Listen Again'}
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            
+                            {isLoading && (
+                                <div className="flex justify-start items-end">
+                                    <div className="mr-2 mb-1">
+                                        {renderAvatar()}
+                                    </div>
+                                    <div className="chat-bubble-ai px-4 py-3 text-gray-400 flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce"></div>
+                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.15s'}}></div>
+                                        <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.3s'}}></div>
+                                        <span className="text-xs font-bold text-pink-500 ml-1">{teacherName} is thinking...</span>
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={chatEndRef} />
+                        </div>
+
+                        {}
+                        {activeScenario && (
+                            <div className="mx-3 mb-2 bg-white/92 backdrop-blur-md border-2 border-pink-200 rounded-2xl p-2.5 shadow-md z-20 flex-shrink-0">
+                                <div className="flex flex-col gap-2">
+                                    {/* Target Words (Tap any word to hear accurate Mandarin pronunciation!) */}
+                                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                                        <span className="text-xs font-black text-pink-600 uppercase whitespace-nowrap mr-1">
+                                            📚 Tap Word:
+                                        </span>
+                                        {activeScenario.vocab.map((v, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => handleVocabClick(v)}
+                                                className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 active:scale-95 text-gray-800 px-2.5 py-1 rounded-xl text-xs border border-pink-200 font-extrabold transition-all flex items-center gap-1 shadow-sm"
+                                            >
+                                                <i className="fa-solid fa-volume-high text-pink-500 text-[10px]"></i>
+                                                <span className="text-sm text-pink-700">{v.hz}</span>
+                                                <span className="text-gray-500">({v.py})</span>
+                                                <span className="text-gray-600">- {v.en}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                    
+                                    {/* One-Tap "Try Saying" Conversation Starters */}
+                                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-pink-100">
+                                        <span className="text-xs font-black text-sky-600 uppercase whitespace-nowrap mr-1">
+                                            💡 Try Saying:
+                                        </span>
+                                        {activeScenario.hints.map((hint, i) => (
+                                            <button 
+                                                key={i} 
+                                                onClick={() => handleHintClick(hint)}
+                                                disabled={isLoading}
+                                                className="flex-shrink-0 bg-sky-50 hover:bg-sky-100 text-sky-800 px-2.5 py-1 rounded-xl text-xs border border-sky-200 font-extrabold transition-all active:scale-95 shadow-sm"
+                                            >
+                                                "{hint}"
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {}
+                        <div className="glass-footer px-4 py-3 rounded-t-3xl shadow-[0_-8px_20px_rgba(0,0,0,0.04)] flex flex-col items-center z-20 flex-shrink-0">
+                            
+                            {/* On-Screen Diagnostic Banner if Mic Permission Needs Attention */}
+                            {micError && (
+                                <div className="w-full mb-2 bg-amber-50 border-2 border-amber-300 text-amber-900 rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between gap-2 pop-in">
+                                    <div className="flex items-center gap-2">
+                                        <i className="fa-solid fa-circle-info text-amber-500 text-base"></i>
+                                        <span>{micError}</span>
+                                    </div>
+                                    <button onClick={() => setMicError(null)} className="text-amber-600 hover:text-amber-900 px-1">
+                                        <i className="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Live Recording Status & Sound Wave Meter */}
+                            {isRecording && (
+                                <div className="w-full mb-2 bg-rose-50 border-2 border-rose-200 rounded-xl px-3 py-1.5 flex items-center justify-between pop-in">
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                                        <span className="text-xs font-black text-rose-700 truncate max-w-[200px] sm:max-w-xs">
+                                            {liveTranscript ? `"${liveTranscript}"` : 'Listening... Speak now & tap Stop when done!'}
+                                        </span>
+                                    </div>
+                                    {/* Live Volume Bars */}
+                                    <div className="flex items-end gap-1 h-4">
+                                        {[0.4, 0.7, 1.0, 0.8, 0.5].map((mult, idx) => {
+                                            const barHeight = Math.max(4, Math.min(16, Math.round((micVolume * mult) / 5)));
+                                            return (
+                                                <div
+                                                    key={idx}
+                                                    style={{ height: `${barHeight}px` }}
+                                                    className="w-1 bg-rose-500 rounded-full transition-all duration-75"
+                                                ></div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Main Control Row: Language Toggle + Giant Mic Button + Type-to-Talk Input */}
+                            <div className="w-full flex items-center gap-2.5">
+                                {/* Mic Recognition Language Toggle */}
+                                <button
+                                    type="button"
+                                    onClick={() => setMicLang(prev => prev === 'zh-CN' ? 'en-SG' : 'zh-CN')}
+                                    className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 text-pink-700 border-2 border-pink-200 rounded-2xl px-2.5 py-2 text-xs font-black flex flex-col items-center justify-center shadow-sm active:scale-95 transition-transform"
+                                    title="Switch primary listening language"
+                                >
+                                    <span className="text-[10px] text-gray-400 uppercase">Mic Mode</span>
+                                    <span>{micLang === 'zh-CN' ? '🇨🇳 中文+EN' : '🇸🇬 EN+中文'}</span>
+                                </button>
+
+                                {/* Giant Tap-to-Talk / Tap-to-Stop Microphone Button */}
+                                <button 
+                                    type="button"
+                                    onClick={handleMicToggle}
+                                    disabled={isLoading}
+                                    className={`flex-shrink-0 w-16 h-16 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-200 active:scale-90 border-4 border-white ${
+                                        isRecording
+                                            ? 'bg-red-500 text-white animate-pulse shadow-red-300'
+                                            : 'bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-pink-200 hover:from-pink-600 hover:to-rose-600'
+                                    } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    <i className={`fa-solid ${isRecording ? 'fa-stop text-xl' : 'fa-microphone text-2xl'}`}></i>
+                                    <span className="text-[9px] font-black uppercase tracking-wider mt-0.5">
+                                        {isRecording ? 'Stop' : 'Speak'}
+                                    </span>
+                                </button>
+
+                                {/* Always-Accessible Type-to-Talk Input (Works even if iPad mic permission is off) */}
+                                <form onSubmit={handleTextSubmit} className="flex-1 flex items-center gap-1.5">
+                                    <input
+                                        type="text"
+                                        value={textInput}
+                                        onChange={(e) => setTextInput(e.target.value)}
+                                        placeholder={`Or type to ${teacherName} here...`}
+                                        disabled={isLoading}
+                                        className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-pink-200 bg-white/95 text-sm font-bold text-gray-700 focus:outline-none focus:border-pink-400 shadow-inner"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={!textInput.trim() || isLoading}
+                                        className="flex-shrink-0 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-200 text-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm transition-colors active:scale-95"
+                                        aria-label="Send message"
+                                    >
+                                        <i className="fa-solid fa-paper-plane text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
