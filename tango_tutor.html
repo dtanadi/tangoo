@@ -2,16 +2,16 @@
 <html lang="zh-SG">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>欢乐小伙伴 • SG Primary Chinese Buddy</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
       font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
     @keyframes EqualizerBounce {
       0%, 100% { transform: scaleY(0.5); }
@@ -20,12 +20,6 @@
     .eq-bar {
       animation: EqualizerBounce 0.55s infinite ease-in-out;
     }
-    .eq-bar:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-    .eq-bar:nth-child(4) {
-      animation-delay: 0.3s;
-    }
     @keyframes GentleFloat {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-5px); }
@@ -33,7 +27,6 @@
     .actor-talk-bounce {
       animation: GentleFloat 0.6s infinite ease-in-out;
     }
-    /* Custom scrollbar for history drawer */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -57,7 +50,6 @@
         <div
           id="header-tutor-avatar"
           onclick="openModal('avatars')"
-          title="Click to customize Talking Head photos!"
           class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 flex items-center justify-center text-2xl shadow-md border-2 border-amber-200 cursor-pointer overflow-hidden transition-transform hover:scale-105"
         >
           <span id="header-tutor-emoji">🐼</span>
@@ -68,85 +60,77 @@
           <div class="flex items-center gap-2 flex-wrap">
             <h1 class="text-base sm:text-xl font-black tracking-tight text-white">欢乐小伙伴</h1>
             <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
-              SG Pri 1–3 • 10大新加坡实景舞台
+              SG Pri 1–3 • iPad & Mobile Ready
             </span>
           </div>
           <p class="text-[11px] text-amber-200/80 font-semibold">
-            👆 点字发音 • 跟着大头像读 • Interactive Roleplay Stage
+            👆 点字发音 • 跟着大头像读 • iOS Audio Enabled
           </p>
         </div>
       </div>
 
-      <!-- Interactive Kid Controls & Star Sticker Counter -->
+      <!-- Controls & Star Counter -->
       <div class="flex items-center flex-wrap gap-1.5 sm:gap-2">
         <button
           onclick="openPhotoAskModal()"
-          class="flex items-center gap-1.5 bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-white/40 transition-transform hover:scale-105 cursor-pointer"
+          class="flex items-center gap-1.5 bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 text-white px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-white/40 cursor-pointer"
         >
           <span>📸 拍照问一问</span>
         </button>
 
         <button
           onclick="openModal('avatars')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-purple-600 text-white border border-purple-400 hover:bg-purple-500 shadow-sm transition-all cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-purple-600 text-white border border-purple-400 cursor-pointer"
         >
-          <span>🎭 换头像 Avatar</span>
+          <span>🎭 换头像</span>
         </button>
 
         <button
-          id="star-counter-btn"
           onclick="openModal('stickers')"
-          class="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-amber-200 transition-transform hover:scale-105 cursor-pointer"
+          class="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-amber-200 cursor-pointer"
         >
           <span>⭐ <span id="stars-count-label">3</span> 颗星</span>
-          <span id="stickers-unlocked-badge" class="hidden md:inline text-[11px] bg-black/15 px-1.5 py-0.5 rounded-full">🎁 2/5</span>
         </button>
 
         <button
           id="toggle-pinyin-btn"
           onclick="togglePinyin()"
-          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-indigo-600 text-white border-indigo-400 shadow-sm cursor-pointer"
+          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-indigo-600 text-white border-indigo-400 cursor-pointer"
         >
-          ✓ 拼音 Pinyin
+          ✓ 拼音
         </button>
 
         <button
           id="toggle-english-btn"
           onclick="toggleEnglish()"
-          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-sky-500 text-white border-sky-300 shadow-sm cursor-pointer"
+          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-sky-500 text-white border-sky-300 cursor-pointer"
         >
-          ✓ 英文 English
+          ✓ 英文
         </button>
 
         <button
           onclick="openModal('vocab')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-600 text-white border border-emerald-400 hover:bg-emerald-500 shadow-sm transition-all cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-600 text-white border border-emerald-400 cursor-pointer"
         >
           <span>📖 词语本</span>
         </button>
 
         <button
-          onclick="openModal('json')"
-          class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all cursor-pointer"
-        >
-          <span>{ } JSON</span>
-        </button>
-
-        <button
           onclick="openModal('settings')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-700 transition-all shadow-sm cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-amber-300 border border-slate-700 cursor-pointer"
         >
-          <span>⚙️ AI 设置</span>
+          <span>⚙️ 设置</span>
         </button>
       </div>
     </div>
   </header>
 
+  <!-- Scenario Bar -->
   <div class="bg-slate-900 border-b border-slate-800 py-2.5 px-3 sm:px-4">
     <div class="max-w-6xl w-full mx-auto">
       <div class="flex items-center justify-between mb-2 px-1 flex-wrap gap-1">
         <span class="text-xs font-black text-amber-300 flex items-center gap-1.5">
-          🇸🇬 选择新加坡生活场景（自动切换背景舞台）• Choose from 10 Familiar Singapore Contexts:
+          🇸🇬 选择新加坡生活场景 • Choose Singapore Context:
         </span>
         <span id="active-scenario-pill" class="text-[11px] font-bold text-amber-200 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-400/40">
           当前: 小贩中心 (Hawker Centre)
@@ -163,13 +147,13 @@
       <button onclick="hideErrorBanner()" class="px-3 py-1 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-black shrink-0 cursor-pointer">OK</button>
     </div>
 
-    <!-- MAIN INTERACTIVE SCENE STAGE (Matches Reference Image Layout) -->
+    <!-- MAIN STAGE -->
     <div id="scene-stage-wrapper" class="relative w-full rounded-[2rem] overflow-hidden border-4 border-slate-700 shadow-2xl min-h-[540px] sm:min-h-[610px] flex flex-col justify-between bg-slate-900 select-none">
       
-      <!-- Dynamic Contextual SVG Background Layer -->
+      <!-- Dynamic SVG Background -->
       <div id="scene-svg-background" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
 
-      <!-- Subtle Top Vignette & Floating Context Location Signboard -->
+      <!-- Top Location Signboard & History Toggle -->
       <div class="relative z-20 flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 pt-3.5">
         <div class="inline-flex items-center gap-2 bg-slate-950/80 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full border border-amber-400/50 shadow-lg">
           <span id="stage-location-emoji" class="text-lg">🍛</span>
@@ -179,88 +163,71 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <!-- Previous / Latest Turn Indicator + History Toggle -->
           <button
             type="button"
             onclick="toggleHistoryDrawer()"
-            class="px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 backdrop-blur-md text-slate-200 border border-slate-600 text-xs font-extrabold flex items-center gap-1.5 shadow cursor-pointer"
+            class="px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 text-slate-200 border border-slate-600 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
           >
-            <span>💬 对话记录 History (<span id="history-count-badge">1</span>)</span>
+            <span>💬 对话记录 (<span id="history-count-badge">1</span>)</span>
           </button>
           <button
             type="button"
             onclick="openPhotoAskModal()"
-            class="px-3 py-1.5 rounded-full bg-rose-600/95 hover:bg-rose-500 text-white border border-rose-300 text-xs font-black flex items-center gap-1 shadow-md cursor-pointer"
+            class="px-3 py-1.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white border border-rose-300 text-xs font-black flex items-center gap-1 cursor-pointer"
           >
             <span>📸 拍照问一问</span>
           </button>
         </div>
       </div>
 
-      <!-- DARK SPEECH CALLOUT BUBBLE (Directly styled after Reference Image) -->
+      <!-- DARK SPEECH CALLOUT BUBBLE -->
       <div class="relative z-20 w-full max-w-4xl mx-auto px-3 sm:px-8 pt-2">
-        <!-- Child's Latest Reply Pill (shown right above the dark speech bubble when child replies) -->
         <div id="latest-child-reply-bar" class="hidden mb-2 justify-end"></div>
 
-        <!-- Outer Dark Callout Frame with Blue-Slate Border & Speech Pointer Tail -->
         <div class="relative bg-[#070b14]/95 backdrop-blur-md border-[3px] border-[#3b669c] rounded-[2.4rem] p-3 sm:p-5 shadow-[0_22px_55px_rgba(0,0,0,0.65)] text-white">
-          
-          <!-- Inner Dark Slate Card -->
-          <div id="dark-speech-card-content" class="bg-[#111722] border border-slate-800/90 rounded-[1.6rem] p-3.5 sm:p-5 space-y-4">
-            <!-- Populated dynamically by renderAll() -->
-          </div>
+          <div id="dark-speech-card-content" class="bg-[#111722] border border-slate-800/90 rounded-[1.6rem] p-3.5 sm:p-5 space-y-4"></div>
 
-          <!-- Comic Speech Bubble Pointer Tail (Points down-left toward the Tutor Character) -->
-          <svg
-            class="absolute -bottom-[34px] left-14 sm:left-28 w-24 h-10 pointer-events-none drop-shadow-lg"
-            viewBox="0 0 110 45"
-            fill="none"
-          >
+          <!-- Speech Pointer Tail -->
+          <svg class="absolute -bottom-[34px] left-14 sm:left-28 w-24 h-10 pointer-events-none drop-shadow-lg" viewBox="0 0 110 45" fill="none">
             <path d="M 38 0 L 6 42 L 88 0 Z" fill="#070b14" />
             <path d="M 38 0 L 6 42 L 88 0" stroke="#3b669c" stroke-width="3.5" stroke-linejoin="round" />
           </svg>
         </div>
       </div>
 
-      <!-- TWO ILLUSTRATED CONVERSING CHARACTERS AT THE BOTTOM OF THE STAGE (Like Reference Image) -->
+      <!-- TWO CONVERSING CHARACTERS AT THE BOTTOM -->
       <div class="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-12 pt-6 flex items-end justify-between gap-4 pointer-events-none min-h-[210px] sm:min-h-[245px]">
-        
-        <!-- LEFT CHARACTER: Tutor (Blue Shirt Character gesturing in conversation + Custom Photo Support) -->
         <div id="stage-left-tutor-actor" class="pointer-events-auto flex flex-col items-center"></div>
-
-        <!-- CENTER FLOATING SCENE ACTION HINT -->
         <div class="hidden md:flex flex-col items-center pb-5 pointer-events-auto">
           <div class="bg-slate-950/75 backdrop-blur-md border border-white/20 rounded-2xl px-3.5 py-2 text-center shadow-lg">
             <div class="text-[11px] font-extrabold text-amber-300">🎭 点击人物头像可上传自己的照片</div>
-            <div class="text-[10px] font-semibold text-slate-300">Click either character&apos;s head to upload a custom face photo!</div>
+            <div class="text-[10px] font-semibold text-slate-300">Click avatar to upload custom face photo!</div>
           </div>
         </div>
-
-        <!-- RIGHT CHARACTER: Student / Child Partner (Red/Orange Top Character waving back + Custom Photo Support) -->
         <div id="stage-right-child-actor" class="pointer-events-auto flex flex-col items-center"></div>
       </div>
 
-      <!-- Collapsible Conversation History Drawer Overlay inside Stage -->
+      <!-- Conversation History Drawer Overlay -->
       <div id="history-drawer" class="hidden absolute inset-x-4 top-16 bottom-4 z-30 bg-slate-950/95 backdrop-blur-md border-2 border-amber-400/60 rounded-3xl p-4 flex-col shadow-2xl">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
           <div class="flex items-center gap-2">
             <span class="text-lg">💬</span>
-            <h3 class="text-sm sm:text-base font-black text-white">完整对话记录 • Full Conversation History</h3>
+            <h3 class="text-sm sm:text-base font-black text-white">完整对话记录 • Full History</h3>
           </div>
           <button onclick="toggleHistoryDrawer()" class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-black text-amber-300 cursor-pointer">
-            返回舞台 Back to Stage ✕
+            返回舞台 Back ✕
           </button>
         </div>
         <div id="chat-history-list" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
       </div>
     </div>
 
-    <!-- Quick Replies + Attached Photo Preview + Input Bar -->
+    <!-- Quick Replies + Input Bar -->
     <div class="bg-slate-950/90 border-2 border-slate-800 rounded-3xl p-3 sm:p-4 space-y-3 shadow-xl">
       <div>
         <div class="flex items-center justify-between mb-2 px-1">
           <span class="text-xs font-black text-amber-300 flex items-center gap-1.5">
-            🪄 点选句子回答老师，或点击 📸 拍照问一问 (Tap a sentence to reply or snap a photo):
+            🪄 点选句子回答老师，或点击 📸 拍照问一问:
           </span>
         </div>
         <div id="quick-replies-grid" class="grid grid-cols-1 md:grid-cols-3 gap-2.5"></div>
@@ -272,14 +239,14 @@
           <img id="attached-photo-thumb" src="" alt="Preview" class="w-14 h-14 rounded-xl object-cover border-2 border-white shadow" />
           <div>
             <span class="text-xs font-black text-rose-200 block">📸 照片已准备好！Photo Ready to Ask AI</span>
-            <span class="text-xs text-rose-300 font-semibold">Type a question below or click “立即问乐乐” to learn the Chinese words inside!</span>
+            <span class="text-xs text-rose-300 font-semibold">Type a question below or click “立即问乐乐” to learn words!</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
           <button
             type="button"
             onclick="sendAttachedPhotoImmediately()"
-            class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-xs shadow-sm hover:opacity-95 cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-xs shadow-sm cursor-pointer"
           >
             🔍 立即问乐乐 Ask Now ➤
           </button>
@@ -299,7 +266,7 @@
           <button
             type="button"
             onclick="openPhotoAskModal()"
-            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-sm transition-all cursor-pointer"
+            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm cursor-pointer"
           >
             <span>📸</span>
             <span class="hidden sm:inline">拍照问一问</span>
@@ -309,7 +276,7 @@
             id="mic-btn"
             type="button"
             onclick="toggleListening()"
-            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 border border-amber-400/40 cursor-pointer"
+            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all bg-amber-400/20 text-amber-300 border border-amber-400/40 cursor-pointer"
           >
             <span id="mic-btn-label">🎤 说话 Speak</span>
           </button>
@@ -318,7 +285,7 @@
             id="speech-lang-btn"
             type="button"
             onclick="toggleSpeechLang()"
-            class="px-2.5 py-2.5 rounded-xl text-[11px] font-black bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-600 cursor-pointer"
+            class="px-2.5 py-2.5 rounded-xl text-[11px] font-black bg-slate-800 text-slate-200 border border-slate-600 cursor-pointer"
           >
             🇨🇳 华语
           </button>
@@ -328,7 +295,7 @@
           id="chat-input"
           type="text"
           onkeydown="if(event.key==='Enter') handleSendMessage()"
-          placeholder="用华语、拼音或英文回答，或点击📸拍照问一问..."
+          placeholder="用华语回答，或点击📸拍照问一问..."
           class="flex-1 min-w-[180px] bg-transparent px-2 py-2 text-sm sm:text-base font-bold text-white placeholder:text-slate-400 focus:outline-none"
         />
 
@@ -336,7 +303,7 @@
           id="send-btn"
           type="button"
           onclick="handleSendMessage()"
-          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 font-black text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black text-sm flex items-center gap-1.5 shadow-md cursor-pointer"
         >
           <span>发送 ➤</span>
         </button>
@@ -344,234 +311,132 @@
     </div>
   </main>
 
-  <!-- Hidden Global File Inputs for Avatar & Photo Uploads -->
+  <!-- Hidden File Inputs -->
   <input id="tutor-avatar-input" type="file" accept="image/*" class="hidden" onchange="handleAvatarFileSelect(event, 'tutor')" />
   <input id="child-avatar-input" type="file" accept="image/*" class="hidden" onchange="handleAvatarFileSelect(event, 'child')" />
   <input id="camera-file-input" type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhotoFileSelect(event)" />
 
-  <!-- Modal Container Backdrop -->
+  <!-- Modal Container -->
   <div id="modal-backdrop" class="hidden fixed inset-0 z-50 bg-slate-900/65 backdrop-blur-sm items-center justify-center p-3 sm:p-4">
-    <!-- 1. Camera / Snap & Ask Modal -->
+    <!-- Camera Modal -->
     <div id="modal-camera" class="hidden bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 shadow-2xl border-4 border-rose-300 space-y-4">
       <div class="flex items-center justify-between border-b border-rose-100 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 text-white flex items-center justify-center text-2xl shadow-sm">📸</div>
           <div>
-            <h2 class="text-lg font-black text-slate-900">拍照问一问 • Snap & Ask What's in the Picture!</h2>
-            <p class="text-xs text-slate-500 font-semibold">Take a photo, upload a picture, or tap a Singapore card to learn the Chinese words inside!</p>
+            <h2 class="text-lg font-black text-slate-900">拍照问一问 • Snap & Ask!</h2>
+            <p class="text-xs text-slate-500 font-semibold">Take a photo or pick a sample card to learn Chinese words!</p>
           </div>
         </div>
-        <button onclick="closePhotoAskModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700 cursor-pointer">关闭 Close ✕</button>
+        <button onclick="closePhotoAskModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-black text-slate-700 cursor-pointer">关闭 ✕</button>
       </div>
 
       <div id="camera-stage" class="relative rounded-3xl overflow-hidden bg-slate-950 border-4 border-amber-300 shadow-inner min-h-[240px] flex flex-col items-center justify-center"></div>
 
       <div class="space-y-2">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-black text-slate-700">✨ 或者点选新加坡示例照片试试看 • Or tap a sample picture to test right away:</span>
-          <button type="button" onclick="document.getElementById('camera-file-input').click()" class="text-xs font-extrabold text-indigo-600 hover:text-indigo-800 cursor-pointer">📤 从电脑/手机选图</button>
+          <span class="text-xs font-black text-slate-700">✨ 示例照片 Sample Pictures:</span>
+          <button type="button" onclick="document.getElementById('camera-file-input').click()" class="text-xs font-extrabold text-indigo-600 cursor-pointer">📤 选图</button>
         </div>
         <div id="sample-photo-cards-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
       </div>
 
       <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 space-y-2.5">
-        <label class="text-xs font-black text-amber-950 block">💬 你想问乐乐关于这张照片的什么问题？ (What do you want to ask about this picture?)</label>
+        <label class="text-xs font-black text-amber-950 block">💬 提问 Question:</label>
         <div id="camera-preset-questions" class="flex flex-wrap gap-1.5"></div>
         <div class="flex items-center gap-2 pt-1">
-          <input
-            id="camera-question-input"
-            type="text"
-            value="这是什么？请教我怎么用华语说！"
-            class="flex-1 px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs sm:text-sm font-bold text-slate-800"
-          />
-          <button
-            type="button"
-            onclick="submitCameraQuestion()"
-            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-black text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
-          >
-            <span>发送照片提问 Ask AI ➤</span>
-          </button>
+          <input id="camera-question-input" type="text" value="这是什么？请教我怎么用华语说！" class="flex-1 px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs sm:text-sm font-bold text-slate-800" />
+          <button type="button" onclick="submitCameraQuestion()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-xs cursor-pointer">发送 Ask ➤</button>
         </div>
       </div>
     </div>
 
-    <!-- 2. Customize Talking Heads Modal -->
+    <!-- Avatars Modal -->
     <div id="modal-avatars" class="hidden bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border-4 border-purple-300 space-y-5">
       <div class="flex items-center justify-between border-b border-purple-100 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-2xl bg-purple-100 flex items-center justify-center text-2xl">🎭</div>
           <div>
-            <h2 class="text-lg font-black text-slate-900">自定义说话大头像 • Customize Talking Heads</h2>
-            <p class="text-xs text-slate-500 font-semibold">Upload your own photo for the Tutor or Child Talking Head!</p>
+            <h2 class="text-lg font-black text-slate-900">自定义说话大头像 • Avatars</h2>
+            <p class="text-xs text-slate-500 font-semibold">Upload custom photos for Tutor & Child!</p>
           </div>
         </div>
-        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700 cursor-pointer">关闭 Close ✕</button>
+        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-black text-slate-700 cursor-pointer">关闭 ✕</button>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="p-4 rounded-3xl bg-amber-50/90 border-2 border-amber-300 flex flex-col items-center text-center space-y-3">
+        <div class="p-4 rounded-3xl bg-amber-50 border-2 border-amber-300 flex flex-col items-center text-center space-y-3">
           <div id="modal-tutor-avatar-slot"></div>
-          <div class="w-full space-y-1">
-            <label class="text-[11px] font-black text-amber-900 block">伴读老师名字 (Tutor Name):</label>
-            <input id="tutor-name-input" type="text" value="乐乐老师" oninput="updateAvatarNames()" class="w-full px-3 py-1.5 rounded-xl border border-amber-300 bg-white text-xs font-black text-center" />
-          </div>
+          <input id="tutor-name-input" type="text" value="乐乐老师" oninput="updateAvatarNames()" class="w-full px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-black text-center" />
         </div>
-
-        <div class="p-4 rounded-3xl bg-sky-50/90 border-2 border-sky-300 flex flex-col items-center text-center space-y-3">
+        <div class="p-4 rounded-3xl bg-sky-50 border-2 border-sky-300 flex flex-col items-center text-center space-y-3">
           <div id="modal-child-avatar-slot"></div>
-          <div class="w-full space-y-1">
-            <label class="text-[11px] font-black text-sky-900 block">我的名字 (My Name):</label>
-            <input id="child-name-input" type="text" value="新加坡小达人" oninput="updateAvatarNames()" class="w-full px-3 py-1.5 rounded-xl border border-sky-300 bg-white text-xs font-black text-center" />
-          </div>
+          <input id="child-name-input" type="text" value="新加坡小达人" oninput="updateAvatarNames()" class="w-full px-3 py-1.5 rounded-xl border border-sky-300 text-xs font-black text-center" />
         </div>
       </div>
-
-      <div class="flex justify-end">
-        <button onclick="closeModal()" class="px-5 py-2 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs shadow-sm cursor-pointer">完成 Done ✓</button>
-      </div>
+      <div class="flex justify-end"><button onclick="closeModal()" class="px-5 py-2 rounded-2xl bg-purple-600 text-white font-black text-xs cursor-pointer">完成 Done ✓</button></div>
     </div>
 
-    <!-- 3. Vocabulary Word Bank Modal -->
+    <!-- Vocab Modal -->
     <div id="modal-vocab" class="hidden bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-emerald-300 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl">📖</div>
-          <div>
-            <h2 id="vocab-modal-title" class="text-lg font-black text-slate-900">我的词语本 • Word Bank</h2>
-            <p class="text-xs text-slate-500 font-semibold">Tap Listen or any character to watch Pinyin light up!</p>
-          </div>
+          <h2 id="vocab-modal-title" class="text-lg font-black text-slate-900">我的词语本 • Word Bank</h2>
         </div>
-        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700 cursor-pointer">关闭 Close ✕</button>
+        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-black text-slate-700 cursor-pointer">关闭 ✕</button>
       </div>
       <div id="vocab-modal-list" class="space-y-3 max-h-[65vh] overflow-y-auto pr-1"></div>
     </div>
 
-    <!-- 4. Star Stickers Modal -->
+    <!-- Stickers Modal -->
     <div id="modal-stickers" class="hidden bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-amber-300 space-y-4">
       <div class="flex items-center justify-between border-b border-amber-100 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl">🏆</div>
-          <div>
-            <h2 class="text-lg font-black text-slate-900">我的星星贴纸簿 • Star Sticker Book</h2>
-            <p class="text-xs text-slate-500 font-semibold">Every Chinese reply earns 1 ⭐ star! Collect them all!</p>
-          </div>
-        </div>
-        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700 cursor-pointer">关闭 Close ✕</button>
+        <h2 class="text-lg font-black text-slate-900">🏆 我的星星贴纸簿 • Stickers</h2>
+        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-black text-slate-700 cursor-pointer">关闭 ✕</button>
       </div>
-
-      <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 text-white flex items-center justify-between shadow-sm">
-        <div>
-          <div class="text-xs font-extrabold uppercase opacity-90">我的星星 Total Stars</div>
-          <div id="modal-stars-total" class="text-2xl font-black">3 颗星 ⭐</div>
-        </div>
-        <div class="text-right">
-          <div class="text-xs font-extrabold uppercase opacity-90">已解锁贴纸 Unlocked</div>
-          <div id="modal-stickers-ratio" class="text-xl font-black">2 / 5</div>
-        </div>
+      <div class="p-4 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-between">
+        <div><div class="text-xs font-extrabold">Total Stars</div><div id="modal-stars-total" class="text-2xl font-black">3 ⭐</div></div>
       </div>
-
       <div id="stickers-modal-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
     </div>
 
-    <!-- 5. Raw JSON Output Modal -->
-    <div id="modal-json" class="hidden bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h2 class="text-base font-black text-slate-900">{ } Latest Structured JSON Response</h2>
-        <button onclick="closeModal()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">Close ✕</button>
-      </div>
-      <p class="text-xs text-slate-600">Each Chinese character is paired 1-to-1 with its Hanyu Pinyin syllable from this JSON payload and highlighted during speech playback:</p>
-      <pre id="raw-json-pre" class="p-4 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto leading-relaxed"></pre>
+    <!-- JSON Modal -->
+    <div id="modal-json" class="hidden bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b pb-3"><h2 class="text-base font-black text-slate-900">{ } JSON Response</h2><button onclick="closeModal()" class="px-3 py-1 text-xs font-bold cursor-pointer">Close ✕</button></div>
+      <pre id="raw-json-pre" class="p-4 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto"></pre>
     </div>
 
-    <!-- 6. AI Connector & System Prompt Settings Modal -->
-    <div id="modal-settings" class="hidden bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 space-y-5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-        <div>
-          <h2 class="text-lg font-black text-slate-900">⚙️ Open-Source AI Connector & System Prompt</h2>
-          <p class="text-xs text-slate-500">Use Built-in Cloud AI or connect to your local Ollama / Open-Source LLM (e.g., qwen2.5:7b)</p>
-        </div>
-        <button onclick="closeModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">Close ✕</button>
-      </div>
-
-      <div class="space-y-3">
-        <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">1. Select AI Backend Engine</label>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button id="engine-builtin-btn" onclick="setEngineMode('builtin')" class="p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-50/70 text-left transition-all cursor-pointer">
-            <div class="font-extrabold text-sm text-slate-900">⚡ Built-in Cloud AI / Gemini</div>
-            <p class="text-xs text-slate-600 mt-1">Works with strict JSON schema output & vision recognition.</p>
-          </button>
-          <button id="engine-ollama-btn" onclick="setEngineMode('ollama')" class="p-3.5 rounded-2xl border-2 border-slate-200 text-left transition-all cursor-pointer">
-            <div class="font-extrabold text-sm text-slate-900">🦙 Local Open-Source LLM (Ollama)</div>
-            <p class="text-xs text-slate-600 mt-1">Connects to free local models like <code>qwen2.5:7b</code> or <code>llama3.1</code>.</p>
-          </button>
-        </div>
-      </div>
-
-      <div id="gemini-key-box" class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-2">
-        <label class="text-xs font-bold text-amber-950 block">Optional Gemini API Key (for standalone GitHub Pages hosting):</label>
-        <input id="gemini-api-key-input" type="password" placeholder="Leave blank in preview, or paste your free Gemini API key for GitHub Pages" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs font-mono" />
-      </div>
-
-      <div id="ollama-config-box" class="hidden p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200 space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="text-xs font-bold text-indigo-950 block mb-1">Ollama Endpoint URL</label>
-            <input id="ollama-url-input" type="text" value="http://localhost:11434/api/chat" class="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs font-mono" />
-          </div>
-          <div>
-            <label class="text-xs font-bold text-indigo-950 block mb-1">Open-Source Model Name</label>
-            <input id="ollama-model-input" type="text" value="qwen2.5:7b" class="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs font-mono" />
-          </div>
-        </div>
-        <p class="text-[11px] text-indigo-800 leading-relaxed">
-          <strong>Tip:</strong> Run <code>OLLAMA_ORIGINS="*" ollama serve</code> and <code>ollama run qwen2.5:7b</code> on your computer so the browser can connect directly to your local model.
-        </p>
-      </div>
-
+    <!-- Settings Modal -->
+    <div id="modal-settings" class="hidden bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b pb-4"><h2 class="text-lg font-black text-slate-900">⚙️ AI Settings</h2><button onclick="closeModal()" class="px-3 py-1.5 text-xs font-bold cursor-pointer">Close ✕</button></div>
       <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500">2. Active System Prompt (Character-Aligned Pinyin JSON)</label>
-          <button id="copy-prompt-btn" onclick="copySystemPrompt()" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer">📋 Copy Prompt</button>
-        </div>
-        <textarea id="system-prompt-textarea" rows="9" class="w-full p-3.5 rounded-2xl border border-slate-300 font-mono text-xs text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-500"></textarea>
+        <label class="text-xs font-extrabold uppercase text-slate-500">🦙 OpenRouter API Key (Required for Llama 3.3)</label>
+        <input id="openrouter-apikey-input" type="password" placeholder="sk-or-v1-..." class="w-full p-3 rounded-2xl border text-xs bg-slate-50" onchange="localStorage.setItem('openRouterApiKey', this.value)" />
+        <p class="text-[10px] text-slate-500">Get a free key at <a href="https://openrouter.ai" target="_blank" class="text-indigo-600 underline">openrouter.ai</a>. The app uses <b>Llama 3.3 70B (100% Free)</b>.</p>
       </div>
-
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="resetSystemPrompt()" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">Reset Default Prompt</button>
-        <button onclick="closeModal()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow-sm cursor-pointer">Save & Continue</button>
+      <div class="space-y-2">
+        <label class="text-xs font-extrabold uppercase text-slate-500">System Prompt</label>
+        <textarea id="system-prompt-textarea" rows="8" class="w-full p-3 rounded-2xl border font-mono text-xs bg-slate-50"></textarea>
       </div>
+      <div class="flex justify-end"><button onclick="closeModal()" class="px-5 py-2 rounded-xl bg-amber-500 text-white text-xs font-extrabold cursor-pointer">Save</button></div>
     </div>
   </div>
 
   <script>
-    const DEFAULT_SYSTEM_PROMPT = `You are "乐乐" (Lè Le), a friendly, patient, and encouraging Chinese conversation panda tutor for lower primary students (Primary 1 to 3, ages 7-9) in Singapore. You power an interactive language learning app. 
-
-Your goal is to help children practice daily Chinese conversations aligned with the Singapore MOE "欢乐伙伴" (Huanle Huoban) syllabus. 
-
-### CONTEXT & TONE
-1. Use familiar Singaporean environments (e.g., 小贩中心 hawker centre, 组屋 HDB, 食堂 school canteen, 游乐场 playground, 巴士 bus).
-2. Keep vocabulary simple and conversational, strictly within the lower primary level.
-3. Be enthusiastic, warm, and highly encouraging.
-4. Keep responses brief (1 to 2 short sentences).
-5. Always end with a simple question to encourage the child to reply and keep the conversation going.
-
-### OUTPUT FORMAT (STRICT JSON)
-You must output ONLY a valid JSON object. The app UI aligns each Pinyin syllable directly underneath its corresponding Chinese character. Therefore, in the "pinyin" field, separate EVERY single character's Pinyin syllable with a space so it maps 1-to-1 with the Chinese characters.
-
-Structure your JSON exactly like this:
+    const DEFAULT_SYSTEM_PROMPT = `You are "乐乐" (Lè Le), a friendly, patient, and encouraging Chinese conversation panda tutor for lower primary students (Primary 1 to 3, ages 7-9) in Singapore. Output ONLY a valid JSON object:
 {
-  "chinese": "Simplified Chinese characters go here.",
-  "pinyin": "Space-separated Hanyu Pinyin syllables (1 syllable per Chinese character) with proper tone marks.",
-  "english": "English translation goes here.",
-  "encouragement": "A short, cheerful English phrase praising the child or teaching a fun word."
+  "chinese": "Simplified Chinese characters here.",
+  "pinyin": "Space-separated Hanyu Pinyin syllables matching characters 1-to-1.",
+  "english": "English translation here.",
+  "encouragement": "A short, cheerful English phrase praising the child.",
+  "detectedWords": [{"hanzi": "字", "pinyin": "zì", "meaning": "word", "emoji": "✨"}]
 }`;
 
     const STICKER_REWARDS = [
       { id: 'panda', emoji: '🐼', name: '乐乐好朋友', english: 'Panda Buddy', starsRequired: 1 },
       { id: 'chickenrice', emoji: '🍛', name: '小贩美食家', english: 'Hawker Foodie', starsRequired: 3 },
       { id: 'merlion', emoji: '🦁', name: '新加坡小达人', english: 'SG Little Star', starsRequired: 5 },
-      { id: 'bus', emoji: '🚌', name: '搭巴士高手', english: 'Bus Captain', starsRequired: 7 },
-      { id: 'trophy', emoji: '🏆', name: '华语小状元', english: 'Chinese Champion', starsRequired: 10 }
+      { id: 'bus', emoji: '🚌', name: '搭巴士高手', english: 'Bus Captain', starsRequired: 7 }
     ];
 
     const SCENARIOS = [
@@ -587,18 +452,18 @@ Structure your JSON exactly like this:
           chinese: '你好！欢迎来到小贩中心。你今天想吃鸡饭还是炒面？',
           pinyin: 'Nǐ hǎo ! Huān yíng lái dào xiǎo fàn zhōng xīn . Nǐ jīn tiān xiǎng chī jī fàn hái shì chǎo miàn ?',
           english: 'Hello! Welcome to the hawker centre. Do you want to eat chicken rice or fried noodles today?',
-          encouragement: 'Tap any Chinese word to hear how it sounds, or click "📸 拍照问一问" to snap a photo of your food!'
+          encouragement: 'Tap any Chinese word to hear how it sounds!'
         },
         quickReplies: [
-          { chinese: '我想吃鸡饭。', pinyin: 'Wǒ xiǎng chī jī fàn .', english: 'I want to eat chicken rice.' },
-          { chinese: '我喜欢喝美禄。', pinyin: 'Wǒ xǐ huan hē měi lù .', english: 'I like to drink Milo.' },
+          { chinese: '我想吃鸡饭。', pinyin: 'Wǒ xiǎng chī jī fàn .', english: 'I want chicken rice.' },
+          { chinese: '我喜欢喝美禄。', pinyin: 'Wǒ xǐ huan hē měi lù .', english: 'I like Milo.' },
           { chinese: '我想吃炒面和喝果汁。', pinyin: 'Wǒ xiǎng chī chǎo miàn hé hē guǒ zhī .', english: 'I want fried noodles and fruit juice.' }
         ],
         vocab: [
           { hanzi: '小贩中心', pinyin: 'xiǎo fàn zhōng xīn', meaning: 'hawker centre', emoji: '🏪' },
           { hanzi: '鸡饭', pinyin: 'jī fàn', meaning: 'chicken rice', emoji: '🍗' },
           { hanzi: '炒面', pinyin: 'chǎo miàn', meaning: 'fried noodles', emoji: '🍜' },
-          { hanzi: '好喝', pinyin: 'hǎo hē', meaning: 'tasty (drink)', emoji: '🥤' }
+          { hanzi: '美禄', pinyin: 'měi lù', meaning: 'Milo drink', emoji: '🥤' }
         ]
       },
       {
@@ -612,18 +477,16 @@ Structure your JSON exactly like this:
         initialMessage: {
           chinese: '叮咚！下课了！我们去学校食堂买东西吃吧。你带了多少钱？',
           pinyin: 'Dīng dōng ! Xià kè le ! Wǒ men qù xué xiào shí táng mǎi dōng xi chī ba . Nǐ dài le duō shao qián ?',
-          english: 'Ding dong! It is recess time! Let us go to the school canteen to buy food. How much money did you bring?',
-          encouragement: 'In Primary 1 & 2, we learn "下课了" (xià kè le) which means recess time!'
+          english: 'Ding dong! Recess time! Let us go to the canteen. How much money did you bring?',
+          encouragement: 'In Primary 1 & 2, we learn 下课了 (recess)!'
         },
         quickReplies: [
           { chinese: '我带了两块钱。', pinyin: 'Wǒ dài le liǎng kuài qián .', english: 'I brought two dollars.' },
-          { chinese: '我想买一碗鱼圆面。', pinyin: 'Wǒ xiǎng mǎi yì wǎn yú yuán miàn .', english: 'I want to buy fishball noodles.' },
-          { chinese: '我们在食堂排队买水果。', pinyin: 'Wǒ men zài shí táng pái duì mǎi shuǐ guǒ .', english: 'We queue up in the canteen to buy fruit.' }
+          { chinese: '我想买一碗鱼圆面。', pinyin: 'Wǒ xiǎng mǎi yì wǎn yú yuán miàn .', english: 'I want fishball noodles.' }
         ],
         vocab: [
           { hanzi: '食堂', pinyin: 'shí táng', meaning: 'canteen', emoji: '🍱' },
-          { hanzi: '下课', pinyin: 'xià kè', meaning: 'recess / class ends', emoji: '🔔' },
-          { hanzi: '排队', pinyin: 'pái duì', meaning: 'queue up', emoji: '🚶' },
+          { hanzi: '下课', pinyin: 'xià kè', meaning: 'recess', emoji: '🔔' },
           { hanzi: '鱼圆面', pinyin: 'yú yuán miàn', meaning: 'fishball noodles', emoji: '🍥' }
         ]
       },
@@ -638,19 +501,18 @@ Structure your JSON exactly like this:
         initialMessage: {
           chinese: '下午好！组屋楼下的游乐场真热闹。你喜欢溜滑梯还是荡秋千？',
           pinyin: 'Xià wǔ hǎo ! Zǔ wū lóu xià de yóu lè chǎng zhēn rè nao . Nǐ xǐ huan liū huá tī hái shì dàng qiū qiān ?',
-          english: 'Good afternoon! The playground downstairs at the HDB block is so lively. Do you like playing on the slide or the swing?',
+          english: 'Good afternoon! The playground at the HDB block is lively. Do you like the slide or swing?',
           encouragement: 'Fun Singapore word: 组屋 (zǔ wū) means HDB flat!'
         },
         quickReplies: [
           { chinese: '我喜欢溜滑梯！', pinyin: 'Wǒ xǐ huan liū huá tī !', english: 'I like the slide!' },
-          { chinese: '我和好朋友一起荡秋千。', pinyin: 'Wǒ hé hǎo péng you yì qǐ dàng qiū qiān .', english: 'I play on the swing with my good friends.' },
-          { chinese: '我们在游乐场开心地跑。', pinyin: 'Wǒ men zài yóu lè chǎng kāi xīn de pǎo .', english: 'We run happily at the playground.' }
+          { chinese: '我和好朋友一起荡秋千。', pinyin: 'Wǒ hé hǎo péng you yì qǐ dàng qiū qiān .', english: 'I play on the swing with friends.' }
         ],
         vocab: [
           { hanzi: '组屋', pinyin: 'zǔ wū', meaning: 'HDB flat', emoji: '🏢' },
           { hanzi: '游乐场', pinyin: 'yóu lè chǎng', meaning: 'playground', emoji: '🎠' },
-          { hanzi: '溜滑梯', pinyin: 'liū huá tī', meaning: 'play on the slide', emoji: '🛝' },
-          { hanzi: '荡秋千', pinyin: 'dàng qiū qiān', meaning: 'play on the swing', emoji: '🌳' }
+          { hanzi: '溜滑梯', pinyin: 'liū huá tī', meaning: 'slide', emoji: '🛝' },
+          { hanzi: '荡秋千', pinyin: 'dàng qiū qiān', meaning: 'swing', emoji: '🌳' }
         ]
       },
       {
@@ -665,211 +527,25 @@ Structure your JSON exactly like this:
           chinese: '早安！巴士来了。你每天是怎么去学校的？',
           pinyin: 'Zǎo ān ! Bā shì lái le . Nǐ měi tiān shì zěn me qù xué xiào de ?',
           english: 'Good morning! The bus is here. How do you go to school every day?',
-          encouragement: 'In Singapore, we call a bus 巴士 (bā shì) and MRT train 地铁 (dì tiě)!'
+          encouragement: 'We call bus 巴士 and train 地铁 in Singapore!'
         },
         quickReplies: [
           { chinese: '我搭巴士去学校。', pinyin: 'Wǒ dā bā shì qù xué xiào .', english: 'I take the bus to school.' },
-          { chinese: '我和妈妈走路去学校。', pinyin: 'Wǒ hé mā ma zǒu lù qù xué xiào .', english: 'I walk to school with Mum.' },
-          { chinese: '我搭地铁去学校。', pinyin: 'Wǒ dā dì tiě qù xué xiào .', english: 'I take the MRT train to school.' }
+          { chinese: '我搭地铁去学校。', pinyin: 'Wǒ dā dì tiě qù xué xiào .', english: 'I take the MRT train.' }
         ],
         vocab: [
-          { hanzi: '搭巴士', pinyin: 'dā bā shì', meaning: 'take the bus', emoji: '🚌' },
-          { hanzi: '地铁', pinyin: 'dì tiě', meaning: 'MRT / train', emoji: '🚇' },
-          { hanzi: '上学', pinyin: 'shàng xué', meaning: 'go to school', emoji: '🎒' },
-          { hanzi: '走路', pinyin: 'zǒu lù', meaning: 'walk', emoji: '👟' }
-        ]
-      },
-      {
-        id: 'zoo',
-        title: '新加坡动物园',
-        pinyin: 'xīn jiā pō dòng wù yuán',
-        english: 'Singapore Zoo',
-        emoji: '🦁',
-        bannerBg: 'from-lime-500 via-green-500 to-emerald-600',
-        sceneDecor: '🐼 🐘 🐒 🦒',
-        initialMessage: {
-          chinese: '欢迎来到新加坡动物园！这里有很多可爱的动物。你最喜欢看什么动物？',
-          pinyin: 'Huān yíng lái dào xīn jiā pō dòng wù yuán ! Zhè lǐ yǒu hěn duō kě ài de dòng wù . Nǐ zuì xǐ huan kàn shén me dòng wù ?',
-          english: 'Welcome to the Singapore Zoo! There are many cute animals here. What animal do you like to see most?',
-          encouragement: 'Did you know? Giant pandas 凯凯 (Kǎi Kǎi) and 嘉嘉 (Jiā Jiā) live in Singapore!'
-        },
-        quickReplies: [
-          { chinese: '我最喜欢看大熊猫吃竹子。', pinyin: 'Wǒ zuì xǐ huan kàn dà xióng māo chī zhú zi .', english: 'I love watching giant pandas eat bamboo.' },
-          { chinese: '小猴子在树上跳来跳去。', pinyin: 'Xiǎo hóu zi zài shù shàng tiào lái tiào qù .', english: 'The little monkeys jump around in the trees.' },
-          { chinese: '大象的鼻子长长的。', pinyin: 'Dà xiàng de bí zi cháng cháng de .', english: 'The elephant has a very long trunk.' }
-        ],
-        vocab: [
-          { hanzi: '动物园', pinyin: 'dòng wù yuán', meaning: 'zoo', emoji: '🦁' },
-          { hanzi: '大熊猫', pinyin: 'dà xióng māo', meaning: 'giant panda', emoji: '🐼' },
-          { hanzi: '猴子', pinyin: 'hóu zi', meaning: 'monkey', emoji: '🐒' },
-          { hanzi: '大象', pinyin: 'dà xiàng', meaning: 'elephant', emoji: '🐘' }
-        ]
-      },
-      {
-        id: 'gardens',
-        title: '滨海湾花园',
-        pinyin: 'bīn hǎi wān huā yuán',
-        english: 'Gardens by the Bay',
-        emoji: '🌺',
-        bannerBg: 'from-pink-400 via-rose-400 to-fuchsia-500',
-        sceneDecor: '🌸 🌳 🦋 ⛲',
-        initialMessage: {
-          chinese: '哇！滨海湾花园的花真美！你看到高高的天空树和五颜六色的花了吗？',
-          pinyin: 'Wā ! Bīn hǎi wān huā yuán de huā zhēn měi ! Nǐ kàn dào gāo gāo de tiān kōng shù hé wǔ yán liù sè de huā le ma ?',
-          english: 'Wow! The flowers at Gardens by the Bay are so pretty! Did you see the tall Supertrees and colourful flowers?',
-          encouragement: 'Great primary school idiom: 五颜六色 (wǔ yán liù sè) means colourful!'
-        },
-        quickReplies: [
-          { chinese: '我看到了美丽的花朵。', pinyin: 'Wǒ kàn dào le měi lì de huā duǒ .', english: 'I saw beautiful flowers.' },
-          { chinese: '天空树又高又大！', pinyin: 'Tiān kōng shù yòu gāo yòu dà !', english: 'The Supertrees are both tall and big!' },
-          { chinese: '我和家人在花园里拍照。', pinyin: 'Wǒ hé jiā rén zài huā yuán lǐ pāi zhào .', english: 'I take photos in the garden with my family.' }
-        ],
-        vocab: [
-          { hanzi: '花园', pinyin: 'huā yuán', meaning: 'garden', emoji: '🌷' },
-          { hanzi: '天空树', pinyin: 'tiān kōng shù', meaning: 'Supertree', emoji: '🌳' },
-          { hanzi: '美丽', pinyin: 'měi lì', meaning: 'beautiful', emoji: '✨' },
-          { hanzi: '拍照', pinyin: 'pāi zhào', meaning: 'take photos', emoji: '📷' }
-        ]
-      },
-      {
-        id: 'eastcoast',
-        title: '东海岸公园',
-        pinyin: 'dōng hǎi àn gōng yuán',
-        english: 'East Coast Park',
-        emoji: '🏖️',
-        bannerBg: 'from-cyan-400 via-sky-400 to-blue-500',
-        sceneDecor: '🏖️ 🚲 🦀 🪁',
-        initialMessage: {
-          chinese: '今天天气晴朗，我们在东海岸公园吹海风！你想堆沙堡还是骑脚踏车？',
-          pinyin: 'Jīn tiān tiān qì qíng lǎng , wǒ men zài dōng hǎi àn gōng yuán chuī hǎi fēng ! Nǐ xiǎng duī shā bǎo hái shì qí jiǎo tà chē ?',
-          english: 'The weather is sunny today, and we are enjoying the sea breeze at East Coast Park! Do you want to build a sandcastle or ride a bicycle?',
-          encouragement: 'In Singapore Mandarin, we call a bicycle 脚踏车 (jiǎo tà chē)!'
-        },
-        quickReplies: [
-          { chinese: '我想在沙滩上堆沙堡。', pinyin: 'Wǒ xiǎng zài shā tān shàng duī shā bǎo .', english: 'I want to build a sandcastle on the beach.' },
-          { chinese: '我和爸爸一起骑脚踏车。', pinyin: 'Wǒ hé bà ba yì qǐ qí jiǎo tà chē .', english: 'I ride a bicycle together with Dad.' },
-          { chinese: '我们在海边放风筝。', pinyin: 'Wǒ men zài hǎi biān fàng fēng zheng .', english: 'We fly a kite by the seaside.' }
-        ],
-        vocab: [
-          { hanzi: '海边', pinyin: 'hǎi biān', meaning: 'seaside / beach', emoji: '🌊' },
-          { hanzi: '堆沙堡', pinyin: 'duī shā bǎo', meaning: 'build a sandcastle', emoji: '🏰' },
-          { hanzi: '脚踏车', pinyin: 'jiǎo tà chē', meaning: 'bicycle', emoji: '🚲' },
-          { hanzi: '放风筝', pinyin: 'fàng fēng zheng', meaning: 'fly a kite', emoji: '🪁' }
-        ]
-      },
-      {
-        id: 'library',
-        title: '国家图书馆',
-        pinyin: 'guó jiā tú shū guǎn',
-        english: 'Public Library',
-        emoji: '📚',
-        bannerBg: 'from-indigo-400 via-blue-500 to-violet-600',
-        sceneDecor: '📚 🤫 🔖 🧸',
-        initialMessage: {
-          chinese: '嘘！我们在图书馆里要保持安静。你今天想借几本华文故事书？',
-          pinyin: 'Xū ! Wǒ men zài tú shū guǎn lǐ yào bǎo chí ān jìng . Nǐ jīn tiān xiǎng jiè jǐ běn huá wén gù shi shū ?',
-          english: 'Shh! We need to keep quiet in the library. How many Chinese storybooks do you want to borrow today?',
-          encouragement: 'Remember: 借书 (jiè shū) means borrow books, and 安静 (ān jìng) means quiet!'
-        },
-        quickReplies: [
-          { chinese: '我想借三本有趣的故事书。', pinyin: 'Wǒ xiǎng jiè sān běn yǒu qù de gù shi shū .', english: 'I want to borrow three interesting storybooks.' },
-          { chinese: '我们在图书馆安静地看书。', pinyin: 'Wǒ men zài tú shū guǎn ān jìng de kàn shū .', english: 'We read books quietly in the library.' },
-          { chinese: '我喜欢看动物图画书。', pinyin: 'Wǒ xǐ huan kàn dòng wù tú huà shū .', english: 'I like reading animal picture books.' }
-        ],
-        vocab: [
-          { hanzi: '图书馆', pinyin: 'tú shū guǎn', meaning: 'library', emoji: '🏛️' },
-          { hanzi: '故事书', pinyin: 'gù shi shū', meaning: 'storybook', emoji: '📘' },
-          { hanzi: '安静', pinyin: 'ān jìng', meaning: 'quiet', emoji: '🤫' },
-          { hanzi: '借书', pinyin: 'jiè shū', meaning: 'borrow books', emoji: '🪪' }
-        ]
-      },
-      {
-        id: 'supermarket',
-        title: '平价超市购物',
-        pinyin: 'píng jià chāo shì gòu wù',
-        english: 'NTUC Supermarket',
-        emoji: '🛒',
-        bannerBg: 'from-orange-400 via-red-400 to-rose-500',
-        sceneDecor: '🛒 🍎 🥛 🥦',
-        initialMessage: {
-          chinese: '我们推着购物车去超市买东西吧！你想帮妈妈选什么水果和食物？',
-          pinyin: 'Wǒ men tuī zhe gòu wù chē qù chāo shì mǎi dōng xi ba ! Nǐ xiǎng bāng mā ma xuǎn shén me shuǐ guǒ hé shí wù ?',
-          english: 'Let us push the trolley and go shopping at the supermarket! What fruits and food do you want to help Mum pick?',
-          encouragement: 'Take a photo of any fruit or snack at home using "📸 拍照问一问" to learn its Chinese name!'
-        },
-        quickReplies: [
-          { chinese: '我想买红红的苹果和香蕉。', pinyin: 'Wǒ xiǎng mǎi hóng hóng de píng guǒ hé xiāng jiāo .', english: 'I want to buy red apples and bananas.' },
-          { chinese: '我们还要买牛奶、面包和鸡蛋。', pinyin: 'Wǒ men hái yào mǎi niú nǎi 、 miàn bāo hé jī dàn .', english: 'We also need to buy milk, bread, and eggs.' },
-          { chinese: '我帮妈妈把东西放进环保袋。', pinyin: 'Wǒ bāng mā ma bǎ dōng xi fàng jìn huán bǎo dài .', english: 'I help Mum put the items into the reusable bag.' }
-        ],
-        vocab: [
-          { hanzi: '超市', pinyin: 'chāo shì', meaning: 'supermarket', emoji: '🏪' },
-          { hanzi: '苹果', pinyin: 'píng guǒ', meaning: 'apple', emoji: '🍎' },
-          { hanzi: '牛奶', pinyin: 'niú nǎi', meaning: 'milk', emoji: '🥛' },
-          { hanzi: '环保袋', pinyin: 'huán bǎo dài', meaning: 'reusable bag', emoji: '🛍️' }
-        ]
-      },
-      {
-        id: 'chinatown',
-        title: '牛车水与樟宜',
-        pinyin: 'niú chē shuǐ yǔ zhāng yí',
-        english: 'Chinatown & Changi',
-        emoji: '🏮',
-        bannerBg: 'from-red-500 via-rose-500 to-amber-500',
-        sceneDecor: '🏮 🧧 ✈️ ⛲',
-        initialMessage: {
-          chinese: '牛车水挂满了红灯笼，星耀樟宜还有大瀑布！周末你喜欢去哪里玩？',
-          pinyin: 'Niú chē shuǐ guà mǎn le hóng dēng long , xīng yào zhāng yí hái yǒu dà pù bù ! Zhōu mò nǐ xǐ huan qù nǎ lǐ wán ?',
-          english: 'Chinatown is full of red lanterns, and Jewel Changi has a giant waterfall! Where do you like to go on weekends?',
-          encouragement: 'In Singapore, Chinatown is called 牛车水 (niú chē shuǐ — bullock water cart)!'
-        },
-        quickReplies: [
-          { chinese: '我喜欢去牛车水看红灯笼。', pinyin: 'Wǒ xǐ huan qù niú chē shuǐ kàn hóng dēng long .', english: 'I like going to Chinatown to see the red lanterns.' },
-          { chinese: '我想去樟宜机场看大飞机。', pinyin: 'Wǒ xiǎng qù zhāng yí jī chǎng kàn dà fēi jī .', english: 'I want to go to Changi Airport to see big airplanes.' },
-          { chinese: '周末我和全家人一起去逛街。', pinyin: 'Zhōu mò wǒ hé quán jiā rén yì qǐ qù guàng jiē .', english: 'On weekends, I go out with my whole family.' }
-        ],
-        vocab: [
-          { hanzi: '牛车水', pinyin: 'niú chē shuǐ', meaning: 'Chinatown (SG)', emoji: '🏮' },
-          { hanzi: '红灯笼', pinyin: 'hóng dēng long', meaning: 'red lantern', emoji: '🧧' },
-          { hanzi: '樟宜机场', pinyin: 'zhāng yí jī chǎng', meaning: 'Changi Airport', emoji: '✈️' },
-          { hanzi: '瀑布', pinyin: 'pù bù', meaning: 'waterfall', emoji: '⛲' }
+          { hanzi: '巴士', pinyin: 'bā shì', meaning: 'bus', emoji: '🚌' },
+          { hanzi: '地铁', pinyin: 'dì tiě', meaning: 'MRT', emoji: '🚇' },
+          { hanzi: '上学', pinyin: 'shàng xué', meaning: 'go to school', emoji: '🎒' }
         ]
       }
     ];
 
     const SAMPLE_PHOTO_CARDS = [
-      {
-        id: 'sample-chickenrice',
-        title: '海南鸡饭',
-        english: 'Hainanese Chicken Rice',
-        emoji: '🍛',
-        bgGradient: ['#f59e0b', '#ef4444'],
-        defaultQuestion: '这是什么食物？请教我用华语怎么说！'
-      },
-      {
-        id: 'sample-merlion',
-        title: '鱼尾狮公园',
-        english: 'Merlion Statue',
-        emoji: '🦁',
-        bgGradient: ['#0ea5e9', '#6366f1'],
-        defaultQuestion: '照片里是什么？它在新加坡哪里？'
-      },
-      {
-        id: 'sample-fruits',
-        title: '热带水果',
-        english: 'Apples & Bananas',
-        emoji: '🍎🍌',
-        bgGradient: ['#10b981', '#059669'],
-        defaultQuestion: '照片里有什么水果和颜色？'
-      },
-      {
-        id: 'sample-bus',
-        title: '新加坡双层巴士',
-        english: 'SG Double-Decker Bus',
-        emoji: '🚌',
-        bgGradient: ['#8b5cf6', '#d946ef'],
-        defaultQuestion: '这是什么交通工具？我们可以搭它去哪里？'
-      }
+      { id: 'sample-chickenrice', title: '海南鸡饭', english: 'Chicken Rice', emoji: '🍛', bgGradient: ['#f59e0b', '#ef4444'], defaultQuestion: '这是什么食物？请教我用华语怎么说！' },
+      { id: 'sample-merlion', title: '鱼尾狮公园', english: 'Merlion', emoji: '🦁', bgGradient: ['#0ea5e9', '#6366f1'], defaultQuestion: '照片里是什么？它在新加坡哪里？' },
+      { id: 'sample-fruits', title: '热带水果', english: 'Fruits', emoji: '🍎🍌', bgGradient: ['#10b981', '#059669'], defaultQuestion: '照片里有什么水果和颜色？' },
+      { id: 'sample-bus', title: '双层巴士', english: 'SG Bus', emoji: '🚌', bgGradient: ['#8b5cf6', '#d946ef'], defaultQuestion: '这是什么交通工具？' }
     ];
 
     const CHAR_PINYIN_FALLBACK = {
@@ -884,37 +560,12 @@ Structure your JSON exactly like this:
       场: 'chǎng', 真: 'zhēn', 热: 'rè', 闹: 'nao', 溜: 'liū', 滑: 'huá', 梯: 'tī', 荡: 'dàng',
       秋: 'qiū', 千: 'qiān', 朋: 'péng', 友: 'you', 起: 'qǐ', 玩: 'wán', 开: 'kāi', 地: 'dì',
       跑: 'pǎo', 早: 'zǎo', 安: 'ān', 巴: 'bā', 士: 'shì', 每: 'měi', 怎: 'zěn', 么: 'me',
-      搭: 'dā', 妈: 'mā', 走: 'zǒu', 路: 'lù', 铁: 'tiě', 太: 'tài', 棒: 'bàng', 继: 'jì',
-      续: 'xù', 说: 'shuō', 华: 'huá', 语: 'yǔ', 吗: 'ma', 呢: 'ne', 啊: 'a', 呀: 'ya',
-      爸: 'bà', 哥: 'gē', 姐: 'jiě', 弟: 'dì', 妹: 'mèi', 老: 'lǎo', 师: 'shī', 同: 'tóng',
-      包: 'bāo', 菜: 'cài', 肉: 'ròu', 蛋: 'dàn', 奶: 'nǎi', 茶: 'chá', 冰: 'bīng', 甜: 'tián',
-      大: 'dà', 高: 'gāo', 兴: 'xìng', 看: 'kàn', 听: 'tīng', 读: 'dú', 写: 'xiě', 画: 'huà',
-      家: 'jiā', 公: 'gōng', 园: 'yuán', 动: 'dòng', 物: 'wù', 书: 'shū', 店: 'diàn', 超: 'chāo',
-      市: 'shì', 新: 'xīn', 加: 'jiā', 坡: 'pō', 这: 'zhè', 里: 'lǐ', 有: 'yǒu', 很: 'hěn',
-      可: 'kě', 爱: 'ài', 最: 'zuì', 什: 'shén', 熊: 'xióng', 猫: 'māo', 竹: 'zhú', 子: 'zi',
-      猴: 'hóu', 树: 'shù', 上: 'shàng', 跳: 'tiào', 象: 'xiàng', 鼻: 'bí', 长: 'cháng', 哇: 'wā',
-      滨: 'bīn', 海: 'hǎi', 湾: 'wān', 花: 'huā', 空: 'kōng', 五: 'wǔ', 颜: 'yán', 六: 'liù',
-      色: 'sè', 朵: 'duǒ', 丽: 'lì', 又: 'yòu', 人: 'rén', 拍: 'pāi', 照: 'zhào', 气: 'qì',
-      晴: 'qíng', 朗: 'lǎng', 岸: 'àn', 吹: 'chuī', 风: 'fēng', 堆: 'duī', 沙: 'shā', 堡: 'bǎo',
-      骑: 'qí', 脚: 'jiǎo', 踏: 'tà', 车: 'chē', 滩: 'tān', 边: 'biān', 放: 'fàng', 筝: 'zheng',
-      嘘: 'xū', 图: 'tú', 馆: 'guǎn', 要: 'yào', 保: 'bǎo', 持: 'chí', 静: 'jìng', 借: 'jiè',
-      几: 'jǐ', 本: 'běn', 文: 'wén', 故: 'gù', 事: 'shi', 三: 'sān', 趣: 'qù', 推: 'tuī',
-      着: 'zhe', 购: 'gòu', 帮: 'bāng', 选: 'xuǎn', 红: 'hóng', 苹: 'píng', 香: 'xiāng', 蕉: 'jiāo',
-      牛: 'niú', 把: 'bǎ', 进: 'jìn', 环: 'huán', 袋: 'dài', 挂: 'guà', 满: 'mǎn', 灯: 'dēng',
-      笼: 'long', 星: 'xīng', 耀: 'yào', 樟: 'zhāng', 宜: 'yí', 瀑: 'pù', 布: 'bù', 周: 'zhōu',
-      末: 'mò', 哪: 'nǎ', 机: 'jī', 飞: 'fēi', 全: 'quán', 逛: 'guàng', 街: 'jiē', 片: 'piàn',
-      请: 'qǐng', 教: 'jiāo', 尾: 'wěi', 狮: 'shī', 双: 'shuāng', 层: 'céng'
+      搭: 'dā', 妈: 'mā', 走: 'zǒu', 路: 'lù', 铁: 'tiě', 太: 'tài', 棒: 'bàng'
     };
 
     const state = {
       activeScenario: SCENARIOS[0],
-      messages: [
-        {
-          id: 'init-1',
-          sender: 'tutor',
-          ...SCENARIOS[0].initialMessage
-        }
-      ],
+      messages: [{ id: 'init-1', sender: 'tutor', ...SCENARIOS[0].initialMessage }],
       isLoading: false,
       stars: 3,
       showPinyin: true,
@@ -929,14 +580,9 @@ Structure your JSON exactly like this:
       isCameraActive: false,
       cameraFacingMode: 'environment',
       cameraError: null,
-      engineMode: 'builtin',
       isListening: false,
       speechLang: 'zh-CN',
-      speakingState: {
-        messageId: null,
-        mode: null,
-        charIndex: null
-      },
+      speakingState: { messageId: null, mode: null, charIndex: null },
       lastRawJson: JSON.stringify(SCENARIOS[0].initialMessage, null, 2)
     };
 
@@ -944,6 +590,21 @@ Structure your JSON exactly like this:
     let boundaryWorked = false;
     let recognitionInstance = null;
     let cameraStream = null;
+    let audioUnlockedForiOS = false;
+
+    // --- CRITICAL FIX FOR IPAD / SAFARI AUDIO ---
+    // Apple iOS requires SpeechSynthesis to be unlocked via a direct user touch gesture.
+    function unlockIOSAudio() {
+      if (audioUnlockedForiOS) return;
+      if ('speechSynthesis' in window) {
+        try {
+          const silentUtter = new SpeechSynthesisUtterance('');
+          silentUtter.volume = 0;
+          window.speechSynthesis.speak(silentUtter);
+          audioUnlockedForiOS = true;
+        } catch (e) {}
+      }
+    }
 
     function escapeHtml(str) {
       return String(str || '')
@@ -957,301 +618,14 @@ Structure your JSON exactly like this:
     function getScenarioBackgroundSVG(scenarioId) {
       switch (scenarioId) {
         case 'hawker':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-hawker" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#fef3c7"/>
-                <stop offset="55%" stop-color="#fde68a"/>
-                <stop offset="100%" stop-color="#f59e0b"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-hawker)"/>
-            <!-- Hawker Shelter Roof Beams -->
-            <polygon points="0,0 1200,0 1120,95 80,95" fill="#92400e" opacity="0.25"/>
-            <!-- Hanging Red Lanterns -->
-            <g fill="#ef4444" stroke="#b91c1c" stroke-width="3">
-              <line x1="150" y1="0" x2="150" y2="55" stroke="#78350f" stroke-width="4"/>
-              <ellipse cx="150" cy="78" rx="34" ry="26"/>
-              <line x1="1050" y1="0" x2="1050" y2="55" stroke="#78350f" stroke-width="4"/>
-              <ellipse cx="1050" cy="78" rx="34" ry="26"/>
-            </g>
-            <!-- Hawker Stalls in background -->
-            <g opacity="0.88">
-              <rect x="70" y="250" width="310" height="260" rx="16" fill="#fffbeb" stroke="#d97706" stroke-width="5"/>
-              <rect x="60" y="235" width="330" height="48" rx="10" fill="#dc2626"/>
-              <text x="225" y="266" text-anchor="middle" fill="#fef08a" font-size="22" font-weight="900">天天海南鸡饭 • CHICKEN RICE</text>
-              <circle cx="150" cy="355" r="28" fill="#fde047"/>
-              <text x="150" y="365" text-anchor="middle" font-size="32">🍗</text>
-              <circle cx="230" cy="355" r="28" fill="#fed7aa"/>
-              <text x="230" y="365" text-anchor="middle" font-size="32">🍛</text>
-
-              <rect x="820" y="250" width="310" height="260" rx="16" fill="#fffbeb" stroke="#0d9488" stroke-width="5"/>
-              <rect x="810" y="235" width="330" height="48" rx="10" fill="#0f766e"/>
-              <text x="975" y="266" text-anchor="middle" fill="#ccfbf1" font-size="22" font-weight="900">老字号炒面与美禄 • NOODLES</text>
-              <circle cx="905" cy="355" r="28" fill="#bbf7d0"/>
-              <text x="905" y="365" text-anchor="middle" font-size="32">🍜</text>
-              <circle cx="985" cy="355" r="28" fill="#bae6fd"/>
-              <text x="985" y="365" text-anchor="middle" font-size="32">🧃</text>
-            </g>
-            <!-- Tiled Hawker Floor & Round Tables -->
-            <rect x="0" y="500" width="1200" height="200" fill="#fbbf24" opacity="0.45"/>
-            <ellipse cx="600" cy="590" rx="170" ry="38" fill="#b45309" opacity="0.45"/>
-            <circle cx="400" cy="595" r="24" fill="#d97706" opacity="0.5"/>
-            <circle cx="800" cy="595" r="24" fill="#d97706" opacity="0.5"/>
-          </svg>`;
-
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full"><defs><linearGradient id="bg-hawker" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef3c7"/><stop offset="55%" stop-color="#fde68a"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs><rect width="1200" height="700" fill="url(#bg-hawker)"/><polygon points="0,0 1200,0 1120,95 80,95" fill="#92400e" opacity="0.25"/><g fill="#ef4444" stroke="#b91c1c" stroke-width="3"><line x1="150" y1="0" x2="150" y2="55" stroke="#78350f" stroke-width="4"/><ellipse cx="150" cy="78" rx="34" ry="26"/><line x1="1050" y1="0" x2="1050" y2="55" stroke="#78350f" stroke-width="4"/><ellipse cx="1050" cy="78" rx="34" ry="26"/></g><rect x="0" y="500" width="1200" height="200" fill="#fbbf24" opacity="0.45"/><ellipse cx="600" cy="590" rx="170" ry="38" fill="#b45309" opacity="0.45"/></svg>`;
         case 'canteen':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-canteen" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#d1fae5"/>
-                <stop offset="60%" stop-color="#a7f3d0"/>
-                <stop offset="100%" stop-color="#34d399"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-canteen)"/>
-            <!-- School Clock & Recess Bell Banner -->
-            <circle cx="130" cy="110" r="45" fill="#ffffff" stroke="#059669" stroke-width="6"/>
-            <line x1="130" y1="110" x2="130" y2="82" stroke="#065f46" stroke-width="5" stroke-linecap="round"/>
-            <line x1="130" y1="110" x2="152" y2="110" stroke="#065f46" stroke-width="4" stroke-linecap="round"/>
-            <!-- School Canteen Stalls -->
-            <rect x="75" y="255" width="320" height="245" rx="16" fill="#ffffff" stroke="#10b981" stroke-width="5"/>
-            <rect x="65" y="240" width="340" height="46" rx="10" fill="#059669"/>
-            <text x="235" y="270" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="900">鱼圆面摊位 • NOODLE STALL</text>
-            <text x="180" y="365" font-size="40">🍜</text>
-            <text x="255" y="365" font-size="40">🍥</text>
-
-            <rect x="815" y="255" width="310" height="245" rx="16" fill="#ffffff" stroke="#0284c7" stroke-width="5"/>
-            <rect x="805" y="240" width="330" height="46" rx="10" fill="#0284c7"/>
-            <text x="970" y="270" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="900">鲜果与饮料 • FRUIT &amp; DRINKS</text>
-            <text x="915" y="365" font-size="40">🍎</text>
-            <text x="990" y="365" font-size="40">🍉</text>
-            <!-- Long School Benches -->
-            <rect x="0" y="500" width="1200" height="200" fill="#10b981" opacity="0.35"/>
-            <rect x="430" y="535" width="340" height="26" rx="8" fill="#047857" opacity="0.5"/>
-          </svg>`;
-
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full"><defs><linearGradient id="bg-canteen" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d1fae5"/><stop offset="60%" stop-color="#a7f3d0"/><stop offset="100%" stop-color="#34d399"/></linearGradient></defs><rect width="1200" height="700" fill="url(#bg-canteen)"/><circle cx="130" cy="110" r="45" fill="#ffffff" stroke="#059669" stroke-width="6"/><rect x="0" y="500" width="1200" height="200" fill="#10b981" opacity="0.35"/></svg>`;
         case 'playground':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-playground" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#bae6fd"/>
-                <stop offset="62%" stop-color="#e0f2fe"/>
-                <stop offset="100%" stop-color="#86efac"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-playground)"/>
-            <!-- HDB Flats in Background -->
-            <g opacity="0.85">
-              <rect x="60" y="130" width="220" height="360" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4"/>
-              <rect x="60" y="130" width="220" height="30" fill="#ef4444"/>
-              <text x="170" y="152" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="900">BLK 128</text>
-              <g fill="#93c5fd">
-                <rect x="85" y="180" width="35" height="25"/><rect x="150" y="180" width="35" height="25"/><rect x="215" y="180" width="35" height="25"/>
-                <rect x="85" y="230" width="35" height="25"/><rect x="150" y="230" width="35" height="25"/><rect x="215" y="230" width="35" height="25"/>
-                <rect x="85" y="280" width="35" height="25"/><rect x="150" y="280" width="35" height="25"/><rect x="215" y="280" width="35" height="25"/>
-                <rect x="85" y="330" width="35" height="25"/><rect x="150" y="330" width="35" height="25"/><rect x="215" y="330" width="35" height="25"/>
-              </g>
-              <rect x="920" y="150" width="220" height="340" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4"/>
-              <rect x="920" y="150" width="220" height="30" fill="#f59e0b"/>
-            </g>
-            <!-- Iconic Toa Payoh Orange Dragon Playground & Slide -->
-            <path d="M 0 470 Q 600 430 1200 470 L 1200 700 L 0 700 Z" fill="#4ade80"/>
-            <ellipse cx="600" cy="560" rx="340" ry="70" fill="#fde047" opacity="0.65"/>
-            <!-- Slide & Swing -->
-            <path d="M 830 350 L 960 495" stroke="#f97316" stroke-width="22" stroke-linecap="round"/>
-            <rect x="780" y="310" width="70" height="55" rx="10" fill="#ef4444"/>
-          </svg>`;
-
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full"><defs><linearGradient id="bg-playground" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#bae6fd"/><stop offset="62%" stop-color="#e0f2fe"/><stop offset="100%" stop-color="#86efac"/></linearGradient></defs><rect width="1200" height="700" fill="url(#bg-playground)"/><path d="M 0 470 Q 600 430 1200 470 L 1200 700 L 0 700 Z" fill="#4ade80"/></svg>`;
         case 'bus':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-bus" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#c4b5fd"/>
-                <stop offset="55%" stop-color="#ede9fe"/>
-                <stop offset="100%" stop-color="#94a3b8"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-bus)"/>
-            <!-- MRT Elevated Track & Train -->
-            <rect x="0" y="185" width="1200" height="22" fill="#64748b"/>
-            <rect x="180" y="207" width="28" height="260" fill="#94a3b8"/>
-            <rect x="980" y="207" width="28" height="260" fill="#94a3b8"/>
-            <!-- SG Lush Green Double-Decker Bus -->
-            <g transform="translate(55, 275)">
-              <rect x="0" y="0" width="340" height="190" rx="22" fill="#84cc16" stroke="#3f6212" stroke-width="5"/>
-              <rect x="18" y="18" width="304" height="58" rx="10" fill="#bae6fd"/>
-              <rect x="18" y="95" width="220" height="60" rx="10" fill="#bae6fd"/>
-              <rect x="255" y="88" width="60" height="95" rx="8" fill="#ecfccb"/>
-              <circle cx="75" cy="192" r="28" fill="#1e293b" stroke="#cbd5e1" stroke-width="8"/>
-              <circle cx="265" cy="192" r="28" fill="#1e293b" stroke="#cbd5e1" stroke-width="8"/>
-              <text x="145" y="135" text-anchor="middle" fill="#1e293b" font-size="22" font-weight="900">SG BUS 巴士</text>
-            </g>
-            <!-- Bus Stop Shelter on Right -->
-            <rect x="850" y="275" width="270" height="22" rx="8" fill="#f97316"/>
-            <rect x="880" y="297" width="16" height="175" fill="#475569"/>
-            <rect x="1080" y="297" width="16" height="175" fill="#475569"/>
-            <!-- Asphalt Road -->
-            <rect x="0" y="470" width="1200" height="230" fill="#475569"/>
-            <line x1="0" y1="560" x2="1200" y2="560" stroke="#facc15" stroke-width="8" stroke-dasharray="45 35"/>
-          </svg>`;
-
-        case 'zoo':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-zoo" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#bef264"/>
-                <stop offset="55%" stop-color="#86efac"/>
-                <stop offset="100%" stop-color="#15803d"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-zoo)"/>
-            <!-- Lush Tropical Trees & Bamboo -->
-            <g stroke="#166534" stroke-width="12" stroke-linecap="round">
-              <line x1="90" y1="100" x2="90" y2="520"/>
-              <line x1="130" y1="140" x2="130" y2="520"/>
-              <line x1="1080" y1="110" x2="1080" y2="520"/>
-              <line x1="1120" y1="150" x2="1120" y2="520"/>
-            </g>
-            <!-- Wooden Zoo Enclosure Sign -->
-            <rect x="75" y="265" width="260" height="160" rx="20" fill="#fef3c7" stroke="#92400e" stroke-width="6"/>
-            <text x="205" y="335" text-anchor="middle" font-size="56">🐼🎋</text>
-            <text x="205" y="395" text-anchor="middle" fill="#78350f" font-size="22" font-weight="900">河川生态园 • 大熊猫</text>
-            <rect x="865" y="265" width="260" height="160" rx="20" fill="#fef3c7" stroke="#92400e" stroke-width="6"/>
-            <text x="995" y="335" text-anchor="middle" font-size="56">🐘🦒</text>
-            <text x="995" y="395" text-anchor="middle" fill="#78350f" font-size="22" font-weight="900">新加坡动物园 • ZOO</text>
-            <path d="M 0 490 Q 600 450 1200 490 L 1200 700 L 0 700 Z" fill="#166534" opacity="0.55"/>
-          </svg>`;
-
-        case 'gardens':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-gardens" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#fbcfe8"/>
-                <stop offset="55%" stop-color="#f5d0fe"/>
-                <stop offset="100%" stop-color="#4ade80"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-gardens)"/>
-            <!-- Flower Dome Glass Conservatory Arch -->
-            <path d="M 280 480 Q 600 240 920 480 Z" fill="#e0f2fe" opacity="0.7" stroke="#38bdf8" stroke-width="5"/>
-            <!-- Iconic Purple/Pink Supertrees on Left and Right -->
-            <g stroke="#a21caf" stroke-width="8" fill="none">
-              <path d="M 160 480 L 185 250 L 100 175 L 270 175 L 185 250 L 210 480" fill="#d946ef" opacity="0.45"/>
-              <path d="M 1010 480 L 1035 250 L 950 175 L 1120 175 L 1035 250 L 1060 480" fill="#d946ef" opacity="0.45"/>
-            </g>
-            <ellipse cx="185" cy="170" rx="105" ry="26" fill="#ec4899" opacity="0.75"/>
-            <ellipse cx="1035" cy="170" rx="105" ry="26" fill="#ec4899" opacity="0.75"/>
-            <!-- Flower Lawn -->
-            <rect x="0" y="480" width="1200" height="220" fill="#22c55e" opacity="0.5"/>
-            <text x="150" y="465" font-size="42">🌺🌸🌷</text>
-            <text x="950" y="465" font-size="42">🌻🦋🌹</text>
-          </svg>`;
-
-        case 'eastcoast':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-sky" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#38bdf8"/>
-                <stop offset="55%" stop-color="#bae6fd"/>
-                <stop offset="100%" stop-color="#fef08a"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-sky)"/>
-            <!-- Bright Sun & Kites -->
-            <circle cx="140" cy="105" r="52" fill="#fde047"/>
-            <text x="1030" y="140" font-size="55">🪁</text>
-            <!-- Turquoise Sea & Ships on Horizon -->
-            <rect x="0" y="360" width="1200" height="110" fill="#0284c7" opacity="0.75"/>
-            <text x="200" y="355" font-size="38">🚢</text>
-            <text x="920" y="355" font-size="38">⛵</text>
-            <!-- Sandy Beach & Sandcastle -->
-            <path d="M 0 465 Q 600 430 1200 465 L 1200 700 L 0 700 Z" fill="#fde68a"/>
-            <text x="150" y="460" font-size="54">🏖️🏰</text>
-            <text x="960" y="460" font-size="54">🚲🌴</text>
-          </svg>`;
-
-        case 'library':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-lib" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#e0e7ff"/>
-                <stop offset="60%" stop-color="#c7d2fe"/>
-                <stop offset="100%" stop-color="#818cf8"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-lib)"/>
-            <!-- Tall Bookshelves Left & Right -->
-            <g fill="#fef3c7" stroke="#6366f1" stroke-width="5">
-              <rect x="60" y="140" width="250" height="350" rx="12"/>
-              <line x1="60" y1="230" x2="310" y2="230"/>
-              <line x1="60" y1="320" x2="310" y2="320"/>
-              <line x1="60" y1="410" x2="310" y2="410"/>
-
-              <rect x="890" y="140" width="250" height="350" rx="12"/>
-              <line x1="890" y1="230" x2="1140" y2="230"/>
-              <line x1="890" y1="320" x2="1140" y2="320"/>
-              <line x1="890" y1="410" x2="1140" y2="410"/>
-            </g>
-            <text x="185" y="210" text-anchor="middle" font-size="42">📕📗📘📙</text>
-            <text x="185" y="300" text-anchor="middle" font-size="42">📚🔖🧸</text>
-            <text x="1015" y="210" text-anchor="middle" font-size="42">📘📙📕📗</text>
-            <text x="1015" y="300" text-anchor="middle" font-size="42">🤫📖🏛️</text>
-            <rect x="0" y="490" width="1200" height="210" fill="#4f46e5" opacity="0.35"/>
-          </svg>`;
-
-        case 'supermarket':
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-mart" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#ffedd5"/>
-                <stop offset="60%" stop-color="#fed7aa"/>
-                <stop offset="100%" stop-color="#fb923c"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-mart)"/>
-            <!-- Fresh Produce & Dairy Shelves -->
-            <rect x="65" y="220" width="290" height="270" rx="16" fill="#ffffff" stroke="#ea580c" stroke-width="5"/>
-            <rect x="55" y="205" width="310" height="44" rx="10" fill="#ea580c"/>
-            <text x="210" y="234" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">新鲜水果 • FRESH FRUITS</text>
-            <text x="210" y="320" text-anchor="middle" font-size="48">🍎🍌🍊🍇</text>
-            <text x="210" y="395" text-anchor="middle" font-size="48">🍉🍓🍍🥝</text>
-
-            <rect x="845" y="220" width="290" height="270" rx="16" fill="#ffffff" stroke="#0284c7" stroke-width="5"/>
-            <rect x="835" y="205" width="310" height="44" rx="10" fill="#0284c7"/>
-            <text x="990" y="234" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">牛奶与面包 • DAIRY &amp; BAKERY</text>
-            <text x="990" y="320" text-anchor="middle" font-size="48">🥛🍞🥚🧀</text>
-            <text x="990" y="395" text-anchor="middle" font-size="48">🛒🛍️🥦🥕</text>
-            <rect x="0" y="490" width="1200" height="210" fill="#f97316" opacity="0.35"/>
-          </svg>`;
-
-        case 'chinatown':
         default:
-          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
-            <defs>
-              <linearGradient id="bg-chinatown" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#fecdd3"/>
-                <stop offset="55%" stop-color="#fde68a"/>
-                <stop offset="100%" stop-color="#f87171"/>
-              </linearGradient>
-            </defs>
-            <rect width="1200" height="700" fill="url(#bg-chinatown)"/>
-            <!-- Festive Red Lantern String Across Sky -->
-            <path d="M 0 55 Q 600 135 1200 55" stroke="#991b1b" stroke-width="4" fill="none"/>
-            <text x="160" y="110" font-size="48">🏮</text>
-            <text x="340" y="125" font-size="48">🏮</text>
-            <text x="860" y="125" font-size="48">🏮</text>
-            <text x="1040" y="110" font-size="48">🏮</text>
-            <!-- Chinatown Shophouse Left & Jewel Waterfall Right -->
-            <rect x="70" y="230" width="270" height="260" rx="14" fill="#fff1f2" stroke="#dc2626" stroke-width="5"/>
-            <text x="205" y="280" text-anchor="middle" fill="#991b1b" font-size="22" font-weight="900">牛车水 • CHINATOWN</text>
-            <text x="205" y="365" text-anchor="middle" font-size="52">🏮🧧🥟</text>
-
-            <rect x="860" y="230" width="270" height="260" rx="14" fill="#ecfeff" stroke="#0891b2" stroke-width="5"/>
-            <text x="995" y="280" text-anchor="middle" fill="#155e75" font-size="22" font-weight="900">星耀樟宜 • JEWEL CHANGI</text>
-            <text x="995" y="365" text-anchor="middle" font-size="52">⛲✈️🌴</text>
-            <rect x="0" y="490" width="1200" height="210" fill="#dc2626" opacity="0.3"/>
-          </svg>`;
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full"><defs><linearGradient id="bg-bus" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4b5fd"/><stop offset="55%" stop-color="#ede9fe"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient></defs><rect width="1200" height="700" fill="url(#bg-bus)"/><rect x="0" y="470" width="1200" height="230" fill="#475569"/><line x1="0" y1="560" x2="1200" y2="560" stroke="#facc15" stroke-width="8" stroke-dasharray="45 35"/></svg>`;
       }
     }
 
@@ -1287,20 +661,14 @@ Structure your JSON exactly like this:
       return chars.map((char, index) => {
         const isHanzi = /[\u4e00-\u9fa5]/.test(char);
         const isSpace = char.trim() === '';
-        if (isSpace) {
-          return { char, pinyin: '', isHanzi: false, isSpace: true, index };
-        }
+        if (isSpace) return { char, pinyin: '', isHanzi: false, isSpace: true, index };
         let syllable = '';
         if (useExactTokenMap) {
           const candidate = rawTokens[rawCursor] || '';
           rawCursor += 1;
           syllable = isHanzi ? candidate.replace(/[.,!?，。！？、；：]/g, '') : '';
         } else if (isHanzi) {
-          if (expandedSyllables.length === hanziOnlyChars.length) {
-            syllable = expandedSyllables[hanziCursor] || CHAR_PINYIN_FALLBACK[char] || '';
-          } else {
-            syllable = CHAR_PINYIN_FALLBACK[char] || expandedSyllables[hanziCursor] || '';
-          }
+          syllable = CHAR_PINYIN_FALLBACK[char] || expandedSyllables[hanziCursor] || '';
           hanziCursor += 1;
         }
         return { char, pinyin: syllable, isHanzi, isSpace: false, index };
@@ -1315,20 +683,12 @@ Structure your JSON exactly like this:
 
       return `<div class="flex flex-wrap items-end gap-x-2 gap-y-2.5 leading-none select-none">
         ${alignedItems.map((item) => {
-          if (item.isSpace) {
-            return `<span class="w-2"></span>`;
-          }
+          if (item.isSpace) return `<span class="w-2"></span>`;
           const isCurrent = isMessageSpeaking && activeCharIndex === item.index;
           const isPast = isMessageSpeaking && activeCharIndex !== null && item.index < activeCharIndex;
 
           if (!item.isHanzi) {
-            return `<div class="inline-flex flex-col items-center justify-end px-1 pb-2 transition-all duration-150 ${
-              isCurrent
-                ? 'scale-125 text-amber-400'
-                : isDark
-                ? 'text-slate-300'
-                : 'text-slate-700'
-            }">
+            return `<div class="inline-flex flex-col items-center justify-end px-1 pb-2 ${isCurrent ? 'scale-125 text-amber-400' : isDark ? 'text-slate-300' : 'text-slate-700'}">
               <span class="${size === 'large' ? 'text-2xl sm:text-3xl font-black' : 'text-base font-bold'}">${escapeHtml(item.char)}</span>
               ${displayPinyin ? '<span class="text-xs h-4">&nbsp;</span>' : ''}
             </div>`;
@@ -1336,46 +696,20 @@ Structure your JSON exactly like this:
 
           const safeChar = escapeHtml(item.char);
           const safePinyin = escapeHtml(item.pinyin || ' ');
-
           const tileStyleClasses = isCurrent
             ? 'bg-gradient-to-b from-amber-300 via-amber-400 to-orange-400 border-amber-200 shadow-[0_0_20px_rgba(251,191,36,0.75)] -translate-y-1.5 scale-110 z-10 ring-4 ring-amber-300/50'
             : isPast
-            ? isDark
-              ? 'bg-amber-950/80 border-amber-500/80 text-amber-200'
-              : 'bg-amber-100/90 border-amber-300 text-amber-950'
-            : isDark
-            ? 'bg-[#1a1f2c] hover:bg-[#252c3d] border-[#5c5346] hover:border-amber-400 shadow-sm'
-            : 'bg-white/95 hover:bg-amber-50 border-amber-200/80 hover:border-amber-400 shadow-2xs';
-
-          const hanziColorClass = isCurrent
-            ? 'text-slate-950'
-            : isDark
-            ? 'text-white group-hover:text-amber-300'
-            : 'text-slate-900 group-hover:text-amber-700';
-
-          const pinyinColorClass = isCurrent
-            ? 'bg-slate-950 text-amber-300'
-            : isPast
-            ? isDark
-              ? 'text-amber-300'
-              : 'text-amber-800'
-            : isDark
-            ? 'text-[#818cf8] group-hover:text-amber-300'
-            : 'text-indigo-600 group-hover:text-amber-800';
+            ? isDark ? 'bg-amber-950/80 border-amber-500/80 text-amber-200' : 'bg-amber-100 border-amber-300 text-amber-950'
+            : isDark ? 'bg-[#1a1f2c] border-[#5c5346] text-white' : 'bg-white border-amber-200 text-slate-900';
 
           return `<button
             type="button"
-            onclick="speakSingleCharacter('${safeChar}', ${item.index}, '${messageId}')"
-            title="Click to pronounce ${safeChar} (${safePinyin})"
-            class="group relative inline-flex flex-col items-center justify-center rounded-2xl transition-all duration-150 cursor-pointer border-2 ${
-              size === 'large'
-                ? 'px-3 py-2 min-w-[3.4rem] sm:min-w-[3.8rem]'
-                : 'px-2 py-1 min-w-[2.4rem]'
-            } ${tileStyleClasses}"
+            onclick="unlockIOSAudio(); speakSingleCharacter('${safeChar}', ${item.index}, '${messageId}')"
+            class="group relative inline-flex flex-col items-center justify-center rounded-2xl transition-all duration-150 cursor-pointer border-2 ${size === 'large' ? 'px-3 py-2 min-w-[3.4rem]' : 'px-2 py-1 min-w-[2.4rem]'} ${tileStyleClasses}"
           >
-            ${isCurrent ? '<span class="absolute -top-2.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full shadow animate-bounce">🔊</span>' : ''}
-            <span class="${size === 'large' ? 'text-2xl sm:text-[32px]' : 'text-lg sm:text-xl'} font-black tracking-tight transition-colors ${hanziColorClass}">${safeChar}</span>
-            ${displayPinyin ? `<span class="${size === 'large' ? 'text-xs sm:text-sm' : 'text-[11px]'} font-extrabold tracking-tight mt-1.5 px-1 rounded ${pinyinColorClass}">${safePinyin}</span>` : ''}
+            ${isCurrent ? '<span class="absolute -top-2.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black px-1.5 rounded-full animate-bounce">🔊</span>' : ''}
+            <span class="${size === 'large' ? 'text-2xl sm:text-[32px]' : 'text-lg sm:text-xl'} font-black">${safeChar}</span>
+            ${displayPinyin ? `<span class="${size === 'large' ? 'text-xs sm:text-sm' : 'text-[11px]'} font-extrabold mt-1.5 px-1 rounded text-indigo-300">${safePinyin}</span>` : ''}
           </button>`;
         }).join('')}
       </div>`;
@@ -1383,185 +717,41 @@ Structure your JSON exactly like this:
 
     function renderStageCharacterActorHTML({ role, name, photoUrl, isSpeaking }) {
       const isTutor = role === 'tutor';
-      const uploadTrigger = isTutor
-        ? "document.getElementById('tutor-avatar-input').click()"
-        : "document.getElementById('child-avatar-input').click()";
+      const uploadTrigger = isTutor ? "document.getElementById('tutor-avatar-input').click()" : "document.getElementById('child-avatar-input').click()";
 
-      // Reference-style flat vector upper body + head slot (supports custom photo or illustrated head)
-      if (isTutor) {
-        return `<div class="relative flex flex-col items-center group cursor-pointer ${isSpeaking ? 'actor-talk-bounce' : ''}" onclick="${uploadTrigger}" title="Click to upload custom photo for ${escapeHtml(name)}!">
-          <div class="relative w-48 sm:w-64 h-44 sm:h-52 flex items-end justify-center">
-            <!-- Illustrated Blue-Shirt Conversing Body (matches left figure in reference image) -->
-            <svg viewBox="0 0 260 210" class="w-full h-full drop-shadow-xl overflow-visible">
-              <!-- Extended gesturing right arm & hand -->
-              <path d="M 165 135 L 228 190 L 245 148" stroke="#1d4ed8" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <path d="M 235 148 Q 252 132 258 144 Q 248 162 232 155 Z" fill="#fbcfe8"/>
-              <!-- Left arm -->
-              <path d="M 65 135 L 28 205" stroke="#2563eb" stroke-width="28" stroke-linecap="round" fill="none"/>
-              <!-- Blue Torso Shirt -->
-              <path d="M 48 125 Q 115 112 182 125 L 202 210 L 32 210 Z" fill="#0284c7"/>
-              <path d="M 48 125 Q 85 145 115 210 L 32 210 Z" fill="#2563eb" opacity="0.75"/>
-              <!-- Neck -->
-              <path d="M 98 85 L 132 85 L 138 132 L 92 132 Z" fill="#f5d0c5"/>
-              ${!photoUrl ? `
-                <!-- Illustrated Bearded/Friendly Teacher Head (matches reference image when no custom photo is uploaded) -->
-                <path d="M 85 28 Q 68 8 95 10 Q 125 -4 148 18 Q 168 25 154 55 Z" fill="#312e81"/>
-                <path d="M 88 30 Q 118 25 144 38 L 142 92 Q 115 106 90 88 Z" fill="#f5d0c5"/>
-                <!-- Friendly Beard -->
-                <path d="M 92 65 Q 118 72 144 62 Q 148 98 120 104 Q 90 98 92 65 Z" fill="#312e81"/>
-              ` : ''}
-            </svg>
-
-            ${photoUrl ? `
-              <!-- Custom Uploaded Talking Head Photo positioned squarely on the character's shoulders -->
-              <div class="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 ${isSpeaking ? 'border-amber-400 ring-4 ring-amber-300/60 scale-105' : 'border-white'} shadow-2xl bg-amber-100 transition-transform">
-                <img src="${photoUrl}" alt="${escapeHtml(name)}" class="w-full h-full object-cover" />
-              </div>
-            ` : ''}
-
-            <!-- Speaking soundwave badge -->
-            ${isSpeaking ? `
-              <div class="absolute top-2 right-4 bg-amber-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 animate-bounce border-2 border-slate-950">
-                <span>🔊 正在朗读</span>
-              </div>
-            ` : ''}
-
-            <!-- Upload Photo badge on hover -->
-            <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-950/80 text-amber-300 border border-amber-400/60 flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
-              📷
-            </div>
-          </div>
-
-          <div class="-mt-2 z-10 bg-slate-950/90 text-amber-300 border border-amber-400/50 px-3.5 py-1 rounded-full text-xs font-black shadow-md flex items-center gap-1.5">
-            <span>🐼 ${escapeHtml(name)}</span>
-            <span class="text-[10px] text-slate-400 font-bold">(点我换照片)</span>
-          </div>
-        </div>`;
-      }
-
-      // Right Character: Student / Child Partner (Red/Coral shirt figure with raised hand like reference image)
-      return `<div class="relative flex flex-col items-center group cursor-pointer ${isSpeaking ? 'actor-talk-bounce' : ''}" onclick="${uploadTrigger}" title="Click to upload custom photo for ${escapeHtml(name)}!">
+      return `<div class="relative flex flex-col items-center group cursor-pointer ${isSpeaking ? 'actor-talk-bounce' : ''}" onclick="unlockIOSAudio(); ${uploadTrigger}">
         <div class="relative w-48 sm:w-64 h-44 sm:h-52 flex items-end justify-center">
           <svg viewBox="0 0 260 210" class="w-full h-full drop-shadow-xl overflow-visible">
-            <!-- Flowing Dark Hair Back Silhouette -->
-            <path d="M 105 18 Q 165 8 188 65 Q 205 125 238 165 L 130 165 Z" fill="#312e81"/>
-            <!-- Raised waving left arm & hand -->
-            <path d="M 88 145 L 42 195 L 66 118" stroke="#dc2626" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <path d="M 65 115 Q 52 92 72 88 Q 84 105 72 120 Z" fill="#f5d0c5"/>
-            <!-- Coral / Red Shirt Torso -->
-            <path d="M 72 132 Q 130 120 192 135 L 212 210 L 55 210 Z" fill="#ea580c"/>
-            <path d="M 110 130 L 185 210 L 212 210 L 192 135 Z" fill="#dc2626" opacity="0.75"/>
-            <!-- Neck -->
-            <path d="M 115 88 L 145 88 L 150 135 L 110 135 Z" fill="#f5d0c5"/>
-            ${!photoUrl ? `
-              <!-- Illustrated Head (matches right figure in reference image when no custom photo is uploaded) -->
-              <path d="M 98 35 Q 128 22 155 40 L 152 94 Q 125 108 102 90 Z" fill="#f5d0c5"/>
-              <path d="M 94 38 Q 112 12 158 24 Q 175 45 164 82 Q 145 48 94 38 Z" fill="#312e81"/>
-            ` : ''}
+            ${isTutor ? `
+              <path d="M 165 135 L 228 190 L 245 148" stroke="#1d4ed8" stroke-width="26" stroke-linecap="round" fill="none"/>
+              <path d="M 65 135 L 28 205" stroke="#2563eb" stroke-width="28" stroke-linecap="round" fill="none"/>
+              <path d="M 48 125 Q 115 112 182 125 L 202 210 L 32 210 Z" fill="#0284c7"/>
+              <path d="M 98 85 L 132 85 L 138 132 L 92 132 Z" fill="#f5d0c5"/>
+            ` : `
+              <path d="M 105 18 Q 165 8 188 65 Q 205 125 238 165 L 130 165 Z" fill="#312e81"/>
+              <path d="M 88 145 L 42 195 L 66 118" stroke="#dc2626" stroke-width="24" stroke-linecap="round" fill="none"/>
+              <path d="M 72 132 Q 130 120 192 135 L 212 210 L 55 210 Z" fill="#ea580c"/>
+              <path d="M 115 88 L 145 88 L 150 135 L 110 135 Z" fill="#f5d0c5"/>
+            `}
           </svg>
-
-          ${photoUrl ? `
-            <!-- Custom Uploaded Child Photo on Character Shoulders -->
-            <div class="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 ${isSpeaking ? 'border-sky-400 ring-4 ring-sky-300/60 scale-105' : 'border-white'} shadow-2xl bg-sky-100 transition-transform">
-              <img src="${photoUrl}" alt="${escapeHtml(name)}" class="w-full h-full object-cover" />
-            </div>
-          ` : ''}
-
-          <!-- Upload Photo badge on hover -->
-          <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-950/80 text-sky-300 border border-sky-400/60 flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
-            📷
-          </div>
+          ${photoUrl ? `<div class="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white shadow-2xl"><img src="${photoUrl}" class="w-full h-full object-cover"/></div>` : ''}
         </div>
-
-        <div class="-mt-2 z-10 bg-slate-950/90 text-sky-300 border border-sky-400/50 px-3.5 py-1 rounded-full text-xs font-black shadow-md flex items-center gap-1.5">
-          <span>🧒 ${escapeHtml(name)}</span>
-          <span class="text-[10px] text-slate-400 font-bold">(点我换照片)</span>
+        <div class="-mt-2 z-10 bg-slate-950/90 text-amber-300 border border-amber-400/50 px-3.5 py-1 rounded-full text-xs font-black shadow-md">
+          <span>${isTutor ? '🐼' : '🧒'} ${escapeHtml(name)}</span>
         </div>
-      </div>`;
-    }
-
-    function renderTalkingHeadHTML({ role, name, subtitle, photoUrl, defaultEmoji, isSpeaking, size = 'hero', allowReset = false }) {
-      const sizeClasses = size === 'hero'
-        ? 'w-24 h-24 sm:w-32 sm:h-32 rounded-[2rem]'
-        : 'w-16 h-16 sm:w-20 sm:h-20 rounded-3xl';
-      const uploadTrigger = role === 'tutor'
-        ? "document.getElementById('tutor-avatar-input').click()"
-        : "document.getElementById('child-avatar-input').click()";
-      const resetCall = role === 'tutor' ? "resetAvatarPhoto('tutor', event)" : "resetAvatarPhoto('child', event)";
-
-      return `<div class="flex flex-col items-center select-none">
-        <div class="relative group">
-          ${isSpeaking ? `
-            <span class="absolute -inset-2 rounded-[2.2rem] bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 opacity-75 blur-sm animate-pulse"></span>
-            <span class="absolute -inset-1 rounded-[2.1rem] border-4 border-amber-300 animate-ping opacity-40"></span>
-          ` : ''}
-          <div
-            onclick="${uploadTrigger}"
-            title="Click to upload your own photo for this Talking Head!"
-            class="relative ${sizeClasses} overflow-hidden border-4 border-white shadow-xl cursor-pointer transition-all duration-200 flex items-center justify-center ${
-              role === 'tutor'
-                ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400'
-                : 'bg-gradient-to-br from-sky-400 via-indigo-400 to-purple-500'
-            } ${isSpeaking ? 'scale-105 -translate-y-1 ring-4 ring-amber-300' : 'hover:scale-105'}"
-          >
-            ${photoUrl
-              ? `<img src="${photoUrl}" alt="${escapeHtml(name)}" class="w-full h-full object-cover transition-transform duration-150 ${isSpeaking ? 'scale-105 animate-pulse' : ''}" />`
-              : `<span class="${size === 'hero' ? 'text-5xl sm:text-6xl' : 'text-3xl sm:text-4xl'} transition-transform duration-150 ${isSpeaking ? 'animate-bounce' : ''}">${defaultEmoji}</span>`
-            }
-            ${isSpeaking ? `
-              <div class="absolute bottom-1.5 inset-x-3 bg-rose-600/90 text-white rounded-full py-0.5 px-2 flex items-center justify-center gap-1 shadow-md">
-                <span class="w-1.5 h-2.5 bg-yellow-300 rounded-full eq-bar"></span>
-                <span class="w-1.5 h-3.5 bg-white rounded-full eq-bar"></span>
-                <span class="text-[10px] font-black tracking-tight">说话中</span>
-                <span class="w-1.5 h-2.5 bg-yellow-300 rounded-full eq-bar"></span>
-              </div>
-            ` : ''}
-            <div class="absolute inset-0 bg-slate-900/45 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-1 text-center">
-              <span class="text-sm">📷</span>
-              <span class="text-[10px] font-black leading-tight">换头像 Photo</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onclick="${uploadTrigger}"
-            class="absolute -bottom-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-amber-50 text-slate-800 border-2 border-amber-400 shadow-md flex items-center justify-center transition-transform hover:scale-110 cursor-pointer text-xs"
-            title="Upload custom photo for talking head"
-          >📤</button>
-
-          ${photoUrl && allowReset ? `
-            <button
-              type="button"
-              onclick="${resetCall}"
-              class="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-rose-500 hover:bg-rose-600 text-white border-2 border-white shadow flex items-center justify-center text-xs font-black cursor-pointer"
-              title="Reset to default character"
-            >✕</button>
-          ` : ''}
-        </div>
-        ${name ? `<span class="mt-1.5 font-black px-2.5 py-0.5 rounded-full border shadow-2xs text-center ${
-          size === 'hero' ? 'text-xs sm:text-sm' : 'text-[11px]'
-        } ${
-          role === 'tutor'
-            ? 'bg-amber-100 text-amber-950 border-amber-300'
-            : 'bg-sky-100 text-sky-950 border-sky-300'
-        }">${escapeHtml(name)}</span>` : ''}
-        ${subtitle && size === 'hero' ? `<span class="text-[11px] font-bold text-slate-500 mt-0.5">${escapeHtml(subtitle)}</span>` : ''}
       </div>`;
     }
 
     function stopSpeaking() {
-      if (speechTimer) {
-        clearTimeout(speechTimer);
-        speechTimer = null;
-      }
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      if (speechTimer) { clearTimeout(speechTimer); speechTimer = null; }
+      if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); }
       state.speakingState = { messageId: null, mode: null, charIndex: null };
       renderAll();
     }
 
+    // --- ROBUST iOS / IPAD & DESKTOP SPEECH SYNTHESIS ENGINE ---
     function speakChineseWithHighlight(text, messageId, slow = false) {
+      unlockIOSAudio();
       const mode = slow ? 'slow' : 'normal';
       if (state.speakingState.messageId === messageId && state.speakingState.mode === mode) {
         stopSpeaking();
@@ -1580,12 +770,8 @@ Structure your JSON exactly like this:
       const stepNext = () => {
         if (boundaryWorked) return;
         const ch = chars[currentIdx];
-        const isPausePunctuation = /[，。！？,.!?；：]/.test(ch);
-        const isMinorNonHanzi = !/[\u4e00-\u9fa5]/.test(ch) && !isPausePunctuation;
-
-        let baseMs = slow ? 430 : 275;
-        if (isPausePunctuation) baseMs = slow ? 360 : 240;
-        if (isMinorNonHanzi) baseMs = 90;
+        const isPause = /[，。！？,.!?；：]/.test(ch);
+        const baseMs = slow ? 420 : 260;
 
         speechTimer = setTimeout(() => {
           currentIdx += 1;
@@ -1595,37 +781,30 @@ Structure your JSON exactly like this:
               renderAll();
             }
             stepNext();
-          } else {
-            if (!('speechSynthesis' in window)) {
-              stopSpeaking();
-            }
           }
-        }, baseMs);
+        }, isPause ? baseMs * 1.5 : baseMs);
       };
       stepNext();
 
       if (!('speechSynthesis' in window)) return;
 
       try {
+        // iOS Safari Bugfix: cancel active queue before speaking new utterance
+        window.speechSynthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'zh-CN';
-        utterance.rate = slow ? 0.62 : 0.88;
-        utterance.pitch = 1.1;
+        utterance.rate = slow ? 0.6 : 0.85;
+        utterance.pitch = 1.05;
 
         const voices = window.speechSynthesis.getVoices();
-        const zhVoice =
-          voices.find((v) => v.lang.includes('zh-SG')) ||
-          voices.find((v) => v.lang.includes('zh-CN')) ||
-          voices.find((v) => v.lang.includes('zh'));
+        const zhVoice = voices.find(v => v.lang.includes('zh-CN') || v.lang.includes('zh-SG') || v.lang.includes('zh'));
         if (zhVoice) utterance.voice = zhVoice;
 
         utterance.onboundary = (event) => {
           if (typeof event.charIndex === 'number' && event.charIndex >= 0) {
             boundaryWorked = true;
-            if (speechTimer) {
-              clearTimeout(speechTimer);
-              speechTimer = null;
-            }
+            if (speechTimer) { clearTimeout(speechTimer); speechTimer = null; }
             if (state.speakingState.messageId === messageId) {
               state.speakingState.charIndex = Math.min(event.charIndex, chars.length - 1);
               renderAll();
@@ -1636,13 +815,13 @@ Structure your JSON exactly like this:
         utterance.onend = () => stopSpeaking();
         utterance.onerror = () => stopSpeaking();
 
+        // iOS/iPad Safari Fix: Do NOT use setTimeout here. It must be synchronous with the user click.
         window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        // Fallback timer continues
-      }
+      } catch (e) {}
     }
 
     function speakSingleCharacter(char, charIndex, messageId) {
+      unlockIOSAudio();
       stopSpeaking();
       state.speakingState = { messageId, mode: 'char', charIndex };
       renderAll();
@@ -1650,29 +829,24 @@ Structure your JSON exactly like this:
       speechTimer = setTimeout(() => {
         state.speakingState = { messageId: null, mode: null, charIndex: null };
         renderAll();
-      }, 650);
+      }, 600);
 
       if (!('speechSynthesis' in window)) return;
       try {
+        window.speechSynthesis.cancel();
+        
+        // Force reset the internal audio queue on iOS to prevent freezing
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+           window.speechSynthesis.resume();
+        }
+
         const utterance = new SpeechSynthesisUtterance(char);
         utterance.lang = 'zh-CN';
         utterance.rate = 0.75;
-        utterance.pitch = 1.1;
-        const voices = window.speechSynthesis.getVoices();
-        const zhVoice =
-          voices.find((v) => v.lang.includes('zh-SG')) ||
-          voices.find((v) => v.lang.includes('zh-CN')) ||
-          voices.find((v) => v.lang.includes('zh'));
-        if (zhVoice) utterance.voice = zhVoice;
+        
+        // iOS/iPad Safari Fix: Synchronous call
         window.speechSynthesis.speak(utterance);
       } catch (e) {}
-    }
-
-    function speakLatestTutorMessage() {
-      const latest = [...state.messages].reverse().find((m) => m.sender === 'tutor') || state.messages[0];
-      if (latest) {
-        speakChineseWithHighlight(latest.chinese, latest.id, false);
-      }
     }
 
     function processImageFileToDataUrl(file, maxDim = 640, squareCrop = false) {
@@ -1685,23 +859,13 @@ Structure your JSON exactly like this:
             const ctx = canvas.getContext('2d');
             if (squareCrop) {
               const size = Math.min(img.width, img.height);
-              const sx = (img.width - size) / 2;
-              const sy = (img.height - size) / 2;
-              canvas.width = maxDim;
-              canvas.height = maxDim;
-              ctx.drawImage(img, sx, sy, size, size, 0, 0, maxDim, maxDim);
+              canvas.width = maxDim; canvas.height = maxDim;
+              ctx.drawImage(img, (img.width - size)/2, (img.height - size)/2, size, size, 0, 0, maxDim, maxDim);
             } else {
-              let w = img.width;
-              let h = img.height;
-              if (w > h && w > maxDim) {
-                h = Math.round((h * maxDim) / w);
-                w = maxDim;
-              } else if (h >= w && h > maxDim) {
-                w = Math.round((w * maxDim) / h);
-                h = maxDim;
-              }
-              canvas.width = w;
-              canvas.height = h;
+              let w = img.width, h = img.height;
+              if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
+              else if (h >= w && h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
+              canvas.width = w; canvas.height = h;
               ctx.drawImage(img, 0, 0, w, h);
             }
             resolve(canvas.toDataURL('image/jpeg', 0.85));
@@ -1716,34 +880,16 @@ Structure your JSON exactly like this:
 
     function createSampleCardDataUrl(card) {
       const canvas = document.createElement('canvas');
-      canvas.width = 480;
-      canvas.height = 360;
+      canvas.width = 480; canvas.height = 360;
       const ctx = canvas.getContext('2d');
-
       const grad = ctx.createLinearGradient(0, 0, 480, 360);
-      grad.addColorStop(0, card.bgGradient[0]);
-      grad.addColorStop(1, card.bgGradient[1]);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 480, 360);
-
-      ctx.fillStyle = 'rgba(255,255,255,0.92)';
-      ctx.beginPath();
-      ctx.roundRect(40, 36, 400, 288, 28);
-      ctx.fill();
-
-      ctx.font = '96px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      grad.addColorStop(0, card.bgGradient[0]); grad.addColorStop(1, card.bgGradient[1]);
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, 480, 360);
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.roundRect(40, 36, 400, 288, 28); ctx.fill();
+      ctx.font = '96px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(card.emoji, 240, 140);
-
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 34px sans-serif';
-      ctx.fillText(card.title, 240, 235);
-
-      ctx.fillStyle = '#475569';
-      ctx.font = 'bold 20px sans-serif';
-      ctx.fillText(card.english, 240, 275);
-
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 34px sans-serif'; ctx.fillText(card.title, 240, 235);
+      ctx.fillStyle = '#475569'; ctx.font = 'bold 20px sans-serif'; ctx.fillText(card.english, 240, 275);
       return canvas.toDataURL('image/png');
     }
 
@@ -1752,18 +898,10 @@ Structure your JSON exactly like this:
       if (!file) return;
       try {
         const cropped = await processImageFileToDataUrl(file, 360, true);
-        if (role === 'tutor') state.tutorPhoto = cropped;
-        else state.childPhoto = cropped;
+        if (role === 'tutor') state.tutorPhoto = cropped; else state.childPhoto = cropped;
         renderAll();
       } catch (e) {}
       event.target.value = '';
-    }
-
-    function resetAvatarPhoto(role, event) {
-      if (event) event.stopPropagation();
-      if (role === 'tutor') state.tutorPhoto = null;
-      else state.childPhoto = null;
-      renderAll();
     }
 
     function updateAvatarNames() {
@@ -1773,73 +911,39 @@ Structure your JSON exactly like this:
     }
 
     function stopCameraStream() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach((t) => t.stop());
-        cameraStream = null;
-      }
+      if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
       state.isCameraActive = false;
     }
 
     async function startCameraStream(preferredFacing = state.cameraFacingMode) {
-      state.cameraError = null;
-      stopCameraStream();
-      renderCameraModalStage();
-
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        state.cameraError = 'Camera preview is not supported in this browser window. You can upload a photo or tap a sample Singapore card below!';
-        renderCameraModalStage();
-        return;
+      state.cameraError = null; stopCameraStream(); renderCameraModalStage();
+      if (!navigator.mediaDevices?.getUserMedia) {
+        state.cameraError = 'Camera not supported in this browser. Upload a photo or pick a sample card below!';
+        renderCameraModalStage(); return;
       }
-
       try {
-        let stream;
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: preferredFacing, width: { ideal: 640 }, height: { ideal: 480 } },
-            audio: false
-          });
-        } catch (err1) {
-          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        }
-        cameraStream = stream;
-        state.isCameraActive = true;
-        renderCameraModalStage();
+        let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: preferredFacing }, audio: false }).catch(() => navigator.mediaDevices.getUserMedia({ video: true, audio: false }));
+        cameraStream = stream; state.isCameraActive = true; renderCameraModalStage();
         const videoEl = document.getElementById('camera-video-el');
-        if (videoEl) {
-          videoEl.srcObject = stream;
-          videoEl.play().catch(() => {});
-        }
+        if (videoEl) { videoEl.srcObject = stream; videoEl.play().catch(() => {}); }
       } catch (err) {
-        state.cameraError = 'Could not access webcam (permission denied or no camera found). Upload any photo file or pick a sample card below!';
+        state.cameraError = 'Could not access webcam. Upload any photo file or pick a sample card below!';
         renderCameraModalStage();
       }
     }
 
-    function openPhotoAskModal() {
-      openModal('camera');
-      startCameraStream(state.cameraFacingMode);
-    }
-
-    function closePhotoAskModal() {
-      stopCameraStream();
-      closeModal();
-    }
-
-    function flipCamera() {
-      state.cameraFacingMode = state.cameraFacingMode === 'environment' ? 'user' : 'environment';
-      startCameraStream(state.cameraFacingMode);
-    }
+    function openPhotoAskModal() { openModal('camera'); startCameraStream(state.cameraFacingMode); }
+    function closePhotoAskModal() { stopCameraStream(); closeModal(); }
+    function flipCamera() { state.cameraFacingMode = state.cameraFacingMode === 'environment' ? 'user' : 'environment'; startCameraStream(state.cameraFacingMode); }
 
     function capturePhotoFromVideo() {
       const videoEl = document.getElementById('camera-video-el');
       if (!videoEl) return;
       const canvas = document.createElement('canvas');
-      canvas.width = videoEl.videoWidth || 640;
-      canvas.height = videoEl.videoHeight || 480;
+      canvas.width = videoEl.videoWidth || 640; canvas.height = videoEl.videoHeight || 480;
       canvas.getContext('2d').drawImage(videoEl, 0, 0, canvas.width, canvas.height);
       state.attachedPhoto = canvas.toDataURL('image/jpeg', 0.85);
-      stopCameraStream();
-      renderAll();
+      stopCameraStream(); renderAll();
     }
 
     async function handlePhotoFileSelect(event) {
@@ -1847,53 +951,32 @@ Structure your JSON exactly like this:
       if (!file) return;
       try {
         state.attachedPhoto = await processImageFileToDataUrl(file, 640, false);
-        stopCameraStream();
-        renderAll();
-      } catch (e) {
-        state.cameraError = 'Could not load that image file. Please try another photo.';
-        renderCameraModalStage();
-      }
+        stopCameraStream(); renderAll();
+      } catch (e) {}
       event.target.value = '';
     }
 
     function pickSamplePhotoCard(cardId) {
-      const card = SAMPLE_PHOTO_CARDS.find((c) => c.id === cardId);
+      const card = SAMPLE_PHOTO_CARDS.find(c => c.id === cardId);
       if (!card) return;
       state.attachedPhoto = createSampleCardDataUrl(card);
       document.getElementById('camera-question-input').value = card.defaultQuestion;
-      stopCameraStream();
-      renderAll();
+      stopCameraStream(); renderAll();
     }
 
-    function clearAttachedPhoto() {
-      state.attachedPhoto = null;
-      renderAll();
-    }
-
-    function sendAttachedPhotoImmediately() {
-      const q = document.getElementById('chat-input').value.trim() || '这是什么？请教我怎么用华语说！';
-      handleSendMessage(q, state.attachedPhoto);
-    }
-
-    function submitCameraQuestion() {
-      const q = document.getElementById('camera-question-input').value.trim() || '这是什么？请教我怎么用华语说！';
-      if (!state.attachedPhoto) {
-        showErrorBanner('Please take a photo, upload an image, or tap one of the 4 sample cards first!');
-        return;
-      }
-      handleSendMessage(q, state.attachedPhoto);
-    }
+    function clearAttachedPhoto() { state.attachedPhoto = null; renderAll(); }
+    function sendAttachedPhotoImmediately() { handleSendMessage(document.getElementById('chat-input').value.trim() || '这是什么？', state.attachedPhoto); }
+    function submitCameraQuestion() { handleSendMessage(document.getElementById('camera-question-input').value.trim() || '这是什么？', state.attachedPhoto); }
 
     async function fetchWithRetry(url, options, retries = 3) {
-      const delays = [1000, 2000, 4000];
       for (let i = 0; i <= retries; i++) {
         try {
-          const response = await fetch(url, options);
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return response;
+          const res = await fetch(url, options);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res;
         } catch (err) {
           if (i === retries) throw err;
-          await new Promise((r) => setTimeout(r, delays[i] || 2000));
+          await new Promise(r => setTimeout(r, 1500));
         }
       }
     }
@@ -1901,211 +984,102 @@ Structure your JSON exactly like this:
     async function handleSendMessage(overrideText, overridePhotoDataUrl) {
       const inputEl = document.getElementById('chat-input');
       const photoToSend = overridePhotoDataUrl !== undefined ? overridePhotoDataUrl : state.attachedPhoto;
-      const rawText = overrideText !== undefined ? overrideText : inputEl.value;
-      const textToSend = rawText.trim() || (photoToSend ? '这是什么？请教我怎么用华语说！' : '');
-
+      const textToSend = (overrideText !== undefined ? overrideText : inputEl.value).trim() || (photoToSend ? '这是什么？请教我怎么用华语说！' : '');
       if ((!textToSend && !photoToSend) || state.isLoading) return;
 
-      stopSpeaking();
-      hideErrorBanner();
-
-      const userMsg = {
-        id: `user-${Date.now()}`,
-        sender: 'user',
-        text: textToSend,
-        photo: photoToSend || null
-      };
-
+      stopSpeaking(); hideErrorBanner();
+      const userMsg = { id: `user-${Date.now()}`, sender: 'user', text: textToSend, photo: photoToSend || null };
       state.messages.push(userMsg);
       if (overrideText === undefined) inputEl.value = '';
       state.attachedPhoto = null;
-      if (state.activeModal === 'camera') {
-        stopCameraStream();
-        closeModal();
-      }
-      state.isLoading = true;
-      renderAll();
-      scrollToChatBottom();
-
-      const conversationContext = state.messages
-        .slice(-6)
-        .map((m) =>
-          m.sender === 'user'
-            ? `Child${m.photo ? ' [sent a photo]' : ''}: ${m.text}`
-            : `Tutor (JSON): ${JSON.stringify({
-                chinese: m.chinese,
-                pinyin: m.pinyin,
-                english: m.english,
-                encouragement: m.encouragement
-              })}`
-        )
-        .join('\n');
+      if (state.activeModal === 'camera') { stopCameraStream(); closeModal(); }
+      state.isLoading = true; renderAll(); scrollToChatBottom();
 
       const sc = state.activeScenario;
-      const activeSystemPrompt = document.getElementById('system-prompt-textarea').value || DEFAULT_SYSTEM_PROMPT;
-
       const promptForTurn = photoToSend
-        ? `Current Scenario: ${sc.title} (${sc.english}).
-The child just took/uploaded a PHOTO and asked: "${textToSend}".
-1. Look carefully at the attached image and warmly tell the child what is in the picture using simple Singapore Primary 1-3 Chinese sentences (1-2 short sentences), ending with a friendly follow-up question about it.
-2. In the "pinyin" field, provide space-separated Hanyu Pinyin syllables matching EVERY single Chinese character 1-to-1.
-3. In "detectedWords", list 2 to 3 key items/words visible in the photo with their Simplified Chinese ("hanzi"), space-separated "pinyin", English "meaning", and a matching "emoji".`
-        : `Current Scenario: ${sc.title} (${sc.english}).\n\nConversation so far:\n${conversationContext}\n\nRespond to the child's latest message ("${textToSend}") following the system instructions and strict JSON format. Make sure "pinyin" has space-separated syllables matching each Chinese character 1-to-1.`;
+        ? `Scenario: ${sc.title}. Child uploaded a photo and asked: "${textToSend}". Identify objects in the picture in simple Primary 1-3 Chinese. Output STRICT JSON with keys: chinese, pinyin (space-separated 1-to-1 syllables), english, encouragement, and detectedWords array [{hanzi, pinyin, meaning, emoji}].`
+        : `Scenario: ${sc.title}. Child said: "${textToSend}". Respond in 1-2 short sentences. Output STRICT JSON with keys: chinese, pinyin (space-separated 1-to-1 syllables), english, encouragement.`;
 
       try {
-        let parsedTutorResponse = null;
-
-        if (state.engineMode === 'ollama') {
-          const ollamaUrl = document.getElementById('ollama-url-input').value.trim();
-          const ollamaModel = document.getElementById('ollama-model-input').value.trim();
-          const ollamaMsg = { role: 'user', content: promptForTurn };
-          if (photoToSend) {
-            const base64Clean = photoToSend.split(',')[1];
-            if (base64Clean) ollamaMsg.images = [base64Clean];
-          }
-
-          const response = await fetch(ollamaUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              model: ollamaModel,
-              format: 'json',
-              stream: false,
-              messages: [{ role: 'system', content: activeSystemPrompt }, ollamaMsg]
-            })
-          });
-          if (!response.ok) throw new Error(`Ollama status ${response.status}`);
-          const data = await response.json();
-          parsedTutorResponse = JSON.parse(data?.message?.content || data?.response || '{}');
-        } else {
-          const customKey = document.getElementById('gemini-api-key-input')?.value?.trim() || '';
-          const apiKey = customKey;
-          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
-          const userParts = [{ text: promptForTurn }];
-          if (photoToSend) {
-            const mimeMatch = photoToSend.match(/^data:(image\/[a-zA-Z0-9+.-]+);base64,/);
-            const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-            const base64Data = photoToSend.split(',')[1];
-            if (base64Data) {
-              userParts.push({ inlineData: { mimeType, data: base64Data } });
-            }
-          }
-
-          const payload = {
-            contents: [{ role: 'user', parts: userParts }],
-            systemInstruction: { parts: [{ text: activeSystemPrompt }] },
-            generationConfig: {
-              responseMimeType: 'application/json',
-              responseSchema: {
-                type: 'OBJECT',
-                properties: {
-                  chinese: { type: 'STRING' },
-                  pinyin: { type: 'STRING' },
-                  english: { type: 'STRING' },
-                  encouragement: { type: 'STRING' },
-                  detectedWords: {
-                    type: 'ARRAY',
-                    items: {
-                      type: 'OBJECT',
-                      properties: {
-                        hanzi: { type: 'STRING' },
-                        pinyin: { type: 'STRING' },
-                        meaning: { type: 'STRING' },
-                        emoji: { type: 'STRING' }
-                      },
-                      required: ['hanzi', 'pinyin', 'meaning', 'emoji']
-                    }
-                  }
-                },
-                required: ['chinese', 'pinyin', 'english', 'encouragement']
-              }
-            }
-          };
-
-          const response = await fetchWithRetry(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const result = await response.json();
-          const rawTextResp = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (!rawTextResp) throw new Error('Empty AI response');
-          parsedTutorResponse = JSON.parse(rawTextResp);
+        const apiKey = localStorage.getItem('openRouterApiKey') || '';
+        const apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+        
+        // Llama 3.3 70B is text-only. If a photo is attached, we fall back to a free vision model on OpenRouter (Llama 3.2 11B Vision).
+        const targetModel = photoToSend ? 'meta-llama/llama-3.2-11b-vision-instruct:free' : 'meta-llama/llama-3.3-70b-instruct:free';
+        
+        let userContent = promptForTurn;
+        if (photoToSend) {
+          userContent = [
+            { type: 'text', text: promptForTurn },
+            { type: 'image_url', image_url: { url: photoToSend } }
+          ];
         }
 
-        const finalTutorObj = {
-          chinese: parsedTutorResponse.chinese || '太棒了！我们继续说华语吧！',
-          pinyin: parsedTutorResponse.pinyin || 'Tài bàng le ! Wǒ men jì xù shuō huá yǔ ba !',
-          english: parsedTutorResponse.english || 'Awesome! Let us continue speaking Chinese!',
-          encouragement: parsedTutorResponse.encouragement || 'Great job practicing your Chinese today!',
-          detectedWords: Array.isArray(parsedTutorResponse.detectedWords) ? parsedTutorResponse.detectedWords : []
+        const res = await fetchWithRetry(apiUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.href,
+            'X-Title': 'SG Primary Chinese Buddy'
+          },
+          body: JSON.stringify({
+            model: targetModel,
+            messages: [
+              { role: 'system', content: document.getElementById('system-prompt-textarea').value || DEFAULT_SYSTEM_PROMPT },
+              { role: 'user', content: userContent }
+            ],
+            response_format: { type: 'json_object' }
+          })
+        });
+
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message || 'OpenRouter API Error');
+        
+        const rawTextResponse = data.choices[0].message.content;
+        // Strip out markdown code blocks if the open-source model adds them
+        const cleanJsonStr = rawTextResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanJsonStr);
+        
+        const finalObj = {
+          chinese: parsed.chinese || '太棒了！我们继续说华语吧！',
+          pinyin: parsed.pinyin || 'Tài bàng le !',
+          english: parsed.english || 'Awesome!',
+          encouragement: parsed.encouragement || 'Great job!',
+          detectedWords: Array.isArray(parsed.detectedWords) ? parsed.detectedWords : []
         };
 
-        state.lastRawJson = JSON.stringify(finalTutorObj, null, 2);
-        const newTutorMsg = {
-          id: `tutor-${Date.now()}`,
-          sender: 'tutor',
-          ...finalTutorObj
-        };
-
+        state.lastRawJson = JSON.stringify(finalObj, null, 2);
+        const newTutorMsg = { id: `tutor-${Date.now()}`, sender: 'tutor', ...finalObj };
         state.messages.push(newTutorMsg);
         state.stars += 1;
         state.isLoading = false;
-        renderAll();
-        scrollToChatBottom();
+        renderAll(); scrollToChatBottom();
 
-        setTimeout(() => {
-          speakChineseWithHighlight(finalTutorObj.chinese, newTutorMsg.id, false);
-        }, 200);
+        setTimeout(() => speakChineseWithHighlight(finalObj.chinese, newTutorMsg.id, false), 250);
       } catch (err) {
         state.isLoading = false;
-        showErrorBanner(
-          state.engineMode === 'ollama'
-            ? 'Could not reach local Ollama. Make sure Ollama is running with OLLAMA_ORIGINS="*" or switch back to Built-in Cloud AI.'
-            : 'If hosting on GitHub Pages, click "⚙️ AI 设置" to paste a free Gemini API key or connect to local Ollama!'
-        );
+        showErrorBanner('AI connection error. Please try again!');
         renderAll();
       }
     }
 
     function toggleListening() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        showErrorBanner('Your browser does not support voice microphone input. Try tapping a quick reply card or typing below!');
-        return;
-      }
-      if (state.isListening) {
-        recognitionInstance?.stop();
-        state.isListening = false;
-        renderAll();
-        return;
-      }
-      const recognition = new SpeechRecognition();
-      recognition.lang = state.speechLang;
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
+      if (!SpeechRecognition) { showErrorBanner('Voice input not supported in this browser.'); return; }
+      if (state.isListening) { recognitionInstance?.stop(); state.isListening = false; renderAll(); return; }
 
-      recognition.onstart = () => {
-        state.isListening = true;
-        hideErrorBanner();
-        renderAll();
+      const rec = new SpeechRecognition();
+      rec.lang = state.speechLang; rec.interimResults = false;
+      rec.onstart = () => { state.isListening = true; renderAll(); };
+      rec.onresult = (e) => {
+        const txt = e.results[0][0].transcript;
+        const inp = document.getElementById('chat-input');
+        inp.value = inp.value ? `${inp.value} ${txt}` : txt;
       };
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        const inputEl = document.getElementById('chat-input');
-        inputEl.value = inputEl.value ? `${inputEl.value} ${transcript}` : transcript;
-      };
-      recognition.onerror = () => {
-        state.isListening = false;
-        renderAll();
-      };
-      recognition.onend = () => {
-        state.isListening = false;
-        renderAll();
-      };
-      recognitionInstance = recognition;
-      recognition.start();
+      rec.onerror = () => { state.isListening = false; renderAll(); };
+      rec.onend = () => { state.isListening = false; renderAll(); };
+      recognitionInstance = rec; rec.start();
     }
 
     function toggleSpeechLang() {
@@ -2113,565 +1087,154 @@ The child just took/uploaded a PHOTO and asked: "${textToSend}".
       document.getElementById('speech-lang-btn').textContent = state.speechLang === 'zh-CN' ? '🇨🇳 华语' : '🇬🇧 ENG';
     }
 
-    function togglePinyin() {
-      state.showPinyin = !state.showPinyin;
+    function togglePinyin() { state.showPinyin = !state.showPinyin; renderAll(); }
+    function toggleEnglish() { state.showEnglish = !state.showEnglish; renderAll(); }
+    function selectScenario(id) {
+      const sc = SCENARIOS.find(s => s.id === id); if (!sc) return;
+      stopSpeaking(); state.activeScenario = sc;
+      const initMsg = { id: `init-${Date.now()}`, sender: 'tutor', ...sc.initialMessage };
+      state.messages = [initMsg]; state.lastRawJson = JSON.stringify(sc.initialMessage, null, 2);
       renderAll();
+      setTimeout(() => speakChineseWithHighlight(sc.initialMessage.chinese, initMsg.id, false), 150);
     }
 
-    function toggleEnglish() {
-      state.showEnglish = !state.showEnglish;
-      renderAll();
-    }
-
-    function selectScenario(scenarioId) {
-      const sc = SCENARIOS.find((s) => s.id === scenarioId);
-      if (!sc) return;
-      stopSpeaking();
-      state.activeScenario = sc;
-      const initMsg = {
-        id: `init-${Date.now()}`,
-        sender: 'tutor',
-        ...sc.initialMessage
-      };
-      state.messages = [initMsg];
-      state.lastRawJson = JSON.stringify(sc.initialMessage, null, 2);
-      hideErrorBanner();
-      renderAll();
-      setTimeout(() => {
-        speakChineseWithHighlight(sc.initialMessage.chinese, initMsg.id, false);
-      }, 150);
-    }
-
-    function openModal(modalName) {
-      state.activeModal = modalName;
-      renderAll();
-    }
-
-    function closeModal() {
-      state.activeModal = null;
-      renderAll();
-    }
-
-    function setEngineMode(mode) {
-      state.engineMode = mode;
-      renderAll();
-    }
-
-    function copySystemPrompt() {
-      const textarea = document.getElementById('system-prompt-textarea');
-      textarea.select();
-      document.execCommand('copy');
-      const btn = document.getElementById('copy-prompt-btn');
-      btn.textContent = '✓ Copied!';
-      setTimeout(() => {
-        btn.textContent = '📋 Copy Prompt';
-      }, 2000);
-    }
-
-    function resetSystemPrompt() {
-      document.getElementById('system-prompt-textarea').value = DEFAULT_SYSTEM_PROMPT;
-    }
-
+    function openModal(name) { state.activeModal = name; renderAll(); }
+    function closeModal() { state.activeModal = null; renderAll(); }
     function showErrorBanner(msg) {
-      const banner = document.getElementById('error-banner');
+      const b = document.getElementById('error-banner');
       document.getElementById('error-banner-text').textContent = `⚠️ ${msg}`;
-      banner.classList.remove('hidden');
-      banner.classList.add('flex');
+      b.classList.remove('hidden'); b.classList.add('flex');
     }
-
-    function hideErrorBanner() {
-      const banner = document.getElementById('error-banner');
-      banner.classList.add('hidden');
-      banner.classList.remove('flex');
-    }
-
-    function toggleHistoryDrawer() {
-      state.showHistoryDrawer = !state.showHistoryDrawer;
-      renderAll();
-    }
-
-    function scrollToChatBottom() {
-      const container = document.getElementById('chat-history-list');
-      if (container) {
-        container.scrollTop = container.scrollHeight;
-      }
-    }
+    function hideErrorBanner() { document.getElementById('error-banner').classList.add('hidden'); }
+    function toggleHistoryDrawer() { state.showHistoryDrawer = !state.showHistoryDrawer; renderAll(); }
+    function scrollToChatBottom() { const c = document.getElementById('chat-history-list'); if (c) c.scrollTop = c.scrollHeight; }
 
     function renderCameraModalStage() {
       const stage = document.getElementById('camera-stage');
       if (!stage) return;
-
       if (state.attachedPhoto) {
-        stage.innerHTML = `<div class="relative w-full flex flex-col items-center p-3 bg-slate-900">
-          <img src="${state.attachedPhoto}" alt="Captured preview" class="max-h-64 rounded-2xl object-contain border-2 border-white shadow-lg" />
-          <button type="button" onclick="clearAttachedPhoto(); startCameraStream();" class="mt-3 px-4 py-1.5 rounded-full bg-white/90 hover:bg-white text-slate-900 font-black text-xs flex items-center gap-1.5 shadow cursor-pointer">
-            🔄 重新拍照 Retake Photo
-          </button>
-        </div>`;
+        stage.innerHTML = `<div class="p-3 bg-slate-900 w-full flex flex-col items-center"><img src="${state.attachedPhoto}" class="max-h-64 rounded-2xl object-contain"/><button onclick="clearAttachedPhoto(); startCameraStream();" class="mt-2 px-3 py-1 bg-white text-slate-900 rounded-full text-xs font-black cursor-pointer">🔄 Retake</button></div>`;
       } else if (state.isCameraActive) {
-        stage.innerHTML = `<div class="relative w-full flex flex-col items-center">
-          <video id="camera-video-el" autoplay playsinline muted class="w-full max-h-64 object-cover"></video>
-          <div class="p-3 w-full bg-slate-900/90 flex items-center justify-center gap-3">
-            <button type="button" onclick="flipCamera()" class="px-3.5 py-2 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer">
-              🔄 切换镜头 Flip
-            </button>
-            <button type="button" onclick="capturePhotoFromVideo()" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white font-black text-sm shadow-lg ring-4 ring-rose-300/50 flex items-center gap-2 cursor-pointer">
-              📸 咔嚓！拍照 Snap Photo
-            </button>
-          </div>
-        </div>`;
+        stage.innerHTML = `<div class="w-full flex flex-col items-center"><video id="camera-video-el" autoplay playsinline muted class="w-full max-h-64 object-cover"></video><div class="p-2 w-full bg-slate-900 flex justify-center gap-3"><button onclick="flipCamera()" class="px-3 py-1 bg-slate-800 text-white rounded-xl text-xs font-bold cursor-pointer">🔄 Flip</button><button onclick="capturePhotoFromVideo()" class="px-5 py-2 bg-rose-500 text-white rounded-full text-xs font-black cursor-pointer">📸 Snap</button></div></div>`;
       } else {
-        stage.innerHTML = `<div class="p-6 text-center space-y-3 text-white">
-          <div class="text-4xl">📷</div>
-          <p class="text-xs sm:text-sm text-slate-300 max-w-md font-semibold">
-            ${escapeHtml(state.cameraError || 'Click below to start your camera or upload any picture from your device!')}
-          </p>
-          <div class="flex flex-wrap items-center justify-center gap-2.5">
-            <button type="button" onclick="startCameraStream()" class="px-4 py-2 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs flex items-center gap-1.5 cursor-pointer">
-              📷 开启相机 Start Camera
-            </button>
-            <button type="button" onclick="document.getElementById('camera-file-input').click()" class="px-4 py-2 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-black text-xs flex items-center gap-1.5 cursor-pointer">
-              📤 上传照片 Upload Photo
-            </button>
-          </div>
-        </div>`;
+        stage.innerHTML = `<div class="p-6 text-center space-y-3 text-white"><div class="text-3xl">📷</div><p class="text-xs text-slate-300">${escapeHtml(state.cameraError || 'Start camera or upload photo')}</p><button onclick="startCameraStream()" class="px-4 py-2 bg-amber-400 text-slate-950 rounded-2xl text-xs font-black cursor-pointer">Start Camera</button></div>`;
       }
     }
 
     function renderAll() {
       const sc = state.activeScenario;
-      const unlockedCount = STICKER_REWARDS.filter((s) => state.stars >= s.starsRequired).length;
-
-      // Header avatar & badges
-      const headerEmoji = document.getElementById('header-tutor-emoji');
-      const headerImg = document.getElementById('header-tutor-img');
-      if (state.tutorPhoto) {
-        headerEmoji.classList.add('hidden');
-        headerImg.src = state.tutorPhoto;
-        headerImg.classList.remove('hidden');
-      } else {
-        headerEmoji.classList.remove('hidden');
-        headerImg.classList.add('hidden');
-      }
-
       document.getElementById('stars-count-label').textContent = state.stars;
-      document.getElementById('stickers-unlocked-badge').textContent = `🎁 ${unlockedCount}/${STICKER_REWARDS.length}`;
-
-      const pinyinBtn = document.getElementById('toggle-pinyin-btn');
-      pinyinBtn.textContent = state.showPinyin ? '✓ 拼音 Pinyin' : '拼音 Pinyin';
-      pinyinBtn.className = `px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all cursor-pointer ${
-        state.showPinyin ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm' : 'bg-white text-slate-600 border-slate-300'
-      }`;
-
-      const engBtn = document.getElementById('toggle-english-btn');
-      engBtn.textContent = state.showEnglish ? '✓ 英文 English' : '英文 English';
-      engBtn.className = `px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all cursor-pointer ${
-        state.showEnglish ? 'bg-sky-500 text-white border-sky-300 shadow-sm' : 'bg-slate-800 text-slate-300 border-slate-700'
-      }`;
-
-      // 10 Scenarios Grid
-      document.getElementById('active-scenario-pill').textContent = `当前: ${sc.title} (${sc.english})`;
-      const scenarioGrid = document.getElementById('scenario-grid');
-      scenarioGrid.innerHTML = SCENARIOS.map((item, idx) => {
-        const isSelected = item.id === sc.id;
-        return `<button
-          onclick="selectScenario('${item.id}')"
-          class="group text-left p-2 rounded-2xl border-2 transition-all flex items-center gap-2 cursor-pointer ${
-            isSelected
-              ? 'bg-slate-800 border-amber-400 shadow-md ring-2 ring-amber-400/40 -translate-y-0.5'
-              : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/80 hover:border-slate-600'
-          }"
-        >
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${item.bannerBg} flex items-center justify-center text-lg shadow-xs shrink-0 group-hover:scale-105 transition-transform relative">
-            ${item.emoji}
-            <span class="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-slate-950 text-amber-300 text-[9px] font-black flex items-center justify-center border border-amber-400/40">${idx + 1}</span>
-          </div>
-          <div class="min-w-0">
-            <div class="text-[10px] font-extrabold text-indigo-400 truncate">${escapeHtml(item.pinyin)}</div>
-            <div class="font-black text-white text-xs truncate">${escapeHtml(item.title)}</div>
-            <div class="text-[10px] font-semibold text-slate-400 truncate">${escapeHtml(item.english)}</div>
-          </div>
-        </button>`;
-      }).join('');
-
-      document.getElementById('scene-svg-background').innerHTML = getScenarioBackgroundSVG(sc.id);
+      document.getElementById('active-scenario-pill').textContent = `当前: ${sc.title}`;
       document.getElementById('stage-location-emoji').textContent = sc.emoji;
       document.getElementById('stage-location-title').textContent = `${sc.title} • ${sc.english}`;
       document.getElementById('stage-location-decor').textContent = sc.sceneDecor;
       document.getElementById('history-count-badge').textContent = state.messages.length;
 
-      // Latest user message pill (if the child has replied in this scenario)
-      const latestUserMsg = [...state.messages].reverse().find((m) => m.sender === 'user');
-      const latestChildBar = document.getElementById('latest-child-reply-bar');
-      if (latestUserMsg) {
-        const safeUserText = escapeHtml(latestUserMsg.text).replace(/'/g, "\\'");
-        latestChildBar.classList.remove('hidden');
-        latestChildBar.classList.add('flex');
-        latestChildBar.innerHTML = `<div class="inline-flex items-center gap-2.5 bg-amber-500/95 text-slate-950 px-4 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-lg border-2 border-amber-200">
-          ${latestUserMsg.photo ? `<img src="${latestUserMsg.photo}" class="w-6 h-6 rounded-full object-cover border border-white" />` : '<span>🗣️</span>'}
-          <span>${escapeHtml(state.childName)}: “${escapeHtml(latestUserMsg.text)}”</span>
-          <button onclick="speakChineseWithHighlight('${safeUserText}', '${latestUserMsg.id}', false)" class="px-2 py-0.5 rounded-full bg-black/15 hover:bg-black/25 text-[11px] cursor-pointer">🔊</button>
-        </div>`;
-      } else {
-        latestChildBar.classList.add('hidden');
-        latestChildBar.classList.remove('flex');
-      }
+      document.getElementById('scene-svg-background').innerHTML = getScenarioBackgroundSVG(sc.id);
 
-      // Render Dark Speech Bubble Card (Exact layout from Reference Image)
-      const latestTutor = [...state.messages].reverse().find((m) => m.sender === 'tutor') || state.messages[0];
-      const darkBubbleEl = document.getElementById('dark-speech-card-content');
+      // Scenarios grid
+      document.getElementById('scenario-grid').innerHTML = SCENARIOS.map((item, idx) => `
+        <button onclick="selectScenario('${item.id}')" class="group text-left p-2 rounded-2xl border-2 transition-all flex items-center gap-2 cursor-pointer ${item.id === sc.id ? 'bg-slate-800 border-amber-400' : 'bg-slate-950/80 border-slate-800'}">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br ${item.bannerBg} flex items-center justify-center text-base shrink-0">${item.emoji}</div>
+          <div class="min-w-0"><div class="font-black text-white text-xs truncate">${escapeHtml(item.title)}</div><div class="text-[9px] text-slate-400 truncate">${escapeHtml(item.english)}</div></div>
+        </button>`).join('');
 
+      // Latest Tutor Speech Bubble
+      const latestTutor = [...state.messages].reverse().find(m => m.sender === 'tutor') || state.messages[0];
+      const bubbleEl = document.getElementById('dark-speech-card-content');
       if (state.isLoading) {
-        darkBubbleEl.innerHTML = `<div class="py-10 flex flex-col items-center justify-center text-center space-y-3">
-          <div class="text-4xl animate-bounce">🐼✨</div>
-          <div class="text-base sm:text-lg font-black text-amber-300">
-            ${escapeHtml(state.tutorName)}正在看和想... (Preparing Chinese &amp; Hanyu Pinyin...)
-          </div>
-        </div>`;
+        bubbleEl.innerHTML = `<div class="py-8 text-center text-amber-300 font-black animate-pulse">🐼 乐乐正在思考中... (Thinking...)</div>`;
       } else if (latestTutor) {
-        const alignedItems = alignChineseWithPinyin(latestTutor.chinese, latestTutor.pinyin);
-        const isThisSpeaking = state.speakingState.messageId === latestTutor.id;
-        const isPlayingNormal = isThisSpeaking && state.speakingState.mode === 'normal';
-        const isPlayingSlow = isThisSpeaking && state.speakingState.mode === 'slow';
-        const safeChineseJs = escapeHtml(latestTutor.chinese).replace(/'/g, "\\'");
+        const aligned = alignChineseWithPinyin(latestTutor.chinese, latestTutor.pinyin);
+        const isSpeaking = state.speakingState.messageId === latestTutor.id;
+        const safeCh = escapeHtml(latestTutor.chinese).replace(/'/g, "\\'");
 
-        const detectedWordsHtml = (latestTutor.detectedWords && latestTutor.detectedWords.length > 0)
-          ? `<div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-3 space-y-2">
-              <div class="text-xs font-black text-amber-300">📸 照片里的新词语 • Words Spotted in Your Picture:</div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                ${latestTutor.detectedWords.map((dw, dwIdx) => {
-                  const dwId = `${latestTutor.id}-dw-${dwIdx}`;
-                  const dwAligned = alignChineseWithPinyin(dw.hanzi, dw.pinyin);
-                  const safeDwHanzi = escapeHtml(dw.hanzi).replace(/'/g, "\\'");
-                  return `<div class="bg-[#182030] rounded-2xl p-2.5 border border-slate-700 flex flex-col justify-between gap-2">
-                    <div class="flex items-center justify-between gap-1">
-                      <span class="text-2xl">${escapeHtml(dw.emoji || '✨')}</span>
-                      <button type="button" onclick="speakChineseWithHighlight('${safeDwHanzi}', '${dwId}', false)" class="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-black cursor-pointer">🔊 读</button>
-                    </div>
-                    ${renderRubyBlockHTML(dwAligned, dwId, 'small', true, 'dark')}
-                    <div class="text-xs font-bold text-sky-200 border-t border-slate-800 pt-1">🇬🇧 ${escapeHtml(dw.meaning)}</div>
-                  </div>`;
-                }).join('')}
-              </div>
-            </div>`
-          : '';
-
-        darkBubbleEl.innerHTML = `
-          <!-- Top Header Bar Inside Dark Bubble (matches Reference Image) -->
+        bubbleEl.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800">
-            <span class="text-xs font-black tracking-wide text-amber-400 bg-[#272015] px-3.5 py-1.5 rounded-full border border-amber-600/50">
-              👆 点字发音 • 跟着大头像读
-            </span>
+            <span class="text-xs font-black text-amber-400 bg-[#272015] px-3 py-1 rounded-full border border-amber-600/50">👆 点字发音 • 跟着读</span>
             <div class="flex items-center gap-2">
-              <button
-                onclick="speakChineseWithHighlight('${safeChineseJs}', '${latestTutor.id}', false)"
-                class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black transition-all shadow-md cursor-pointer ${
-                  isPlayingNormal
-                    ? 'bg-rose-500 text-white ring-4 ring-rose-400/40 scale-105'
-                    : 'bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950'
-                }"
-              >
-                🔊 <span>${isPlayingNormal ? '正在读... 停止' : '听一听 Listen'}</span>
+              <button onclick="speakChineseWithHighlight('${safeCh}', '${latestTutor.id}', false)" class="px-4 py-1.5 rounded-full text-xs font-black bg-amber-400 hover:bg-amber-300 text-slate-950 shadow cursor-pointer">
+                🔊 ${isSpeaking ? '停止 Stop' : '听一听 Listen'}
               </button>
-              <button
-                onclick="speakChineseWithHighlight('${safeChineseJs}', '${latestTutor.id}', true)"
-                class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-black transition-all cursor-pointer ${
-                  isPlayingSlow
-                    ? 'bg-indigo-600 text-white ring-4 ring-indigo-400/40 scale-105'
-                    : 'bg-[#171c28] hover:bg-[#22293a] text-[#a5b4fc] border border-[#3b4254]'
-                }"
-              >
-                🐢 <span>${isPlayingSlow ? '慢读中... 停止' : '慢速读 Slow'}</span>
+              <button onclick="speakChineseWithHighlight('${safeCh}', '${latestTutor.id}', true)" class="px-3.5 py-1.5 rounded-full text-xs font-black bg-[#171c28] text-indigo-300 border border-indigo-400/40 cursor-pointer">
+                🐢 慢速 Slow
               </button>
             </div>
           </div>
-
-          <!-- Character-by-Character Dark Rounded Tiles with Pinyin Directly Underneath -->
-          <div class="py-1.5">
-            ${renderRubyBlockHTML(alignedItems, latestTutor.id, 'large', false, 'dark')}
-          </div>
-
-          ${detectedWordsHtml}
-
-          <!-- Dark Slate-Blue English Meaning Box (Matches Reference Image) -->
-          ${state.showEnglish ? `
-            <div class="bg-[#131d2e] border border-[#293f5c] rounded-2xl px-4 py-3 flex items-start gap-3">
-              <span class="text-xs font-black text-slate-300 mt-1 shrink-0">GB</span>
-              <div>
-                <span class="text-[10px] font-black uppercase tracking-wider text-[#38bdf8] block">
-                  英文意思 • ENGLISH MEANING
-                </span>
-                <p class="text-sm sm:text-base font-extrabold text-white leading-snug mt-0.5">
-                  ${escapeHtml(latestTutor.english)}
-                </p>
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Dark Forest-Green Encouragement / Tip Bar (Matches Reference Image) -->
-          ${latestTutor.encouragement ? `
-            <div class="bg-[#0f241d] border border-[#1f4e3d] rounded-2xl px-4 py-2.5 flex items-center gap-2.5">
-              <span class="text-sm">✨</span>
-              <div class="text-xs sm:text-sm text-[#d1fae5] font-extrabold leading-snug">
-                ${escapeHtml(latestTutor.encouragement)}
-              </div>
-            </div>
-          ` : ''}
+          <div class="py-1">${renderRubyBlockHTML(aligned, latestTutor.id, 'large', false, 'dark')}</div>
+          ${state.showEnglish ? `<div class="bg-[#131d2e] border border-[#293f5c] rounded-2xl px-4 py-2.5 text-white"><span class="text-[10px] font-black uppercase text-[#38bdf8] block">ENGLISH MEANING</span><p class="text-sm font-bold mt-0.5">${escapeHtml(latestTutor.english)}</p></div>` : ''}
+          ${latestTutor.encouragement ? `<div class="bg-[#0f241d] border border-[#1f4e3d] rounded-2xl px-4 py-2 text-xs text-[#d1fae5] font-extrabold">✨ ${escapeHtml(latestTutor.encouragement)}</div>` : ''}
         `;
       }
 
-      // Render Two Conversing Stage Actors at the Bottom of the Scene
-      const isTutorSpeakingNow = Boolean(
-        state.speakingState.messageId &&
-        !String(state.speakingState.messageId).startsWith('user-')
-      );
-      const isChildSpeakingNow = Boolean(
-        state.isListening ||
-        (state.speakingState.messageId && String(state.speakingState.messageId).startsWith('user-'))
-      );
+      // Actors
+      const isTutorSpk = Boolean(state.speakingState.messageId && !String(state.speakingState.messageId).startsWith('user-'));
+      document.getElementById('stage-left-tutor-actor').innerHTML = renderStageCharacterActorHTML({ role: 'tutor', name: state.tutorName, photoUrl: state.tutorPhoto, isSpeaking: isTutorSpk });
+      document.getElementById('stage-right-child-actor').innerHTML = renderStageCharacterActorHTML({ role: 'child', name: state.childName, photoUrl: state.childPhoto, isSpeaking: state.isListening });
 
-      document.getElementById('stage-left-tutor-actor').innerHTML = renderStageCharacterActorHTML({
-        role: 'tutor',
-        name: state.tutorName,
-        photoUrl: state.tutorPhoto,
-        isSpeaking: isTutorSpeakingNow
-      });
-
-      document.getElementById('stage-right-child-actor').innerHTML = renderStageCharacterActorHTML({
-        role: 'child',
-        name: state.childName,
-        photoUrl: state.childPhoto,
-        isSpeaking: isChildSpeakingNow
-      });
-
-      // Conversation History Drawer
-      const historyDrawer = document.getElementById('history-drawer');
-      if (state.showHistoryDrawer) {
-        historyDrawer.classList.remove('hidden');
-        historyDrawer.classList.add('flex');
-        const historyList = document.getElementById('chat-history-list');
-        historyList.innerHTML = state.messages.map((msg) => {
-          if (msg.sender === 'user') {
-            return `<div class="p-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 text-amber-100 flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2.5">
-                ${msg.photo ? `<img src="${msg.photo}" class="w-10 h-10 rounded-xl object-cover border border-white" />` : '<span>🧒</span>'}
-                <div>
-                  <div class="text-[11px] font-bold text-amber-300">${escapeHtml(state.childName)}</div>
-                  <div class="text-sm font-black text-white">${escapeHtml(msg.text)}</div>
-                </div>
-              </div>
-            </div>`;
-          }
-          const aligned = alignChineseWithPinyin(msg.chinese, msg.pinyin);
-          const safeCh = escapeHtml(msg.chinese).replace(/'/g, "\\'");
-          return `<div class="p-3.5 rounded-2xl bg-[#111722] border border-slate-700 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-400">🐼 ${escapeHtml(state.tutorName)}</span>
-              <button onclick="speakChineseWithHighlight('${safeCh}', '${msg.id}', false)" class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black cursor-pointer">🔊 听一听</button>
-            </div>
-            ${renderRubyBlockHTML(aligned, msg.id, 'small', false, 'dark')}
-            <div class="text-xs font-bold text-sky-300">🇬🇧 ${escapeHtml(msg.english)}</div>
-          </div>`;
-        }).join('');
-      } else {
-        historyDrawer.classList.add('hidden');
-        historyDrawer.classList.remove('flex');
-      }
-
-      // Quick Replies Grid (Dark themed to match the stage)
-      const qrGrid = document.getElementById('quick-replies-grid');
-      qrGrid.innerHTML = sc.quickReplies.map((qr, idx) => {
-        const qrId = `qr-${sc.id}-${idx}`;
+      // Quick Replies
+      document.getElementById('quick-replies-grid').innerHTML = sc.quickReplies.map((qr, idx) => {
+        const qrId = `qr-${idx}`;
         const qrAligned = alignChineseWithPinyin(qr.chinese, qr.pinyin);
-        const isQrSpeaking = state.speakingState.messageId === qrId;
-        const safeQrChinese = escapeHtml(qr.chinese).replace(/'/g, "\\'");
-
-        return `<div class="bg-[#111722] hover:bg-[#161f2e] border-2 border-slate-700 hover:border-amber-400 rounded-2xl p-3 shadow-md transition-all flex flex-col justify-between gap-2.5">
+        const safeQr = escapeHtml(qr.chinese).replace(/'/g, "\\'");
+        return `<div class="bg-[#111722] border-2 border-slate-700 rounded-2xl p-2.5 flex flex-col justify-between gap-2">
           ${renderRubyBlockHTML(qrAligned, qrId, 'small', false, 'dark')}
-          <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-800">
-            ${state.showEnglish ? `<span class="text-[11px] font-bold text-slate-300 truncate">${escapeHtml(qr.english)}</span>` : '<span></span>'}
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button
-                type="button"
-                onclick="speakChineseWithHighlight('${safeQrChinese}', '${qrId}', false)"
-                class="px-2.5 py-1 rounded-xl text-[11px] font-black cursor-pointer ${
-                  isQrSpeaking ? 'bg-rose-500 text-white' : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600'
-                }"
-              >🔊 听</button>
-              <button
-                type="button"
-                onclick="handleSendMessage('${safeQrChinese}')"
-                class="px-3 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 text-[11px] font-black shadow-xs cursor-pointer"
-              >发送 ➤</button>
+          <div class="flex items-center justify-between pt-1 border-t border-slate-800">
+            <span class="text-[11px] text-slate-400 truncate">${escapeHtml(qr.english)}</span>
+            <div class="flex gap-1">
+              <button onclick="speakChineseWithHighlight('${safeQr}', '${qrId}', false)" class="px-2 py-0.5 bg-slate-800 text-amber-300 rounded-lg text-[11px] font-black cursor-pointer">🔊 听</button>
+              <button onclick="handleSendMessage('${safeQr}')" class="px-2.5 py-0.5 bg-amber-400 text-slate-950 rounded-lg text-[11px] font-black cursor-pointer">发送 ➤</button>
             </div>
           </div>
         </div>`;
       }).join('');
 
-      // Attached Photo Banner
-      const attachedBanner = document.getElementById('attached-photo-banner');
-      if (state.attachedPhoto) {
-        document.getElementById('attached-photo-thumb').src = state.attachedPhoto;
-        attachedBanner.classList.remove('hidden');
-        attachedBanner.classList.add('flex');
+      // History drawer
+      if (state.showHistoryDrawer) {
+        document.getElementById('history-drawer').classList.remove('hidden');
+        document.getElementById('history-drawer').classList.add('flex');
+        document.getElementById('chat-history-list').innerHTML = state.messages.map(m => `
+          <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-white">
+            <div class="text-xs font-bold text-amber-400 mb-1">${m.sender === 'tutor' ? state.tutorName : state.childName}</div>
+            <div>${escapeHtml(m.chinese || m.text)}</div>
+          </div>`).join('');
       } else {
-        attachedBanner.classList.add('hidden');
-        attachedBanner.classList.remove('flex');
+        document.getElementById('history-drawer').classList.add('hidden');
+        document.getElementById('history-drawer').classList.remove('flex');
       }
 
-      // Mic button state
-      const micBtn = document.getElementById('mic-btn');
-      const micLabel = document.getElementById('mic-btn-label');
-      if (state.isListening) {
-        micBtn.className = 'px-3 py-2.5 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all bg-rose-500 text-white animate-pulse shadow-md ring-4 ring-rose-200 cursor-pointer';
-        micLabel.textContent = '🛑 停止 Stop';
-      } else {
-        micBtn.className = 'px-3 py-2.5 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all bg-amber-100 text-amber-950 hover:bg-amber-200 border border-amber-300 cursor-pointer';
-        micLabel.textContent = '🎤 说话 Speak';
-      }
-
-      // Modals visibility
+      // Modals
       const backdrop = document.getElementById('modal-backdrop');
-      const modalNames = ['camera', 'avatars', 'vocab', 'stickers', 'json', 'settings'];
-      if (state.activeModal) {
-        backdrop.classList.remove('hidden');
-        backdrop.classList.add('flex');
-      } else {
-        backdrop.classList.add('hidden');
-        backdrop.classList.remove('flex');
-      }
+      if (state.activeModal) { backdrop.classList.remove('hidden'); backdrop.classList.add('flex'); }
+      else { backdrop.classList.add('hidden'); backdrop.classList.remove('flex'); }
 
-      modalNames.forEach((m) => {
+      ['camera', 'avatars', 'vocab', 'stickers', 'json', 'settings'].forEach(m => {
         const el = document.getElementById(`modal-${m}`);
-        if (!el) return;
-        if (state.activeModal === m) {
-          el.classList.remove('hidden');
-        } else {
-          el.classList.add('hidden');
-        }
+        if (el) { if (state.activeModal === m) el.classList.remove('hidden'); else el.classList.add('hidden'); }
       });
 
-      // Populate active modal content
-      if (state.activeModal === 'camera') {
-        renderCameraModalStage();
-      } else if (state.activeModal === 'avatars') {
-        document.getElementById('modal-tutor-avatar-slot').innerHTML = renderTalkingHeadHTML({
-          role: 'tutor',
-          name: state.tutorName,
-          subtitle: '点击上传老师头像',
-          photoUrl: state.tutorPhoto,
-          defaultEmoji: '🐼',
-          isSpeaking: false,
-          size: 'hero',
-          allowReset: true
-        });
-        document.getElementById('modal-child-avatar-slot').innerHTML = renderTalkingHeadHTML({
-          role: 'child',
-          name: state.childName,
-          subtitle: '点击上传我的照片',
-          photoUrl: state.childPhoto,
-          defaultEmoji: '🧒',
-          isSpeaking: false,
-          size: 'hero',
-          allowReset: true
-        });
+      if (state.activeModal === 'avatars') {
+        document.getElementById('modal-tutor-avatar-slot').innerHTML = renderStageCharacterActorHTML({ role: 'tutor', name: state.tutorName, photoUrl: state.tutorPhoto, isSpeaking: false });
+        document.getElementById('modal-child-avatar-slot').innerHTML = renderStageCharacterActorHTML({ role: 'child', name: state.childName, photoUrl: state.childPhoto, isSpeaking: false });
       } else if (state.activeModal === 'vocab') {
-        document.getElementById('vocab-modal-title').textContent = `我的词语本 • Word Bank (${sc.title})`;
-        document.getElementById('vocab-modal-list').innerHTML = sc.vocab.map((item, idx) => {
-          const vocabId = `vocab-${idx}`;
-          const alignedVocab = alignChineseWithPinyin(item.hanzi, item.pinyin);
-          const isVocabSpeaking = state.speakingState.messageId === vocabId;
-          const safeHanzi = escapeHtml(item.hanzi).replace(/'/g, "\\'");
-
-          return `<div class="p-3.5 rounded-2xl bg-emerald-50/70 border-2 border-emerald-200 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl bg-white p-2.5 rounded-2xl shadow-sm border border-emerald-100">${item.emoji}</span>
-              <div>
-                ${renderRubyBlockHTML(alignedVocab, vocabId, 'small', true)}
-                <div class="text-xs font-extrabold text-emerald-900 mt-1.5">🇬🇧 ${escapeHtml(item.meaning)}</div>
-              </div>
-            </div>
-            <button
-              onclick="speakChineseWithHighlight('${safeHanzi}', '${vocabId}', false)"
-              class="px-3.5 py-2 rounded-2xl font-black text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer ${
-                isVocabSpeaking ? 'bg-rose-500 text-white animate-pulse' : 'bg-emerald-500 hover:bg-emerald-600 text-white'
-              }"
-            >🔊 读一读</button>
-          </div>`;
-        }).join('');
-      } else if (state.activeModal === 'stickers') {
-        document.getElementById('modal-stars-total').textContent = `${state.stars} 颗星 ⭐`;
-        document.getElementById('modal-stickers-ratio').textContent = `${unlockedCount} / ${STICKER_REWARDS.length}`;
-        document.getElementById('stickers-modal-grid').innerHTML = STICKER_REWARDS.map((st) => {
-          const unlocked = state.stars >= st.starsRequired;
-          return `<div class="p-3.5 rounded-2xl border-2 flex items-center gap-3 transition-all ${
-            unlocked ? 'bg-amber-50 border-amber-300 shadow-sm' : 'bg-slate-100/70 border-slate-200 opacity-60'
-          }">
-            <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-3xl shadow-sm">${unlocked ? st.emoji : '🔒'}</div>
-            <div>
-              <div class="font-black text-sm text-slate-900">${escapeHtml(st.name)}</div>
-              <div class="text-xs font-bold text-slate-500">${escapeHtml(st.english)}</div>
-              <div class="text-[11px] font-extrabold text-amber-700 mt-0.5">${
-                unlocked ? '✓ 已获得 Unlocked!' : `需要 ${st.starsRequired} 颗星 (${st.starsRequired} stars)`
-              }</div>
-            </div>
-          </div>`;
-        }).join('');
-      } else if (state.activeModal === 'json') {
-        document.getElementById('raw-json-pre').textContent = state.lastRawJson;
-      } else if (state.activeModal === 'settings') {
-        const builtinBtn = document.getElementById('engine-builtin-btn');
-        const ollamaBtn = document.getElementById('engine-ollama-btn');
-        const ollamaBox = document.getElementById('ollama-config-box');
-        const geminiBox = document.getElementById('gemini-key-box');
-
-        if (state.engineMode === 'ollama') {
-          ollamaBtn.className = 'p-3.5 rounded-2xl border-2 border-indigo-600 bg-indigo-50/70 text-left transition-all cursor-pointer';
-          builtinBtn.className = 'p-3.5 rounded-2xl border-2 border-slate-200 text-left transition-all cursor-pointer';
-          ollamaBox.classList.remove('hidden');
-          geminiBox.classList.add('hidden');
-        } else {
-          builtinBtn.className = 'p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-50/70 text-left transition-all cursor-pointer';
-          ollamaBtn.className = 'p-3.5 rounded-2xl border-2 border-slate-200 text-left transition-all cursor-pointer';
-          ollamaBox.classList.add('hidden');
-          geminiBox.classList.remove('hidden');
-        }
+        document.getElementById('vocab-modal-list').innerHTML = sc.vocab.map((v, idx) => `
+          <div class="p-3 bg-emerald-50 rounded-2xl border flex items-center justify-between">
+            <div class="flex items-center gap-2"><span class="text-2xl">${v.emoji}</span><div><div class="font-black text-sm">${v.hanzi} (${v.pinyin})</div><div class="text-xs text-slate-600">${v.meaning}</div></div></div>
+            <button onclick="speakChineseWithHighlight('${v.hanzi}', 'v-${idx}', false)" class="px-3 py-1 bg-emerald-600 text-white rounded-xl text-xs font-black cursor-pointer">🔊 读</button>
+          </div>`).join('');
       }
     }
 
-    // Initialize static modal controls on window load
     window.onload = function () {
       document.getElementById('system-prompt-textarea').value = DEFAULT_SYSTEM_PROMPT;
-
-      // Render sample photo cards in Camera modal
-      document.getElementById('sample-photo-cards-grid').innerHTML = SAMPLE_PHOTO_CARDS.map((card) => `
-        <button
-          type="button"
-          onclick="pickSamplePhotoCard('${card.id}')"
-          class="p-2.5 rounded-2xl border-2 border-slate-200 hover:border-rose-400 bg-slate-50 hover:bg-rose-50/50 transition-all text-left flex items-center gap-2 cursor-pointer"
-        >
-          <span class="text-2xl">${card.emoji}</span>
-          <div class="min-w-0">
-            <div class="text-xs font-black text-slate-900 truncate">${escapeHtml(card.title)}</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">${escapeHtml(card.english)}</div>
-          </div>
-        </button>
-      `).join('');
-
-      // Render preset camera questions
-      const presetQs = [
-        '这是什么？请教我怎么用华语说！',
-        '照片里有什么颜色和东西？',
-        '可以用这张照片造一个华语短句吗？'
-      ];
-      document.getElementById('camera-preset-questions').innerHTML = presetQs.map((q) => `
-        <button
-          type="button"
-          onclick="document.getElementById('camera-question-input').value = '${q}'"
-          class="px-2.5 py-1 rounded-full text-[11px] font-extrabold border bg-white text-slate-700 border-amber-300 hover:bg-amber-100 cursor-pointer"
-        >${q}</button>
-      `).join('');
-
+      document.getElementById('openrouter-apikey-input').value = localStorage.getItem('openRouterApiKey') || '';
+      document.getElementById('sample-photo-cards-grid').innerHTML = SAMPLE_PHOTO_CARDS.map(c => `
+        <button onclick="pickSamplePhotoCard('${c.id}')" class="p-2 border-2 rounded-2xl bg-slate-50 text-left flex items-center gap-2 cursor-pointer">
+          <span class="text-xl">${c.emoji}</span>
+          <div class="min-w-0"><div class="text-xs font-black truncate">${c.title}</div><div class="text-[9px] text-slate-500 truncate">${c.english}</div></div>
+        </button>`).join('');
+      document.getElementById('camera-preset-questions').innerHTML = ['这是什么？请教我怎么用华语说！', '照片里有什么颜色和东西？'].map(q => `
+        <button onclick="document.getElementById('camera-question-input').value = '${q}'" class="px-2 py-1 bg-white border text-slate-700 rounded-full text-[10px] font-bold cursor-pointer">${q}</button>`).join('');
       renderAll();
     };
   </script>
