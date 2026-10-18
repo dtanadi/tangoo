@@ -26,11 +26,31 @@
     .eq-bar:nth-child(4) {
       animation-delay: 0.3s;
     }
+    @keyframes GentleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    .actor-talk-bounce {
+      animation: GentleFloat 0.6s infinite ease-in-out;
+    }
+    /* Custom scrollbar for history drawer */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.06);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.5);
+      border-radius: 9999px;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-amber-100/70 via-sky-50 to-emerald-50/70 text-slate-800 flex flex-col">
+<body class="min-h-screen bg-slate-900 text-slate-800 flex flex-col">
 
-  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-4 border-amber-300 shadow-sm px-3 sm:px-5 py-2.5">
+  <header class="sticky top-0 z-30 bg-slate-950/95 backdrop-blur-md border-b-2 border-amber-500/40 shadow-md px-3 sm:px-5 py-2.5 text-white">
     <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
       <!-- Brand & Animated Mascot -->
       <div class="flex items-center gap-3">
@@ -38,21 +58,21 @@
           id="header-tutor-avatar"
           onclick="openModal('avatars')"
           title="Click to customize Talking Head photos!"
-          class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-3xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 flex items-center justify-center text-3xl shadow-md border-2 border-white cursor-pointer overflow-hidden transition-transform hover:scale-105"
+          class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 flex items-center justify-center text-2xl shadow-md border-2 border-amber-200 cursor-pointer overflow-hidden transition-transform hover:scale-105"
         >
           <span id="header-tutor-emoji">🐼</span>
           <img id="header-tutor-img" src="" alt="Tutor" class="hidden w-full h-full object-cover" />
-          <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white font-black">✓</span>
+          <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border border-white flex items-center justify-center text-[9px] text-white font-black">✓</span>
         </div>
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-lg sm:text-2xl font-black tracking-tight text-slate-900">欢乐小伙伴</h1>
-            <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-200 to-yellow-200 text-amber-950 border border-amber-400 shadow-sm">
-              SG Pri 1–3 • 10大生活场景
+            <h1 class="text-base sm:text-xl font-black tracking-tight text-white">欢乐小伙伴</h1>
+            <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
+              SG Pri 1–3 • 10大新加坡实景舞台
             </span>
           </div>
-          <p class="text-xs text-slate-500 font-semibold">
-            Upload your own Talking Head photo • Snap any picture to learn Chinese!
+          <p class="text-[11px] text-amber-200/80 font-semibold">
+            👆 点字发音 • 跟着大头像读 • Interactive Roleplay Stage
           </p>
         </div>
       </div>
@@ -61,14 +81,14 @@
       <div class="flex items-center flex-wrap gap-1.5 sm:gap-2">
         <button
           onclick="openPhotoAskModal()"
-          class="flex items-center gap-1.5 bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white px-3.5 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-md border-2 border-white transition-transform hover:scale-105 cursor-pointer"
+          class="flex items-center gap-1.5 bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-white/40 transition-transform hover:scale-105 cursor-pointer"
         >
           <span>📸 拍照问一问</span>
         </button>
 
         <button
           onclick="openModal('avatars')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-purple-600 text-white border-2 border-purple-700 hover:bg-purple-700 shadow-sm transition-all cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-purple-600 text-white border border-purple-400 hover:bg-purple-500 shadow-sm transition-all cursor-pointer"
         >
           <span>🎭 换头像 Avatar</span>
         </button>
@@ -76,16 +96,16 @@
         <button
           id="star-counter-btn"
           onclick="openModal('stickers')"
-          class="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white px-3.5 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-md border-2 border-white transition-transform hover:scale-105 cursor-pointer"
+          class="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 px-3 py-1.5 rounded-full font-black text-xs shadow-md border border-amber-200 transition-transform hover:scale-105 cursor-pointer"
         >
           <span>⭐ <span id="stars-count-label">3</span> 颗星</span>
-          <span id="stickers-unlocked-badge" class="hidden md:inline text-[11px] bg-white/25 px-1.5 py-0.5 rounded-full">🎁 2/5</span>
+          <span id="stickers-unlocked-badge" class="hidden md:inline text-[11px] bg-black/15 px-1.5 py-0.5 rounded-full">🎁 2/5</span>
         </button>
 
         <button
           id="toggle-pinyin-btn"
           onclick="togglePinyin()"
-          class="px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all bg-indigo-600 text-white border-indigo-700 shadow-sm cursor-pointer"
+          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-indigo-600 text-white border-indigo-400 shadow-sm cursor-pointer"
         >
           ✓ 拼音 Pinyin
         </button>
@@ -93,28 +113,28 @@
         <button
           id="toggle-english-btn"
           onclick="toggleEnglish()"
-          class="px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all bg-sky-500 text-white border-sky-600 shadow-sm cursor-pointer"
+          class="px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all bg-sky-500 text-white border-sky-300 shadow-sm cursor-pointer"
         >
           ✓ 英文 English
         </button>
 
         <button
           onclick="openModal('vocab')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-500 text-white border-2 border-emerald-600 hover:bg-emerald-600 shadow-sm transition-all cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-600 text-white border border-emerald-400 hover:bg-emerald-500 shadow-sm transition-all cursor-pointer"
         >
           <span>📖 词语本</span>
         </button>
 
         <button
           onclick="openModal('json')"
-          class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-all cursor-pointer"
+          class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all cursor-pointer"
         >
           <span>{ } JSON</span>
         </button>
 
         <button
           onclick="openModal('settings')"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-white hover:bg-slate-700 transition-all shadow-sm cursor-pointer"
+          class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-700 transition-all shadow-sm cursor-pointer"
         >
           <span>⚙️ AI 设置</span>
         </button>
@@ -122,134 +142,151 @@
     </div>
   </header>
 
-  <div class="max-w-6xl w-full mx-auto px-3 sm:px-4 pt-3">
-    <div class="flex items-center justify-between mb-2 px-1 flex-wrap gap-1">
-      <span class="text-xs font-black text-slate-700 flex items-center gap-1.5">
-        🇸🇬 选择新加坡生活场景 • Choose from 10 Familiar Singapore Contexts:
-      </span>
-      <span id="active-scenario-pill" class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
-        当前: 小贩中心 (Hawker Centre)
-      </span>
+  <div class="bg-slate-900 border-b border-slate-800 py-2.5 px-3 sm:px-4">
+    <div class="max-w-6xl w-full mx-auto">
+      <div class="flex items-center justify-between mb-2 px-1 flex-wrap gap-1">
+        <span class="text-xs font-black text-amber-300 flex items-center gap-1.5">
+          🇸🇬 选择新加坡生活场景（自动切换背景舞台）• Choose from 10 Familiar Singapore Contexts:
+        </span>
+        <span id="active-scenario-pill" class="text-[11px] font-bold text-amber-200 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-400/40">
+          当前: 小贩中心 (Hawker Centre)
+        </span>
+      </div>
+      <div id="scenario-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2"></div>
     </div>
-    <div id="scenario-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
   </div>
 
-  <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-3 flex flex-col">
-    <!-- Hero Banner with Big Talking Heads -->
-    <div id="hero-banner" class="mb-3 rounded-3xl bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 p-3.5 sm:p-5 text-white shadow-lg border-4 border-white">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <!-- Left: BIG Tutor Talking Head -->
-        <div class="flex items-center gap-4 bg-white/95 text-slate-900 p-3 sm:p-3.5 rounded-3xl shadow-md border-2 border-amber-200 w-full md:w-auto">
-          <div id="hero-tutor-talking-head"></div>
-          <div class="flex-1 min-w-0 space-y-1.5">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-300">
-                🎙️ 大头像伴读 • Talking Head
-              </span>
-              <button
-                id="hero-stop-btn"
-                onclick="stopSpeaking()"
-                class="hidden items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-black text-[11px] shadow animate-pulse cursor-pointer"
-              >
-                🔇 停止
-              </button>
-            </div>
-            <p id="hero-latest-quote" class="text-xs sm:text-sm font-black text-slate-800 line-clamp-2">
-              “你好！欢迎来到小贩中心。你今天想吃鸡饭还是炒面？”
-            </p>
-            <div class="flex items-center flex-wrap gap-1.5 pt-0.5">
-              <button
-                type="button"
-                onclick="speakLatestTutorMessage()"
-                class="px-3 py-1 rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs flex items-center gap-1 shadow-xs cursor-pointer"
-              >
-                🔊 听老师读
-              </button>
-              <button
-                type="button"
-                onclick="openModal('avatars')"
-                class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center gap-1 cursor-pointer"
-              >
-                📤 换大头像
-              </button>
-            </div>
+  <main class="flex-1 max-w-6xl w-full mx-auto px-2 sm:px-4 py-3 flex flex-col gap-3">
+    <!-- Error / Status Banner -->
+    <div id="error-banner" class="hidden p-3.5 rounded-2xl bg-rose-950/90 border-2 border-rose-500 text-rose-100 text-xs sm:text-sm font-bold items-center justify-between gap-3 shadow-lg">
+      <span id="error-banner-text"></span>
+      <button onclick="hideErrorBanner()" class="px-3 py-1 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-black shrink-0 cursor-pointer">OK</button>
+    </div>
+
+    <!-- MAIN INTERACTIVE SCENE STAGE (Matches Reference Image Layout) -->
+    <div id="scene-stage-wrapper" class="relative w-full rounded-[2rem] overflow-hidden border-4 border-slate-700 shadow-2xl min-h-[540px] sm:min-h-[610px] flex flex-col justify-between bg-slate-900 select-none">
+      
+      <!-- Dynamic Contextual SVG Background Layer -->
+      <div id="scene-svg-background" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
+
+      <!-- Subtle Top Vignette & Floating Context Location Signboard -->
+      <div class="relative z-20 flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 pt-3.5">
+        <div class="inline-flex items-center gap-2 bg-slate-950/80 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full border border-amber-400/50 shadow-lg">
+          <span id="stage-location-emoji" class="text-lg">🍛</span>
+          <span id="stage-location-title" class="text-xs sm:text-sm font-black tracking-wide text-amber-300">小贩中心 • Hawker Centre</span>
+          <span class="text-slate-500">|</span>
+          <span id="stage-location-decor" class="text-xs">🍗 🍜 🧃 🥟</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Previous / Latest Turn Indicator + History Toggle -->
+          <button
+            type="button"
+            onclick="toggleHistoryDrawer()"
+            class="px-3 py-1.5 rounded-full bg-slate-950/80 hover:bg-slate-900 backdrop-blur-md text-slate-200 border border-slate-600 text-xs font-extrabold flex items-center gap-1.5 shadow cursor-pointer"
+          >
+            <span>💬 对话记录 History (<span id="history-count-badge">1</span>)</span>
+          </button>
+          <button
+            type="button"
+            onclick="openPhotoAskModal()"
+            class="px-3 py-1.5 rounded-full bg-rose-600/95 hover:bg-rose-500 text-white border border-rose-300 text-xs font-black flex items-center gap-1 shadow-md cursor-pointer"
+          >
+            <span>📸 拍照问一问</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DARK SPEECH CALLOUT BUBBLE (Directly styled after Reference Image) -->
+      <div class="relative z-20 w-full max-w-4xl mx-auto px-3 sm:px-8 pt-2">
+        <!-- Child's Latest Reply Pill (shown right above the dark speech bubble when child replies) -->
+        <div id="latest-child-reply-bar" class="hidden mb-2 justify-end"></div>
+
+        <!-- Outer Dark Callout Frame with Blue-Slate Border & Speech Pointer Tail -->
+        <div class="relative bg-[#070b14]/95 backdrop-blur-md border-[3px] border-[#3b669c] rounded-[2.4rem] p-3 sm:p-5 shadow-[0_22px_55px_rgba(0,0,0,0.65)] text-white">
+          
+          <!-- Inner Dark Slate Card -->
+          <div id="dark-speech-card-content" class="bg-[#111722] border border-slate-800/90 rounded-[1.6rem] p-3.5 sm:p-5 space-y-4">
+            <!-- Populated dynamically by renderAll() -->
+          </div>
+
+          <!-- Comic Speech Bubble Pointer Tail (Points down-left toward the Tutor Character) -->
+          <svg
+            class="absolute -bottom-[34px] left-14 sm:left-28 w-24 h-10 pointer-events-none drop-shadow-lg"
+            viewBox="0 0 110 45"
+            fill="none"
+          >
+            <path d="M 38 0 L 6 42 L 88 0 Z" fill="#070b14" />
+            <path d="M 38 0 L 6 42 L 88 0" stroke="#3b669c" stroke-width="3.5" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- TWO ILLUSTRATED CONVERSING CHARACTERS AT THE BOTTOM OF THE STAGE (Like Reference Image) -->
+      <div class="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-12 pt-6 flex items-end justify-between gap-4 pointer-events-none min-h-[210px] sm:min-h-[245px]">
+        
+        <!-- LEFT CHARACTER: Tutor (Blue Shirt Character gesturing in conversation + Custom Photo Support) -->
+        <div id="stage-left-tutor-actor" class="pointer-events-auto flex flex-col items-center"></div>
+
+        <!-- CENTER FLOATING SCENE ACTION HINT -->
+        <div class="hidden md:flex flex-col items-center pb-5 pointer-events-auto">
+          <div class="bg-slate-950/75 backdrop-blur-md border border-white/20 rounded-2xl px-3.5 py-2 text-center shadow-lg">
+            <div class="text-[11px] font-extrabold text-amber-300">🎭 点击人物头像可上传自己的照片</div>
+            <div class="text-[10px] font-semibold text-slate-300">Click either character&apos;s head to upload a custom face photo!</div>
           </div>
         </div>
 
-        <!-- Center: Current Singapore Scene Info -->
-        <div class="flex-1 text-center md:text-left px-2 space-y-2">
-          <div class="inline-flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full text-xs font-extrabold">
-            <span id="hero-scene-emoji">🍛 当前场景</span>
-            <span>•</span>
-            <span id="hero-scene-decor">🍗 🍜 🧃 🥟</span>
-          </div>
-          <h2 id="hero-scene-title" class="text-xl sm:text-2xl font-black tracking-wide drop-shadow-xs">
-            小贩中心 (Hawker Centre)
-          </h2>
-          <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-0.5">
-            <button
-              onclick="openPhotoAskModal()"
-              class="px-4 py-2 rounded-2xl bg-white text-rose-600 hover:bg-rose-50 font-black text-xs sm:text-sm shadow-md flex items-center gap-1.5 transition-transform hover:scale-105 cursor-pointer"
-            >
-              <span>📸 拍照问一问 (Snap & Ask AI)</span>
-            </button>
-            <button
-              onclick="openModal('vocab')"
-              class="px-3.5 py-2 rounded-2xl bg-black/25 hover:bg-black/35 text-white font-extrabold text-xs sm:text-sm flex items-center gap-1.5 border border-white/40 cursor-pointer"
-            >
-              <span>✨ 场景词语 Words</span>
-            </button>
-          </div>
-        </div>
+        <!-- RIGHT CHARACTER: Student / Child Partner (Red/Orange Top Character waving back + Custom Photo Support) -->
+        <div id="stage-right-child-actor" class="pointer-events-auto flex flex-col items-center"></div>
+      </div>
 
-        <!-- Right: BIG Child Talking Head -->
-        <div class="hidden lg:flex items-center gap-3 bg-white/95 text-slate-900 p-3 rounded-3xl shadow-md border-2 border-sky-200">
-          <div id="hero-child-talking-head"></div>
+      <!-- Collapsible Conversation History Drawer Overlay inside Stage -->
+      <div id="history-drawer" class="hidden absolute inset-x-4 top-16 bottom-4 z-30 bg-slate-950/95 backdrop-blur-md border-2 border-amber-400/60 rounded-3xl p-4 flex-col shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">💬</span>
+            <h3 class="text-sm sm:text-base font-black text-white">完整对话记录 • Full Conversation History</h3>
+          </div>
+          <button onclick="toggleHistoryDrawer()" class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-black text-amber-300 cursor-pointer">
+            返回舞台 Back to Stage ✕
+          </button>
         </div>
+        <div id="chat-history-list" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
       </div>
     </div>
 
-    <!-- Error / Status Banner -->
-    <div id="error-banner" class="hidden mb-3 p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs sm:text-sm font-bold items-center justify-between gap-3 shadow-sm">
-      <span id="error-banner-text"></span>
-      <button onclick="hideErrorBanner()" class="px-3 py-1 rounded-xl bg-rose-200 hover:bg-rose-300 font-black shrink-0 cursor-pointer">OK</button>
-    </div>
-
-    <!-- Chat Conversation Container -->
-    <div id="chat-container" class="flex-1 bg-white/90 backdrop-blur-sm border-4 border-amber-200/90 rounded-3xl p-3.5 sm:p-5 shadow-inner overflow-y-auto max-h-[52vh] space-y-6"></div>
-
     <!-- Quick Replies + Attached Photo Preview + Input Bar -->
-    <div class="mt-3 space-y-2.5">
+    <div class="bg-slate-950/90 border-2 border-slate-800 rounded-3xl p-3 sm:p-4 space-y-3 shadow-xl">
       <div>
-        <div class="flex items-center justify-between mb-1.5 px-1">
-          <span class="text-xs font-black text-amber-900 flex items-center gap-1.5">
-            🪄 点卡片回答，或点击 📸 拍照问一问 (Tap a sentence to reply or snap a photo):
+        <div class="flex items-center justify-between mb-2 px-1">
+          <span class="text-xs font-black text-amber-300 flex items-center gap-1.5">
+            🪄 点选句子回答老师，或点击 📸 拍照问一问 (Tap a sentence to reply or snap a photo):
           </span>
         </div>
-        <div id="quick-replies-grid" class="grid grid-cols-1 md:grid-cols-3 gap-2"></div>
+        <div id="quick-replies-grid" class="grid grid-cols-1 md:grid-cols-3 gap-2.5"></div>
       </div>
 
       <!-- Attached Photo Banner -->
-      <div id="attached-photo-banner" class="hidden bg-rose-50 border-2 border-rose-300 rounded-3xl p-3 flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div id="attached-photo-banner" class="hidden bg-rose-950/90 border-2 border-rose-500/80 rounded-2xl p-3 flex-wrap items-center justify-between gap-3 shadow-md">
         <div class="flex items-center gap-3">
-          <img id="attached-photo-thumb" src="" alt="Preview" class="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow" />
+          <img id="attached-photo-thumb" src="" alt="Preview" class="w-14 h-14 rounded-xl object-cover border-2 border-white shadow" />
           <div>
-            <span class="text-xs font-black text-rose-900 block">📸 照片已准备好！Photo Ready to Ask AI</span>
-            <span class="text-xs text-rose-700 font-semibold">Type a question below or click “发送” to ask what is in this picture!</span>
+            <span class="text-xs font-black text-rose-200 block">📸 照片已准备好！Photo Ready to Ask AI</span>
+            <span class="text-xs text-rose-300 font-semibold">Type a question below or click “立即问乐乐” to learn the Chinese words inside!</span>
           </div>
         </div>
         <div class="flex items-center gap-2">
           <button
             type="button"
             onclick="sendAttachedPhotoImmediately()"
-            class="px-4 py-2 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-xs shadow-sm hover:opacity-95 cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-xs shadow-sm hover:opacity-95 cursor-pointer"
           >
             🔍 立即问乐乐 Ask Now ➤
           </button>
           <button
             type="button"
             onclick="clearAttachedPhoto()"
-            class="p-2 rounded-xl bg-rose-200 hover:bg-rose-300 text-rose-900 font-black text-xs cursor-pointer"
+            class="p-2 rounded-xl bg-rose-800 hover:bg-rose-700 text-rose-100 font-black text-xs cursor-pointer"
           >
             ✕
           </button>
@@ -257,12 +294,12 @@
       </div>
 
       <!-- Bottom Input Box -->
-      <div class="bg-white border-4 border-amber-300 rounded-3xl p-2 shadow-md flex flex-wrap sm:flex-nowrap items-center gap-2">
+      <div class="bg-[#111722] border-2 border-slate-700 focus-within:border-amber-400 rounded-2xl p-2 shadow-inner flex flex-wrap sm:flex-nowrap items-center gap-2">
         <div class="flex items-center gap-1.5">
           <button
             type="button"
             onclick="openPhotoAskModal()"
-            class="px-3 py-2.5 rounded-2xl font-black text-xs flex items-center gap-1.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-sm transition-all cursor-pointer"
+            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-sm transition-all cursor-pointer"
           >
             <span>📸</span>
             <span class="hidden sm:inline">拍照问一问</span>
@@ -272,7 +309,7 @@
             id="mic-btn"
             type="button"
             onclick="toggleListening()"
-            class="px-3 py-2.5 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all bg-amber-100 text-amber-950 hover:bg-amber-200 border border-amber-300 cursor-pointer"
+            class="px-3 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 border border-amber-400/40 cursor-pointer"
           >
             <span id="mic-btn-label">🎤 说话 Speak</span>
           </button>
@@ -281,7 +318,7 @@
             id="speech-lang-btn"
             type="button"
             onclick="toggleSpeechLang()"
-            class="px-2 py-2.5 rounded-xl text-[11px] font-black bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer"
+            class="px-2.5 py-2.5 rounded-xl text-[11px] font-black bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-600 cursor-pointer"
           >
             🇨🇳 华语
           </button>
@@ -292,14 +329,14 @@
           type="text"
           onkeydown="if(event.key==='Enter') handleSendMessage()"
           placeholder="用华语、拼音或英文回答，或点击📸拍照问一问..."
-          class="flex-1 min-w-[180px] bg-transparent px-2 py-2 text-sm sm:text-base font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+          class="flex-1 min-w-[180px] bg-transparent px-2 py-2 text-sm sm:text-base font-bold text-white placeholder:text-slate-400 focus:outline-none"
         />
 
         <button
           id="send-btn"
           type="button"
           onclick="handleSendMessage()"
-          class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 font-black text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
         >
           <span>发送 ➤</span>
         </button>
@@ -882,6 +919,7 @@ Structure your JSON exactly like this:
       stars: 3,
       showPinyin: true,
       showEnglish: true,
+      showHistoryDrawer: false,
       activeModal: null,
       tutorPhoto: null,
       childPhoto: null,
@@ -914,6 +952,307 @@ Structure your JSON exactly like this:
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function getScenarioBackgroundSVG(scenarioId) {
+      switch (scenarioId) {
+        case 'hawker':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-hawker" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fef3c7"/>
+                <stop offset="55%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-hawker)"/>
+            <!-- Hawker Shelter Roof Beams -->
+            <polygon points="0,0 1200,0 1120,95 80,95" fill="#92400e" opacity="0.25"/>
+            <!-- Hanging Red Lanterns -->
+            <g fill="#ef4444" stroke="#b91c1c" stroke-width="3">
+              <line x1="150" y1="0" x2="150" y2="55" stroke="#78350f" stroke-width="4"/>
+              <ellipse cx="150" cy="78" rx="34" ry="26"/>
+              <line x1="1050" y1="0" x2="1050" y2="55" stroke="#78350f" stroke-width="4"/>
+              <ellipse cx="1050" cy="78" rx="34" ry="26"/>
+            </g>
+            <!-- Hawker Stalls in background -->
+            <g opacity="0.88">
+              <rect x="70" y="250" width="310" height="260" rx="16" fill="#fffbeb" stroke="#d97706" stroke-width="5"/>
+              <rect x="60" y="235" width="330" height="48" rx="10" fill="#dc2626"/>
+              <text x="225" y="266" text-anchor="middle" fill="#fef08a" font-size="22" font-weight="900">天天海南鸡饭 • CHICKEN RICE</text>
+              <circle cx="150" cy="355" r="28" fill="#fde047"/>
+              <text x="150" y="365" text-anchor="middle" font-size="32">🍗</text>
+              <circle cx="230" cy="355" r="28" fill="#fed7aa"/>
+              <text x="230" y="365" text-anchor="middle" font-size="32">🍛</text>
+
+              <rect x="820" y="250" width="310" height="260" rx="16" fill="#fffbeb" stroke="#0d9488" stroke-width="5"/>
+              <rect x="810" y="235" width="330" height="48" rx="10" fill="#0f766e"/>
+              <text x="975" y="266" text-anchor="middle" fill="#ccfbf1" font-size="22" font-weight="900">老字号炒面与美禄 • NOODLES</text>
+              <circle cx="905" cy="355" r="28" fill="#bbf7d0"/>
+              <text x="905" y="365" text-anchor="middle" font-size="32">🍜</text>
+              <circle cx="985" cy="355" r="28" fill="#bae6fd"/>
+              <text x="985" y="365" text-anchor="middle" font-size="32">🧃</text>
+            </g>
+            <!-- Tiled Hawker Floor & Round Tables -->
+            <rect x="0" y="500" width="1200" height="200" fill="#fbbf24" opacity="0.45"/>
+            <ellipse cx="600" cy="590" rx="170" ry="38" fill="#b45309" opacity="0.45"/>
+            <circle cx="400" cy="595" r="24" fill="#d97706" opacity="0.5"/>
+            <circle cx="800" cy="595" r="24" fill="#d97706" opacity="0.5"/>
+          </svg>`;
+
+        case 'canteen':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-canteen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d1fae5"/>
+                <stop offset="60%" stop-color="#a7f3d0"/>
+                <stop offset="100%" stop-color="#34d399"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-canteen)"/>
+            <!-- School Clock & Recess Bell Banner -->
+            <circle cx="130" cy="110" r="45" fill="#ffffff" stroke="#059669" stroke-width="6"/>
+            <line x1="130" y1="110" x2="130" y2="82" stroke="#065f46" stroke-width="5" stroke-linecap="round"/>
+            <line x1="130" y1="110" x2="152" y2="110" stroke="#065f46" stroke-width="4" stroke-linecap="round"/>
+            <!-- School Canteen Stalls -->
+            <rect x="75" y="255" width="320" height="245" rx="16" fill="#ffffff" stroke="#10b981" stroke-width="5"/>
+            <rect x="65" y="240" width="340" height="46" rx="10" fill="#059669"/>
+            <text x="235" y="270" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="900">鱼圆面摊位 • NOODLE STALL</text>
+            <text x="180" y="365" font-size="40">🍜</text>
+            <text x="255" y="365" font-size="40">🍥</text>
+
+            <rect x="815" y="255" width="310" height="245" rx="16" fill="#ffffff" stroke="#0284c7" stroke-width="5"/>
+            <rect x="805" y="240" width="330" height="46" rx="10" fill="#0284c7"/>
+            <text x="970" y="270" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="900">鲜果与饮料 • FRUIT &amp; DRINKS</text>
+            <text x="915" y="365" font-size="40">🍎</text>
+            <text x="990" y="365" font-size="40">🍉</text>
+            <!-- Long School Benches -->
+            <rect x="0" y="500" width="1200" height="200" fill="#10b981" opacity="0.35"/>
+            <rect x="430" y="535" width="340" height="26" rx="8" fill="#047857" opacity="0.5"/>
+          </svg>`;
+
+        case 'playground':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-playground" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#bae6fd"/>
+                <stop offset="62%" stop-color="#e0f2fe"/>
+                <stop offset="100%" stop-color="#86efac"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-playground)"/>
+            <!-- HDB Flats in Background -->
+            <g opacity="0.85">
+              <rect x="60" y="130" width="220" height="360" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4"/>
+              <rect x="60" y="130" width="220" height="30" fill="#ef4444"/>
+              <text x="170" y="152" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="900">BLK 128</text>
+              <g fill="#93c5fd">
+                <rect x="85" y="180" width="35" height="25"/><rect x="150" y="180" width="35" height="25"/><rect x="215" y="180" width="35" height="25"/>
+                <rect x="85" y="230" width="35" height="25"/><rect x="150" y="230" width="35" height="25"/><rect x="215" y="230" width="35" height="25"/>
+                <rect x="85" y="280" width="35" height="25"/><rect x="150" y="280" width="35" height="25"/><rect x="215" y="280" width="35" height="25"/>
+                <rect x="85" y="330" width="35" height="25"/><rect x="150" y="330" width="35" height="25"/><rect x="215" y="330" width="35" height="25"/>
+              </g>
+              <rect x="920" y="150" width="220" height="340" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4"/>
+              <rect x="920" y="150" width="220" height="30" fill="#f59e0b"/>
+            </g>
+            <!-- Iconic Toa Payoh Orange Dragon Playground & Slide -->
+            <path d="M 0 470 Q 600 430 1200 470 L 1200 700 L 0 700 Z" fill="#4ade80"/>
+            <ellipse cx="600" cy="560" rx="340" ry="70" fill="#fde047" opacity="0.65"/>
+            <!-- Slide & Swing -->
+            <path d="M 830 350 L 960 495" stroke="#f97316" stroke-width="22" stroke-linecap="round"/>
+            <rect x="780" y="310" width="70" height="55" rx="10" fill="#ef4444"/>
+          </svg>`;
+
+        case 'bus':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-bus" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c4b5fd"/>
+                <stop offset="55%" stop-color="#ede9fe"/>
+                <stop offset="100%" stop-color="#94a3b8"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-bus)"/>
+            <!-- MRT Elevated Track & Train -->
+            <rect x="0" y="185" width="1200" height="22" fill="#64748b"/>
+            <rect x="180" y="207" width="28" height="260" fill="#94a3b8"/>
+            <rect x="980" y="207" width="28" height="260" fill="#94a3b8"/>
+            <!-- SG Lush Green Double-Decker Bus -->
+            <g transform="translate(55, 275)">
+              <rect x="0" y="0" width="340" height="190" rx="22" fill="#84cc16" stroke="#3f6212" stroke-width="5"/>
+              <rect x="18" y="18" width="304" height="58" rx="10" fill="#bae6fd"/>
+              <rect x="18" y="95" width="220" height="60" rx="10" fill="#bae6fd"/>
+              <rect x="255" y="88" width="60" height="95" rx="8" fill="#ecfccb"/>
+              <circle cx="75" cy="192" r="28" fill="#1e293b" stroke="#cbd5e1" stroke-width="8"/>
+              <circle cx="265" cy="192" r="28" fill="#1e293b" stroke="#cbd5e1" stroke-width="8"/>
+              <text x="145" y="135" text-anchor="middle" fill="#1e293b" font-size="22" font-weight="900">SG BUS 巴士</text>
+            </g>
+            <!-- Bus Stop Shelter on Right -->
+            <rect x="850" y="275" width="270" height="22" rx="8" fill="#f97316"/>
+            <rect x="880" y="297" width="16" height="175" fill="#475569"/>
+            <rect x="1080" y="297" width="16" height="175" fill="#475569"/>
+            <!-- Asphalt Road -->
+            <rect x="0" y="470" width="1200" height="230" fill="#475569"/>
+            <line x1="0" y1="560" x2="1200" y2="560" stroke="#facc15" stroke-width="8" stroke-dasharray="45 35"/>
+          </svg>`;
+
+        case 'zoo':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-zoo" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#bef264"/>
+                <stop offset="55%" stop-color="#86efac"/>
+                <stop offset="100%" stop-color="#15803d"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-zoo)"/>
+            <!-- Lush Tropical Trees & Bamboo -->
+            <g stroke="#166534" stroke-width="12" stroke-linecap="round">
+              <line x1="90" y1="100" x2="90" y2="520"/>
+              <line x1="130" y1="140" x2="130" y2="520"/>
+              <line x1="1080" y1="110" x2="1080" y2="520"/>
+              <line x1="1120" y1="150" x2="1120" y2="520"/>
+            </g>
+            <!-- Wooden Zoo Enclosure Sign -->
+            <rect x="75" y="265" width="260" height="160" rx="20" fill="#fef3c7" stroke="#92400e" stroke-width="6"/>
+            <text x="205" y="335" text-anchor="middle" font-size="56">🐼🎋</text>
+            <text x="205" y="395" text-anchor="middle" fill="#78350f" font-size="22" font-weight="900">河川生态园 • 大熊猫</text>
+            <rect x="865" y="265" width="260" height="160" rx="20" fill="#fef3c7" stroke="#92400e" stroke-width="6"/>
+            <text x="995" y="335" text-anchor="middle" font-size="56">🐘🦒</text>
+            <text x="995" y="395" text-anchor="middle" fill="#78350f" font-size="22" font-weight="900">新加坡动物园 • ZOO</text>
+            <path d="M 0 490 Q 600 450 1200 490 L 1200 700 L 0 700 Z" fill="#166534" opacity="0.55"/>
+          </svg>`;
+
+        case 'gardens':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-gardens" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fbcfe8"/>
+                <stop offset="55%" stop-color="#f5d0fe"/>
+                <stop offset="100%" stop-color="#4ade80"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-gardens)"/>
+            <!-- Flower Dome Glass Conservatory Arch -->
+            <path d="M 280 480 Q 600 240 920 480 Z" fill="#e0f2fe" opacity="0.7" stroke="#38bdf8" stroke-width="5"/>
+            <!-- Iconic Purple/Pink Supertrees on Left and Right -->
+            <g stroke="#a21caf" stroke-width="8" fill="none">
+              <path d="M 160 480 L 185 250 L 100 175 L 270 175 L 185 250 L 210 480" fill="#d946ef" opacity="0.45"/>
+              <path d="M 1010 480 L 1035 250 L 950 175 L 1120 175 L 1035 250 L 1060 480" fill="#d946ef" opacity="0.45"/>
+            </g>
+            <ellipse cx="185" cy="170" rx="105" ry="26" fill="#ec4899" opacity="0.75"/>
+            <ellipse cx="1035" cy="170" rx="105" ry="26" fill="#ec4899" opacity="0.75"/>
+            <!-- Flower Lawn -->
+            <rect x="0" y="480" width="1200" height="220" fill="#22c55e" opacity="0.5"/>
+            <text x="150" y="465" font-size="42">🌺🌸🌷</text>
+            <text x="950" y="465" font-size="42">🌻🦋🌹</text>
+          </svg>`;
+
+        case 'eastcoast':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="55%" stop-color="#bae6fd"/>
+                <stop offset="100%" stop-color="#fef08a"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-sky)"/>
+            <!-- Bright Sun & Kites -->
+            <circle cx="140" cy="105" r="52" fill="#fde047"/>
+            <text x="1030" y="140" font-size="55">🪁</text>
+            <!-- Turquoise Sea & Ships on Horizon -->
+            <rect x="0" y="360" width="1200" height="110" fill="#0284c7" opacity="0.75"/>
+            <text x="200" y="355" font-size="38">🚢</text>
+            <text x="920" y="355" font-size="38">⛵</text>
+            <!-- Sandy Beach & Sandcastle -->
+            <path d="M 0 465 Q 600 430 1200 465 L 1200 700 L 0 700 Z" fill="#fde68a"/>
+            <text x="150" y="460" font-size="54">🏖️🏰</text>
+            <text x="960" y="460" font-size="54">🚲🌴</text>
+          </svg>`;
+
+        case 'library':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-lib" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e0e7ff"/>
+                <stop offset="60%" stop-color="#c7d2fe"/>
+                <stop offset="100%" stop-color="#818cf8"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-lib)"/>
+            <!-- Tall Bookshelves Left & Right -->
+            <g fill="#fef3c7" stroke="#6366f1" stroke-width="5">
+              <rect x="60" y="140" width="250" height="350" rx="12"/>
+              <line x1="60" y1="230" x2="310" y2="230"/>
+              <line x1="60" y1="320" x2="310" y2="320"/>
+              <line x1="60" y1="410" x2="310" y2="410"/>
+
+              <rect x="890" y="140" width="250" height="350" rx="12"/>
+              <line x1="890" y1="230" x2="1140" y2="230"/>
+              <line x1="890" y1="320" x2="1140" y2="320"/>
+              <line x1="890" y1="410" x2="1140" y2="410"/>
+            </g>
+            <text x="185" y="210" text-anchor="middle" font-size="42">📕📗📘📙</text>
+            <text x="185" y="300" text-anchor="middle" font-size="42">📚🔖🧸</text>
+            <text x="1015" y="210" text-anchor="middle" font-size="42">📘📙📕📗</text>
+            <text x="1015" y="300" text-anchor="middle" font-size="42">🤫📖🏛️</text>
+            <rect x="0" y="490" width="1200" height="210" fill="#4f46e5" opacity="0.35"/>
+          </svg>`;
+
+        case 'supermarket':
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-mart" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffedd5"/>
+                <stop offset="60%" stop-color="#fed7aa"/>
+                <stop offset="100%" stop-color="#fb923c"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-mart)"/>
+            <!-- Fresh Produce & Dairy Shelves -->
+            <rect x="65" y="220" width="290" height="270" rx="16" fill="#ffffff" stroke="#ea580c" stroke-width="5"/>
+            <rect x="55" y="205" width="310" height="44" rx="10" fill="#ea580c"/>
+            <text x="210" y="234" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">新鲜水果 • FRESH FRUITS</text>
+            <text x="210" y="320" text-anchor="middle" font-size="48">🍎🍌🍊🍇</text>
+            <text x="210" y="395" text-anchor="middle" font-size="48">🍉🍓🍍🥝</text>
+
+            <rect x="845" y="220" width="290" height="270" rx="16" fill="#ffffff" stroke="#0284c7" stroke-width="5"/>
+            <rect x="835" y="205" width="310" height="44" rx="10" fill="#0284c7"/>
+            <text x="990" y="234" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="900">牛奶与面包 • DAIRY &amp; BAKERY</text>
+            <text x="990" y="320" text-anchor="middle" font-size="48">🥛🍞🥚🧀</text>
+            <text x="990" y="395" text-anchor="middle" font-size="48">🛒🛍️🥦🥕</text>
+            <rect x="0" y="490" width="1200" height="210" fill="#f97316" opacity="0.35"/>
+          </svg>`;
+
+        case 'chinatown':
+        default:
+          return `<svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" class="w-full h-full">
+            <defs>
+              <linearGradient id="bg-chinatown" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fecdd3"/>
+                <stop offset="55%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f87171"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="700" fill="url(#bg-chinatown)"/>
+            <!-- Festive Red Lantern String Across Sky -->
+            <path d="M 0 55 Q 600 135 1200 55" stroke="#991b1b" stroke-width="4" fill="none"/>
+            <text x="160" y="110" font-size="48">🏮</text>
+            <text x="340" y="125" font-size="48">🏮</text>
+            <text x="860" y="125" font-size="48">🏮</text>
+            <text x="1040" y="110" font-size="48">🏮</text>
+            <!-- Chinatown Shophouse Left & Jewel Waterfall Right -->
+            <rect x="70" y="230" width="270" height="260" rx="14" fill="#fff1f2" stroke="#dc2626" stroke-width="5"/>
+            <text x="205" y="280" text-anchor="middle" fill="#991b1b" font-size="22" font-weight="900">牛车水 • CHINATOWN</text>
+            <text x="205" y="365" text-anchor="middle" font-size="52">🏮🧧🥟</text>
+
+            <rect x="860" y="230" width="270" height="260" rx="14" fill="#ecfeff" stroke="#0891b2" stroke-width="5"/>
+            <text x="995" y="280" text-anchor="middle" fill="#155e75" font-size="22" font-weight="900">星耀樟宜 • JEWEL CHANGI</text>
+            <text x="995" y="365" text-anchor="middle" font-size="52">⛲✈️🌴</text>
+            <rect x="0" y="490" width="1200" height="210" fill="#dc2626" opacity="0.3"/>
+          </svg>`;
+      }
     }
 
     function splitCompoundPinyin(token) {
@@ -968,12 +1307,13 @@ Structure your JSON exactly like this:
       });
     }
 
-    function renderRubyBlockHTML(alignedItems, messageId, size = 'large', forceShowPinyin = false) {
+    function renderRubyBlockHTML(alignedItems, messageId, size = 'large', forceShowPinyin = false, theme = 'dark') {
       const displayPinyin = forceShowPinyin || state.showPinyin;
       const isMessageSpeaking = state.speakingState.messageId === messageId;
       const activeCharIndex = isMessageSpeaking ? state.speakingState.charIndex : null;
+      const isDark = theme === 'dark';
 
-      return `<div class="flex flex-wrap items-end gap-x-1.5 gap-y-2.5 leading-none select-none">
+      return `<div class="flex flex-wrap items-end gap-x-2 gap-y-2.5 leading-none select-none">
         ${alignedItems.map((item) => {
           if (item.isSpace) {
             return `<span class="w-2"></span>`;
@@ -982,43 +1322,161 @@ Structure your JSON exactly like this:
           const isPast = isMessageSpeaking && activeCharIndex !== null && item.index < activeCharIndex;
 
           if (!item.isHanzi) {
-            return `<div class="inline-flex flex-col items-center justify-end px-0.5 pb-1 transition-all duration-150 ${
-              isCurrent ? 'scale-125 text-amber-600' : 'text-slate-700'
+            return `<div class="inline-flex flex-col items-center justify-end px-1 pb-2 transition-all duration-150 ${
+              isCurrent
+                ? 'scale-125 text-amber-400'
+                : isDark
+                ? 'text-slate-300'
+                : 'text-slate-700'
             }">
-              <span class="${size === 'large' ? 'text-xl sm:text-2xl font-black' : 'text-base font-bold'}">${escapeHtml(item.char)}</span>
+              <span class="${size === 'large' ? 'text-2xl sm:text-3xl font-black' : 'text-base font-bold'}">${escapeHtml(item.char)}</span>
               ${displayPinyin ? '<span class="text-xs h-4">&nbsp;</span>' : ''}
             </div>`;
           }
 
           const safeChar = escapeHtml(item.char);
           const safePinyin = escapeHtml(item.pinyin || ' ');
+
+          const tileStyleClasses = isCurrent
+            ? 'bg-gradient-to-b from-amber-300 via-amber-400 to-orange-400 border-amber-200 shadow-[0_0_20px_rgba(251,191,36,0.75)] -translate-y-1.5 scale-110 z-10 ring-4 ring-amber-300/50'
+            : isPast
+            ? isDark
+              ? 'bg-amber-950/80 border-amber-500/80 text-amber-200'
+              : 'bg-amber-100/90 border-amber-300 text-amber-950'
+            : isDark
+            ? 'bg-[#1a1f2c] hover:bg-[#252c3d] border-[#5c5346] hover:border-amber-400 shadow-sm'
+            : 'bg-white/95 hover:bg-amber-50 border-amber-200/80 hover:border-amber-400 shadow-2xs';
+
+          const hanziColorClass = isCurrent
+            ? 'text-slate-950'
+            : isDark
+            ? 'text-white group-hover:text-amber-300'
+            : 'text-slate-900 group-hover:text-amber-700';
+
+          const pinyinColorClass = isCurrent
+            ? 'bg-slate-950 text-amber-300'
+            : isPast
+            ? isDark
+              ? 'text-amber-300'
+              : 'text-amber-800'
+            : isDark
+            ? 'text-[#818cf8] group-hover:text-amber-300'
+            : 'text-indigo-600 group-hover:text-amber-800';
+
           return `<button
             type="button"
             onclick="speakSingleCharacter('${safeChar}', ${item.index}, '${messageId}')"
             title="Click to pronounce ${safeChar} (${safePinyin})"
             class="group relative inline-flex flex-col items-center justify-center rounded-2xl transition-all duration-150 cursor-pointer border-2 ${
-              size === 'large' ? 'px-2.5 py-1.5 min-w-[3.1rem]' : 'px-1.5 py-1 min-w-[2.4rem]'
-            } ${
-              isCurrent
-                ? 'bg-gradient-to-b from-yellow-300 via-amber-300 to-amber-400 border-amber-600 shadow-lg -translate-y-1.5 scale-110 z-10 ring-4 ring-amber-200/80'
-                : isPast
-                ? 'bg-amber-100/90 border-amber-300 text-amber-950'
-                : 'bg-white/95 hover:bg-amber-50 border-amber-200/80 hover:border-amber-400 shadow-2xs'
-            }"
+              size === 'large'
+                ? 'px-3 py-2 min-w-[3.4rem] sm:min-w-[3.8rem]'
+                : 'px-2 py-1 min-w-[2.4rem]'
+            } ${tileStyleClasses}"
           >
             ${isCurrent ? '<span class="absolute -top-2.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full shadow animate-bounce">🔊</span>' : ''}
-            <span class="${size === 'large' ? 'text-2xl sm:text-3xl' : 'text-lg sm:text-xl'} font-black tracking-tight transition-colors ${
-              isCurrent ? 'text-slate-950' : 'text-slate-900 group-hover:text-amber-700'
-            }">${safeChar}</span>
-            ${displayPinyin ? `<span class="${size === 'large' ? 'text-xs sm:text-sm' : 'text-[11px]'} font-extrabold tracking-tight mt-1 px-1 rounded ${
-              isCurrent
-                ? 'bg-amber-950 text-yellow-200'
-                : isPast
-                ? 'text-amber-800'
-                : 'text-indigo-600 group-hover:text-amber-800'
-            }">${safePinyin}</span>` : ''}
+            <span class="${size === 'large' ? 'text-2xl sm:text-[32px]' : 'text-lg sm:text-xl'} font-black tracking-tight transition-colors ${hanziColorClass}">${safeChar}</span>
+            ${displayPinyin ? `<span class="${size === 'large' ? 'text-xs sm:text-sm' : 'text-[11px]'} font-extrabold tracking-tight mt-1.5 px-1 rounded ${pinyinColorClass}">${safePinyin}</span>` : ''}
           </button>`;
         }).join('')}
+      </div>`;
+    }
+
+    function renderStageCharacterActorHTML({ role, name, photoUrl, isSpeaking }) {
+      const isTutor = role === 'tutor';
+      const uploadTrigger = isTutor
+        ? "document.getElementById('tutor-avatar-input').click()"
+        : "document.getElementById('child-avatar-input').click()";
+
+      // Reference-style flat vector upper body + head slot (supports custom photo or illustrated head)
+      if (isTutor) {
+        return `<div class="relative flex flex-col items-center group cursor-pointer ${isSpeaking ? 'actor-talk-bounce' : ''}" onclick="${uploadTrigger}" title="Click to upload custom photo for ${escapeHtml(name)}!">
+          <div class="relative w-48 sm:w-64 h-44 sm:h-52 flex items-end justify-center">
+            <!-- Illustrated Blue-Shirt Conversing Body (matches left figure in reference image) -->
+            <svg viewBox="0 0 260 210" class="w-full h-full drop-shadow-xl overflow-visible">
+              <!-- Extended gesturing right arm & hand -->
+              <path d="M 165 135 L 228 190 L 245 148" stroke="#1d4ed8" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M 235 148 Q 252 132 258 144 Q 248 162 232 155 Z" fill="#fbcfe8"/>
+              <!-- Left arm -->
+              <path d="M 65 135 L 28 205" stroke="#2563eb" stroke-width="28" stroke-linecap="round" fill="none"/>
+              <!-- Blue Torso Shirt -->
+              <path d="M 48 125 Q 115 112 182 125 L 202 210 L 32 210 Z" fill="#0284c7"/>
+              <path d="M 48 125 Q 85 145 115 210 L 32 210 Z" fill="#2563eb" opacity="0.75"/>
+              <!-- Neck -->
+              <path d="M 98 85 L 132 85 L 138 132 L 92 132 Z" fill="#f5d0c5"/>
+              ${!photoUrl ? `
+                <!-- Illustrated Bearded/Friendly Teacher Head (matches reference image when no custom photo is uploaded) -->
+                <path d="M 85 28 Q 68 8 95 10 Q 125 -4 148 18 Q 168 25 154 55 Z" fill="#312e81"/>
+                <path d="M 88 30 Q 118 25 144 38 L 142 92 Q 115 106 90 88 Z" fill="#f5d0c5"/>
+                <!-- Friendly Beard -->
+                <path d="M 92 65 Q 118 72 144 62 Q 148 98 120 104 Q 90 98 92 65 Z" fill="#312e81"/>
+              ` : ''}
+            </svg>
+
+            ${photoUrl ? `
+              <!-- Custom Uploaded Talking Head Photo positioned squarely on the character's shoulders -->
+              <div class="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 ${isSpeaking ? 'border-amber-400 ring-4 ring-amber-300/60 scale-105' : 'border-white'} shadow-2xl bg-amber-100 transition-transform">
+                <img src="${photoUrl}" alt="${escapeHtml(name)}" class="w-full h-full object-cover" />
+              </div>
+            ` : ''}
+
+            <!-- Speaking soundwave badge -->
+            ${isSpeaking ? `
+              <div class="absolute top-2 right-4 bg-amber-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 animate-bounce border-2 border-slate-950">
+                <span>🔊 正在朗读</span>
+              </div>
+            ` : ''}
+
+            <!-- Upload Photo badge on hover -->
+            <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-950/80 text-amber-300 border border-amber-400/60 flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
+              📷
+            </div>
+          </div>
+
+          <div class="-mt-2 z-10 bg-slate-950/90 text-amber-300 border border-amber-400/50 px-3.5 py-1 rounded-full text-xs font-black shadow-md flex items-center gap-1.5">
+            <span>🐼 ${escapeHtml(name)}</span>
+            <span class="text-[10px] text-slate-400 font-bold">(点我换照片)</span>
+          </div>
+        </div>`;
+      }
+
+      // Right Character: Student / Child Partner (Red/Coral shirt figure with raised hand like reference image)
+      return `<div class="relative flex flex-col items-center group cursor-pointer ${isSpeaking ? 'actor-talk-bounce' : ''}" onclick="${uploadTrigger}" title="Click to upload custom photo for ${escapeHtml(name)}!">
+        <div class="relative w-48 sm:w-64 h-44 sm:h-52 flex items-end justify-center">
+          <svg viewBox="0 0 260 210" class="w-full h-full drop-shadow-xl overflow-visible">
+            <!-- Flowing Dark Hair Back Silhouette -->
+            <path d="M 105 18 Q 165 8 188 65 Q 205 125 238 165 L 130 165 Z" fill="#312e81"/>
+            <!-- Raised waving left arm & hand -->
+            <path d="M 88 145 L 42 195 L 66 118" stroke="#dc2626" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M 65 115 Q 52 92 72 88 Q 84 105 72 120 Z" fill="#f5d0c5"/>
+            <!-- Coral / Red Shirt Torso -->
+            <path d="M 72 132 Q 130 120 192 135 L 212 210 L 55 210 Z" fill="#ea580c"/>
+            <path d="M 110 130 L 185 210 L 212 210 L 192 135 Z" fill="#dc2626" opacity="0.75"/>
+            <!-- Neck -->
+            <path d="M 115 88 L 145 88 L 150 135 L 110 135 Z" fill="#f5d0c5"/>
+            ${!photoUrl ? `
+              <!-- Illustrated Head (matches right figure in reference image when no custom photo is uploaded) -->
+              <path d="M 98 35 Q 128 22 155 40 L 152 94 Q 125 108 102 90 Z" fill="#f5d0c5"/>
+              <path d="M 94 38 Q 112 12 158 24 Q 175 45 164 82 Q 145 48 94 38 Z" fill="#312e81"/>
+            ` : ''}
+          </svg>
+
+          ${photoUrl ? `
+            <!-- Custom Uploaded Child Photo on Character Shoulders -->
+            <div class="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 ${isSpeaking ? 'border-sky-400 ring-4 ring-sky-300/60 scale-105' : 'border-white'} shadow-2xl bg-sky-100 transition-transform">
+              <img src="${photoUrl}" alt="${escapeHtml(name)}" class="w-full h-full object-cover" />
+            </div>
+          ` : ''}
+
+          <!-- Upload Photo badge on hover -->
+          <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-950/80 text-sky-300 border border-sky-400/60 flex items-center justify-center text-xs shadow-md group-hover:scale-110 transition-transform">
+            📷
+          </div>
+        </div>
+
+        <div class="-mt-2 z-10 bg-slate-950/90 text-sky-300 border border-sky-400/50 px-3.5 py-1 rounded-full text-xs font-black shadow-md flex items-center gap-1.5">
+          <span>🧒 ${escapeHtml(name)}</span>
+          <span class="text-[10px] text-slate-400 font-bold">(点我换照片)</span>
+        </div>
       </div>`;
     }
 
@@ -1727,8 +2185,13 @@ The child just took/uploaded a PHOTO and asked: "${textToSend}".
       banner.classList.remove('flex');
     }
 
+    function toggleHistoryDrawer() {
+      state.showHistoryDrawer = !state.showHistoryDrawer;
+      renderAll();
+    }
+
     function scrollToChatBottom() {
-      const container = document.getElementById('chat-container');
+      const container = document.getElementById('chat-history-list');
       if (container) {
         container.scrollTop = container.scrollHeight;
       }
@@ -1802,8 +2265,8 @@ The child just took/uploaded a PHOTO and asked: "${textToSend}".
 
       const engBtn = document.getElementById('toggle-english-btn');
       engBtn.textContent = state.showEnglish ? '✓ 英文 English' : '英文 English';
-      engBtn.className = `px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all cursor-pointer ${
-        state.showEnglish ? 'bg-sky-500 text-white border-sky-600 shadow-sm' : 'bg-white text-slate-600 border-slate-300'
+      engBtn.className = `px-3 py-1.5 rounded-full text-xs font-extrabold border transition-all cursor-pointer ${
+        state.showEnglish ? 'bg-sky-500 text-white border-sky-300 shadow-sm' : 'bg-slate-800 text-slate-300 border-slate-700'
       }`;
 
       // 10 Scenarios Grid
@@ -1813,204 +2276,209 @@ The child just took/uploaded a PHOTO and asked: "${textToSend}".
         const isSelected = item.id === sc.id;
         return `<button
           onclick="selectScenario('${item.id}')"
-          class="group text-left p-2 sm:p-2.5 rounded-2xl border-2 transition-all flex items-center gap-2 cursor-pointer ${
+          class="group text-left p-2 rounded-2xl border-2 transition-all flex items-center gap-2 cursor-pointer ${
             isSelected
-              ? 'bg-white border-amber-500 shadow-md ring-3 ring-amber-200/80 -translate-y-0.5'
-              : 'bg-white/85 border-white hover:bg-white hover:border-amber-300 shadow-xs'
+              ? 'bg-slate-800 border-amber-400 shadow-md ring-2 ring-amber-400/40 -translate-y-0.5'
+              : 'bg-slate-950/80 border-slate-800 hover:bg-slate-800/80 hover:border-slate-600'
           }"
         >
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${item.bannerBg} flex items-center justify-center text-xl shadow-xs shrink-0 group-hover:scale-105 transition-transform relative">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${item.bannerBg} flex items-center justify-center text-lg shadow-xs shrink-0 group-hover:scale-105 transition-transform relative">
             ${item.emoji}
-            <span class="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-slate-900/80 text-white text-[9px] font-black flex items-center justify-center">${idx + 1}</span>
+            <span class="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-slate-950 text-amber-300 text-[9px] font-black flex items-center justify-center border border-amber-400/40">${idx + 1}</span>
           </div>
           <div class="min-w-0">
-            <div class="text-[10px] font-extrabold text-indigo-600 truncate">${escapeHtml(item.pinyin)}</div>
-            <div class="font-black text-slate-900 text-xs sm:text-sm truncate">${escapeHtml(item.title)}</div>
-            <div class="text-[10px] font-semibold text-slate-500 truncate">${escapeHtml(item.english)}</div>
+            <div class="text-[10px] font-extrabold text-indigo-400 truncate">${escapeHtml(item.pinyin)}</div>
+            <div class="font-black text-white text-xs truncate">${escapeHtml(item.title)}</div>
+            <div class="text-[10px] font-semibold text-slate-400 truncate">${escapeHtml(item.english)}</div>
           </div>
         </button>`;
       }).join('');
 
-      // Hero Banner
-      const heroBanner = document.getElementById('hero-banner');
-      heroBanner.className = `mb-3 rounded-3xl bg-gradient-to-r ${sc.bannerBg} p-3.5 sm:p-5 text-white shadow-lg border-4 border-white`;
-      document.getElementById('hero-scene-emoji').textContent = `${sc.emoji} 当前场景`;
-      document.getElementById('hero-scene-decor').textContent = sc.sceneDecor;
-      document.getElementById('hero-scene-title').textContent = `${sc.title} (${sc.english})`;
+      document.getElementById('scene-svg-background').innerHTML = getScenarioBackgroundSVG(sc.id);
+      document.getElementById('stage-location-emoji').textContent = sc.emoji;
+      document.getElementById('stage-location-title').textContent = `${sc.title} • ${sc.english}`;
+      document.getElementById('stage-location-decor').textContent = sc.sceneDecor;
+      document.getElementById('history-count-badge').textContent = state.messages.length;
 
-      const latestTutor = [...state.messages].reverse().find((m) => m.sender === 'tutor') || state.messages[0];
-      document.getElementById('hero-latest-quote').textContent = `“${latestTutor?.chinese || ''}”`;
-
-      const stopBtn = document.getElementById('hero-stop-btn');
-      if (state.speakingState.messageId) {
-        stopBtn.classList.remove('hidden');
-        stopBtn.classList.add('flex');
+      // Latest user message pill (if the child has replied in this scenario)
+      const latestUserMsg = [...state.messages].reverse().find((m) => m.sender === 'user');
+      const latestChildBar = document.getElementById('latest-child-reply-bar');
+      if (latestUserMsg) {
+        const safeUserText = escapeHtml(latestUserMsg.text).replace(/'/g, "\\'");
+        latestChildBar.classList.remove('hidden');
+        latestChildBar.classList.add('flex');
+        latestChildBar.innerHTML = `<div class="inline-flex items-center gap-2.5 bg-amber-500/95 text-slate-950 px-4 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-lg border-2 border-amber-200">
+          ${latestUserMsg.photo ? `<img src="${latestUserMsg.photo}" class="w-6 h-6 rounded-full object-cover border border-white" />` : '<span>🗣️</span>'}
+          <span>${escapeHtml(state.childName)}: “${escapeHtml(latestUserMsg.text)}”</span>
+          <button onclick="speakChineseWithHighlight('${safeUserText}', '${latestUserMsg.id}', false)" class="px-2 py-0.5 rounded-full bg-black/15 hover:bg-black/25 text-[11px] cursor-pointer">🔊</button>
+        </div>`;
       } else {
-        stopBtn.classList.add('hidden');
-        stopBtn.classList.remove('flex');
+        latestChildBar.classList.add('hidden');
+        latestChildBar.classList.remove('flex');
       }
 
-      document.getElementById('hero-tutor-talking-head').innerHTML = renderTalkingHeadHTML({
-        role: 'tutor',
-        name: state.tutorName,
-        subtitle: '点击头像换照片',
-        photoUrl: state.tutorPhoto,
-        defaultEmoji: '🐼',
-        isSpeaking: Boolean(state.speakingState.messageId),
-        size: 'hero',
-        allowReset: true
-      });
+      // Render Dark Speech Bubble Card (Exact layout from Reference Image)
+      const latestTutor = [...state.messages].reverse().find((m) => m.sender === 'tutor') || state.messages[0];
+      const darkBubbleEl = document.getElementById('dark-speech-card-content');
 
-      document.getElementById('hero-child-talking-head').innerHTML = renderTalkingHeadHTML({
-        role: 'child',
-        name: state.childName,
-        subtitle: '上传我的照片',
-        photoUrl: state.childPhoto,
-        defaultEmoji: '🧒',
-        isSpeaking: state.isListening,
-        size: 'hero',
-        allowReset: true
-      });
-
-      // Chat Messages
-      const chatContainer = document.getElementById('chat-container');
-      chatContainer.innerHTML = state.messages.map((msg) => {
-        if (msg.sender === 'user') {
-          const userAligned = alignChineseWithPinyin(msg.text, msg.pinyin || '');
-          const hasChineseChars = /[\u4e00-\u9fa5]/.test(msg.text);
-          const isUserSpeaking = state.speakingState.messageId === msg.id;
-          const safeTextJs = escapeHtml(msg.text).replace(/'/g, "\\'");
-
-          return `<div class="flex justify-end items-end gap-3 sm:gap-4">
-            <div class="max-w-[85%] sm:max-w-[74%] bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-3xl rounded-br-sm p-4 shadow-md border-2 border-amber-300 space-y-2.5">
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-xs text-amber-100 font-extrabold">😊 ${escapeHtml(state.childName)} 说 (You asked):</span>
-                ${hasChineseChars ? `<button onclick="speakChineseWithHighlight('${safeTextJs}', '${msg.id}', false)" class="px-2.5 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold cursor-pointer">🔊 读一读</button>` : ''}
-              </div>
-              ${msg.photo ? `<div class="rounded-2xl overflow-hidden border-2 border-white shadow-md bg-slate-900/20 max-w-xs">
-                <img src="${msg.photo}" alt="User photo" class="w-full max-h-52 object-cover" />
-                <div class="bg-black/40 px-2.5 py-1 text-[11px] font-bold text-amber-100">📸 我拍的照片 • My Photo</div>
-              </div>` : ''}
-              ${hasChineseChars
-                ? `<div class="bg-white/95 rounded-2xl p-2.5 text-slate-900">${renderRubyBlockHTML(userAligned, msg.id, 'small')}</div>`
-                : `<p class="text-base sm:text-lg font-extrabold leading-snug">${escapeHtml(msg.text)}</p>`
-              }
-            </div>
-            <div class="shrink-0">
-              ${renderTalkingHeadHTML({
-                role: 'child',
-                name: state.childName,
-                photoUrl: state.childPhoto,
-                defaultEmoji: '🧒',
-                isSpeaking: isUserSpeaking,
-                size: 'chat'
-              })}
-            </div>
-          </div>`;
-        }
-
-        // Tutor Message
-        const alignedItems = alignChineseWithPinyin(msg.chinese, msg.pinyin);
-        const isThisSpeaking = state.speakingState.messageId === msg.id;
+      if (state.isLoading) {
+        darkBubbleEl.innerHTML = `<div class="py-10 flex flex-col items-center justify-center text-center space-y-3">
+          <div class="text-4xl animate-bounce">🐼✨</div>
+          <div class="text-base sm:text-lg font-black text-amber-300">
+            ${escapeHtml(state.tutorName)}正在看和想... (Preparing Chinese &amp; Hanyu Pinyin...)
+          </div>
+        </div>`;
+      } else if (latestTutor) {
+        const alignedItems = alignChineseWithPinyin(latestTutor.chinese, latestTutor.pinyin);
+        const isThisSpeaking = state.speakingState.messageId === latestTutor.id;
         const isPlayingNormal = isThisSpeaking && state.speakingState.mode === 'normal';
         const isPlayingSlow = isThisSpeaking && state.speakingState.mode === 'slow';
-        const safeChineseJs = escapeHtml(msg.chinese).replace(/'/g, "\\'");
+        const safeChineseJs = escapeHtml(latestTutor.chinese).replace(/'/g, "\\'");
 
-        const detectedWordsHtml = (msg.detectedWords && msg.detectedWords.length > 0)
-          ? `<div class="bg-amber-100/70 border-2 border-amber-300 rounded-2xl p-3 space-y-2">
-              <div class="text-xs font-black text-amber-950">📸 照片里的新词语 • Words Spotted in Your Picture:</div>
+        const detectedWordsHtml = (latestTutor.detectedWords && latestTutor.detectedWords.length > 0)
+          ? `<div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-3 space-y-2">
+              <div class="text-xs font-black text-amber-300">📸 照片里的新词语 • Words Spotted in Your Picture:</div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                ${msg.detectedWords.map((dw, dwIdx) => {
-                  const dwId = `${msg.id}-dw-${dwIdx}`;
+                ${latestTutor.detectedWords.map((dw, dwIdx) => {
+                  const dwId = `${latestTutor.id}-dw-${dwIdx}`;
                   const dwAligned = alignChineseWithPinyin(dw.hanzi, dw.pinyin);
                   const safeDwHanzi = escapeHtml(dw.hanzi).replace(/'/g, "\\'");
-                  return `<div class="bg-white rounded-2xl p-2.5 border border-amber-300 shadow-xs flex flex-col justify-between gap-2">
+                  return `<div class="bg-[#182030] rounded-2xl p-2.5 border border-slate-700 flex flex-col justify-between gap-2">
                     <div class="flex items-center justify-between gap-1">
                       <span class="text-2xl">${escapeHtml(dw.emoji || '✨')}</span>
-                      <button type="button" onclick="speakChineseWithHighlight('${safeDwHanzi}', '${dwId}', false)" class="px-2 py-1 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-[11px] font-black cursor-pointer">🔊 读</button>
+                      <button type="button" onclick="speakChineseWithHighlight('${safeDwHanzi}', '${dwId}', false)" class="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-black cursor-pointer">🔊 读</button>
                     </div>
-                    ${renderRubyBlockHTML(dwAligned, dwId, 'small', true)}
-                    <div class="text-xs font-bold text-slate-600 border-t border-slate-100 pt-1">🇬🇧 ${escapeHtml(dw.meaning)}</div>
+                    ${renderRubyBlockHTML(dwAligned, dwId, 'small', true, 'dark')}
+                    <div class="text-xs font-bold text-sky-200 border-t border-slate-800 pt-1">🇬🇧 ${escapeHtml(dw.meaning)}</div>
                   </div>`;
                 }).join('')}
               </div>
             </div>`
           : '';
 
-        return `<div class="flex items-start gap-3 sm:gap-4">
-          <div class="shrink-0">
-            ${renderTalkingHeadHTML({
-              role: 'tutor',
-              name: state.tutorName,
-              photoUrl: state.tutorPhoto,
-              defaultEmoji: '🐼',
-              isSpeaking: isThisSpeaking,
-              size: 'chat'
-            })}
-          </div>
-          <div class="flex-1 max-w-[90%] sm:max-w-[82%] bg-gradient-to-b from-slate-50 to-amber-50/40 border-2 border-amber-200 rounded-3xl rounded-tl-sm p-3.5 sm:p-5 shadow-md space-y-3.5">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-amber-200/60 pb-2.5">
-              <span class="text-[11px] font-black uppercase tracking-wider text-amber-800 bg-amber-100/90 px-2.5 py-1 rounded-full border border-amber-300">
-                👆 点字发音 • 跟着大头像读
-              </span>
-              <div class="flex items-center gap-2">
-                <button
-                  onclick="speakChineseWithHighlight('${safeChineseJs}', '${msg.id}', false)"
-                  class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black transition-all shadow-sm cursor-pointer ${
-                    isPlayingNormal
-                      ? 'bg-rose-500 text-white ring-4 ring-rose-200 scale-105'
-                      : 'bg-amber-400 hover:bg-amber-500 text-slate-950 border border-amber-500'
-                  }"
-                >
-                  🔊 <span>${isPlayingNormal ? '正在读... 停止' : '听一听 Listen'}</span>
-                </button>
-                <button
-                  onclick="speakChineseWithHighlight('${safeChineseJs}', '${msg.id}', true)"
-                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black transition-all shadow-sm cursor-pointer ${
-                    isPlayingSlow
-                      ? 'bg-indigo-600 text-white ring-4 ring-indigo-200 scale-105'
-                      : 'bg-white hover:bg-indigo-50 text-indigo-700 border-2 border-indigo-200'
-                  }"
-                >
-                  🐢 <span>${isPlayingSlow ? '慢读中... 停止' : '慢速读 Slow'}</span>
-                </button>
-              </div>
+        darkBubbleEl.innerHTML = `
+          <!-- Top Header Bar Inside Dark Bubble (matches Reference Image) -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <span class="text-xs font-black tracking-wide text-amber-400 bg-[#272015] px-3.5 py-1.5 rounded-full border border-amber-600/50">
+              👆 点字发音 • 跟着大头像读
+            </span>
+            <div class="flex items-center gap-2">
+              <button
+                onclick="speakChineseWithHighlight('${safeChineseJs}', '${latestTutor.id}', false)"
+                class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black transition-all shadow-md cursor-pointer ${
+                  isPlayingNormal
+                    ? 'bg-rose-500 text-white ring-4 ring-rose-400/40 scale-105'
+                    : 'bg-[#f59e0b] hover:bg-[#fbbf24] text-slate-950'
+                }"
+              >
+                🔊 <span>${isPlayingNormal ? '正在读... 停止' : '听一听 Listen'}</span>
+              </button>
+              <button
+                onclick="speakChineseWithHighlight('${safeChineseJs}', '${latestTutor.id}', true)"
+                class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                  isPlayingSlow
+                    ? 'bg-indigo-600 text-white ring-4 ring-indigo-400/40 scale-105'
+                    : 'bg-[#171c28] hover:bg-[#22293a] text-[#a5b4fc] border border-[#3b4254]'
+                }"
+              >
+                🐢 <span>${isPlayingSlow ? '慢读中... 停止' : '慢速读 Slow'}</span>
+              </button>
             </div>
-            <div class="py-1">
-              ${renderRubyBlockHTML(alignedItems, msg.id, 'large')}
-            </div>
-            ${detectedWordsHtml}
-            ${state.showEnglish ? `<div class="bg-sky-50 border-2 border-sky-200/80 rounded-2xl px-3.5 py-2.5 flex items-start gap-2">
-              <span class="text-base leading-none mt-0.5">🇬🇧</span>
-              <div>
-                <span class="text-[10px] font-black uppercase tracking-wider text-sky-600 block">英文意思 • English Meaning</span>
-                <p class="text-sm sm:text-base font-bold text-sky-950 leading-snug">${escapeHtml(msg.english)}</p>
-              </div>
-            </div>` : ''}
-            ${msg.encouragement ? `<div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-3.5 py-2.5 flex items-start gap-2">
-              <span class="text-sm">✨</span>
-              <div class="text-xs sm:text-sm text-emerald-950 font-bold leading-snug">${escapeHtml(msg.encouragement)}</div>
-            </div>` : ''}
           </div>
-        </div>`;
-      }).join('') + (state.isLoading ? `
-        <div class="flex items-center gap-3">
-          ${renderTalkingHeadHTML({
-            role: 'tutor',
-            name: state.tutorName,
-            photoUrl: state.tutorPhoto,
-            defaultEmoji: '🐼',
-            isSpeaking: true,
-            size: 'chat'
-          })}
-          <div class="bg-amber-50 border-2 border-amber-300 rounded-3xl px-5 py-3.5 text-sm font-black text-amber-900 flex items-center gap-2.5 shadow-sm">
-            <span class="animate-spin">⏳</span>
-            <span>${escapeHtml(state.tutorName)}正在看和想... (Analyzing & preparing Chinese + Pinyin...)</span>
-          </div>
-        </div>
-      ` : '');
 
-      // Quick Replies Grid
+          <!-- Character-by-Character Dark Rounded Tiles with Pinyin Directly Underneath -->
+          <div class="py-1.5">
+            ${renderRubyBlockHTML(alignedItems, latestTutor.id, 'large', false, 'dark')}
+          </div>
+
+          ${detectedWordsHtml}
+
+          <!-- Dark Slate-Blue English Meaning Box (Matches Reference Image) -->
+          ${state.showEnglish ? `
+            <div class="bg-[#131d2e] border border-[#293f5c] rounded-2xl px-4 py-3 flex items-start gap-3">
+              <span class="text-xs font-black text-slate-300 mt-1 shrink-0">GB</span>
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-[#38bdf8] block">
+                  英文意思 • ENGLISH MEANING
+                </span>
+                <p class="text-sm sm:text-base font-extrabold text-white leading-snug mt-0.5">
+                  ${escapeHtml(latestTutor.english)}
+                </p>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Dark Forest-Green Encouragement / Tip Bar (Matches Reference Image) -->
+          ${latestTutor.encouragement ? `
+            <div class="bg-[#0f241d] border border-[#1f4e3d] rounded-2xl px-4 py-2.5 flex items-center gap-2.5">
+              <span class="text-sm">✨</span>
+              <div class="text-xs sm:text-sm text-[#d1fae5] font-extrabold leading-snug">
+                ${escapeHtml(latestTutor.encouragement)}
+              </div>
+            </div>
+          ` : ''}
+        `;
+      }
+
+      // Render Two Conversing Stage Actors at the Bottom of the Scene
+      const isTutorSpeakingNow = Boolean(
+        state.speakingState.messageId &&
+        !String(state.speakingState.messageId).startsWith('user-')
+      );
+      const isChildSpeakingNow = Boolean(
+        state.isListening ||
+        (state.speakingState.messageId && String(state.speakingState.messageId).startsWith('user-'))
+      );
+
+      document.getElementById('stage-left-tutor-actor').innerHTML = renderStageCharacterActorHTML({
+        role: 'tutor',
+        name: state.tutorName,
+        photoUrl: state.tutorPhoto,
+        isSpeaking: isTutorSpeakingNow
+      });
+
+      document.getElementById('stage-right-child-actor').innerHTML = renderStageCharacterActorHTML({
+        role: 'child',
+        name: state.childName,
+        photoUrl: state.childPhoto,
+        isSpeaking: isChildSpeakingNow
+      });
+
+      // Conversation History Drawer
+      const historyDrawer = document.getElementById('history-drawer');
+      if (state.showHistoryDrawer) {
+        historyDrawer.classList.remove('hidden');
+        historyDrawer.classList.add('flex');
+        const historyList = document.getElementById('chat-history-list');
+        historyList.innerHTML = state.messages.map((msg) => {
+          if (msg.sender === 'user') {
+            return `<div class="p-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 text-amber-100 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                ${msg.photo ? `<img src="${msg.photo}" class="w-10 h-10 rounded-xl object-cover border border-white" />` : '<span>🧒</span>'}
+                <div>
+                  <div class="text-[11px] font-bold text-amber-300">${escapeHtml(state.childName)}</div>
+                  <div class="text-sm font-black text-white">${escapeHtml(msg.text)}</div>
+                </div>
+              </div>
+            </div>`;
+          }
+          const aligned = alignChineseWithPinyin(msg.chinese, msg.pinyin);
+          const safeCh = escapeHtml(msg.chinese).replace(/'/g, "\\'");
+          return `<div class="p-3.5 rounded-2xl bg-[#111722] border border-slate-700 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-400">🐼 ${escapeHtml(state.tutorName)}</span>
+              <button onclick="speakChineseWithHighlight('${safeCh}', '${msg.id}', false)" class="px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black cursor-pointer">🔊 听一听</button>
+            </div>
+            ${renderRubyBlockHTML(aligned, msg.id, 'small', false, 'dark')}
+            <div class="text-xs font-bold text-sky-300">🇬🇧 ${escapeHtml(msg.english)}</div>
+          </div>`;
+        }).join('');
+      } else {
+        historyDrawer.classList.add('hidden');
+        historyDrawer.classList.remove('flex');
+      }
+
+      // Quick Replies Grid (Dark themed to match the stage)
       const qrGrid = document.getElementById('quick-replies-grid');
       qrGrid.innerHTML = sc.quickReplies.map((qr, idx) => {
         const qrId = `qr-${sc.id}-${idx}`;
@@ -2018,22 +2486,22 @@ The child just took/uploaded a PHOTO and asked: "${textToSend}".
         const isQrSpeaking = state.speakingState.messageId === qrId;
         const safeQrChinese = escapeHtml(qr.chinese).replace(/'/g, "\\'");
 
-        return `<div class="bg-white/95 hover:bg-amber-50/70 border-2 border-amber-300 hover:border-amber-500 rounded-2xl p-2.5 shadow-sm transition-all flex flex-col justify-between gap-2">
-          ${renderRubyBlockHTML(qrAligned, qrId, 'small')}
-          <div class="flex items-center justify-between gap-2 pt-1 border-t border-amber-100">
-            ${state.showEnglish ? `<span class="text-[11px] font-bold text-slate-500 truncate">${escapeHtml(qr.english)}</span>` : '<span></span>'}
+        return `<div class="bg-[#111722] hover:bg-[#161f2e] border-2 border-slate-700 hover:border-amber-400 rounded-2xl p-3 shadow-md transition-all flex flex-col justify-between gap-2.5">
+          ${renderRubyBlockHTML(qrAligned, qrId, 'small', false, 'dark')}
+          <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-800">
+            ${state.showEnglish ? `<span class="text-[11px] font-bold text-slate-300 truncate">${escapeHtml(qr.english)}</span>` : '<span></span>'}
             <div class="flex items-center gap-1.5 shrink-0">
               <button
                 type="button"
                 onclick="speakChineseWithHighlight('${safeQrChinese}', '${qrId}', false)"
-                class="px-2 py-1 rounded-xl text-[11px] font-black cursor-pointer ${
-                  isQrSpeaking ? 'bg-rose-500 text-white' : 'bg-amber-100 hover:bg-amber-200 text-amber-900'
+                class="px-2.5 py-1 rounded-xl text-[11px] font-black cursor-pointer ${
+                  isQrSpeaking ? 'bg-rose-500 text-white' : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600'
                 }"
               >🔊 听</button>
               <button
                 type="button"
                 onclick="handleSendMessage('${safeQrChinese}')"
-                class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] font-black shadow-xs cursor-pointer"
+                class="px-3 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 text-[11px] font-black shadow-xs cursor-pointer"
               >发送 ➤</button>
             </div>
           </div>
