@@ -137,12 +137,12 @@
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full">
                         <span class="animate-pulse w-3 h-3 rounded-full bg-rose-500"></span>
-                        <span class="font-black text-[10px] sm:text-xs tracking-widest text-rose-400 uppercase">Practice Mode</span>
+                        <span id="hud-role-label" class="font-black text-[10px] sm:text-xs tracking-widest text-rose-400 uppercase">Practice Mode</span>
                     </div>
-                    <button onclick="stopPractice()" class="text-xs font-bold text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg transition-colors">End Practice ✕</button>
+                    <button onclick="stopPractice()" class="text-xs font-bold text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">End Practice ✕</button>
                 </div>
                 
-                <div id="hud-status" class="text-center p-4 sm:p-6 bg-slate-800 rounded-2xl border-2 border-slate-700 min-h-[120px] flex flex-col items-center justify-center relative overflow-hidden">
+                <div id="hud-status" class="text-center p-4 sm:p-6 bg-slate-800 rounded-2xl border-2 border-slate-700 min-h-[140px] flex flex-col items-center justify-center relative overflow-hidden">
                     <!-- Status text, mic button, or feedback shows here -->
                 </div>
             </div>
@@ -206,6 +206,13 @@
         // 👉 PASTE YOUR OPENROUTER API KEY DIRECTLY BETWEEN THE QUOTES BELOW:
         const HARDCODED_OPENROUTER_KEY = 'sk-or-v1-YOUR_KEY_HERE';
 
+        function getInitialApiKey() {
+            if (HARDCODED_OPENROUTER_KEY && HARDCODED_OPENROUTER_KEY !== 'sk-or-v1-YOUR_KEY_HERE' && HARDCODED_OPENROUTER_KEY.trim() !== '') {
+                return HARDCODED_OPENROUTER_KEY.trim();
+            }
+            return localStorage.getItem('OPENROUTER_API_KEY') || '';
+        }
+
         const state = {
             view: 'home',
             activeScenario: null,
@@ -213,18 +220,22 @@
             currentLineIndex: 0,
             isPracticing: false,
             isPlayingFull: false,
-            apiKey: HARDCODED_OPENROUTER_KEY || localStorage.getItem('OPENROUTER_API_KEY') || '',
+            apiKey: getInitialApiKey(),
             isRecording: false,
+            lastTranscript: '',
             recognition: null,
             audioUnlocked: false,
+            activeTimer: null,
+            fallbackSpeechTimeout: null,
+            zhVoice: null,
             scripts: [
                 {
                     id: 'canteen',
                     title: '食堂买饭 (Buying Food at Canteen)',
                     bgPattern: 'bg-gradient-to-br from-emerald-100 to-cyan-100 bg-pattern-dots',
                     roles: [
-                        { id: 'A', name: '食堂安娣', avatar: '👩‍🍳', color: 'bg-emerald-500', align: 'left', pitch: 1.3 },
-                        { id: 'B', name: '小明', avatar: '👦', color: 'bg-sky-500', align: 'right', pitch: 0.9 }
+                        { id: 'A', name: '食堂安娣', avatar: '👩‍🍳', color: 'bg-emerald-500', align: 'left', pitch: 1.2 },
+                        { id: 'B', name: '小明', avatar: '👦', color: 'bg-sky-500', align: 'right', pitch: 0.95 }
                     ],
                     lines: [
                         { speaker: 'A', zh: '小同学，你要吃什么？', py: 'Xiǎo tóng xué, nǐ yào chī shén me?', en: 'Little student, what do you want to eat?' },
@@ -239,7 +250,7 @@
                     bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-waves',
                     roles: [
                         { id: 'A', name: '管理员', avatar: '👨‍🏫', color: 'bg-purple-500', align: 'left', pitch: 1.0 },
-                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-rose-400', align: 'right', pitch: 1.4 }
+                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-rose-400', align: 'right', pitch: 1.3 }
                     ],
                     lines: [
                         { speaker: 'B', zh: '叔叔，我要借这两本书。', py: 'Shū shu, wǒ yào jiè zhè liǎng běn shū.', en: 'Uncle, I want to borrow these two books.' },
@@ -254,7 +265,7 @@
                     bgPattern: 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots',
                     roles: [
                         { id: 'A', name: '文华', avatar: '👦', color: 'bg-amber-500', align: 'left', pitch: 1.0 },
-                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.5 }
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.35 }
                     ],
                     lines: [
                         { speaker: 'A', zh: '丽丽，我们一起去荡秋千吧！', py: 'Lì li, wǒ men yì qǐ qù dàng qiū qiān ba!', en: 'Lili, let\'s go play on the swings together!' },
@@ -266,13 +277,30 @@
             ]
         };
 
-        // Initialization
+        // Preload Chinese TTS Voices for iPad Safari & Android Chrome
+        function loadVoices() {
+            if (!('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices();
+            if (voices && voices.length > 0) {
+                state.zhVoice =
+                    voices.find(v => v.lang === 'zh-SG' || v.lang === 'zh_SG') ||
+                    voices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN' || v.lang === 'cmn-Hans-CN') ||
+                    voices.find(v => v.lang && v.lang.toLowerCase().startsWith('zh'));
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRecognition) {
                 state.recognition = new SpeechRecognition();
                 state.recognition.lang = 'zh-CN';
-                state.recognition.interimResults = false;
+                state.recognition.continuous = false;
+                state.recognition.interimResults = true;
                 state.recognition.maxAlternatives = 1;
             } else {
                 console.warn("Speech recognition is not supported in this browser.");
@@ -281,6 +309,7 @@
 
         window.onload = () => {
             initSpeechRecognition();
+            loadVoices();
             renderScenarioList();
             if (!state.apiKey) {
                 document.getElementById('modal-settings').classList.remove('hidden');
@@ -301,7 +330,7 @@
         // HTML Generators
         function generateRubyHTML(zh, py, lineIndex) {
             const zhChars = Array.from(zh);
-            const pyWords = py.trim().split(/\s+/);
+            const pyWords = py.trim().replace(/([，。！？、：；,.!?])/g, ' ').trim().split(/\s+/);
             
             let pyIndex = 0;
             let html = '';
@@ -318,7 +347,7 @@
                     const pinyin = pyWords[pyIndex] || '';
                     pyIndex++;
                     html += `
-                        <div class="char-ruby bg-white/50 border border-transparent" id="ruby-${lineIndex}-${i}">
+                        <div class="char-ruby bg-white/60 border border-transparent" id="ruby-${lineIndex}-${i}">
                             <span class="py">${pinyin}</span>
                             <span class="zh">${char}</span>
                         </div>
@@ -347,6 +376,21 @@
             `).join('');
         }
 
+        function updateRoleSelectorUI() {
+            const sc = state.activeScenario;
+            if (!sc) return;
+            const roleContainer = document.getElementById('role-selector');
+            roleContainer.innerHTML = `<span class="text-[10px] font-black uppercase text-slate-400 pl-2">Practice as:</span>` + sc.roles.map(r => {
+                const isSelected = state.isPracticing && state.practiceRole === r.id;
+                const ringClass = isSelected ? 'ring-4 ring-amber-400 scale-105' : ' opacity-90 hover:opacity-100';
+                return `
+                    <button onclick="startPractice('${r.id}')" class="px-4 py-2 rounded-xl text-white font-black text-xs ${r.color} ${ringClass} hover:scale-105 shadow-sm transition-all flex items-center gap-1.5">
+                        <span class="text-sm">${r.avatar}</span> ${r.name} ${isSelected ? '✓' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
         function renderPracticeView() {
             const sc = state.activeScenario;
             if (!sc) return;
@@ -358,16 +402,11 @@
             chatStage.className = `flex-1 rounded-[2rem] p-4 sm:p-6 shadow-inner border-4 border-white overflow-y-auto flex flex-col gap-6 scroll-smooth transition-colors duration-500 ${sc.bgPattern}`;
 
             // Render Role Selector
-            const roleContainer = document.getElementById('role-selector');
-            roleContainer.innerHTML = `<span class="text-[10px] font-black uppercase text-slate-400 pl-2">Practice as:</span>` + sc.roles.map(r => `
-                <button onclick="startPractice('${r.id}')" class="px-4 py-2 rounded-xl text-white font-black text-xs ${r.color} hover:scale-105 shadow-sm transition-transform flex items-center gap-1.5">
-                    <span class="text-sm">${r.avatar}</span> ${r.name}
-                </button>
-            `).join('');
+            updateRoleSelectorUI();
 
             // Render Chat Lines with Avatars
             chatStage.innerHTML = sc.lines.map((line, index) => {
-                const role = sc.roles.find(r => r.id === line.speaker);
+                const role = sc.roles.find(r => r.id === line.speaker) || sc.roles[0];
                 const isLeft = role.align === 'left';
                 const bubbleClass = isLeft ? 'chat-bubble-a' : 'chat-bubble-b';
                 
@@ -376,7 +415,7 @@
                         
                         <!-- Avatar / Talking Head -->
                         <div class="flex flex-col items-center gap-1.5 shrink-0">
-                            <div id="avatar-${index}" class="avatar-base w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-white shadow-md flex items-center justify-center text-2xl sm:text-3xl ${role.color} transition-all duration-300 relative">
+                            <div id="avatar-${index}" class="avatar-base w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-white shadow-md flex items-center justify-center text-2xl sm:text-3xl ${role.color} transition-all duration-300 relative cursor-pointer" onclick="handleBubbleClick(${index})">
                                 ${role.avatar}
                                 <div class="speaking-badge hidden absolute -top-2 -right-2 bg-amber-400 border-2 border-white text-white text-[10px] w-6 h-6 items-center justify-center rounded-full shadow-md animate-bounce">
                                     🔊
@@ -388,8 +427,11 @@
                         </div>
 
                         <!-- Speech Bubble -->
-                        <div class="flex flex-col gap-1 max-w-[70%] sm:max-w-[75%] relative">
-                            <div class="p-4 sm:p-5 ${bubbleClass} cursor-pointer shadow-sm hover:shadow-md transition-shadow" onclick="speakLine('${line.zh}', '${line.speaker}', ${index})">
+                        <div class="flex flex-col gap-1 max-w-[75%] sm:max-w-[78%] relative">
+                            <div class="p-4 sm:p-5 ${bubbleClass} cursor-pointer shadow-sm hover:shadow-md transition-all" onclick="handleBubbleClick(${index})">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[10px] font-black uppercase tracking-wider text-indigo-500 bg-indigo-50 px-2.5 py-0.5 rounded-full">🔊 Tap to Listen</span>
+                                </div>
                                 <div class="mb-3">${generateRubyHTML(line.zh, line.py, index)}</div>
                                 <div class="border-t border-slate-200/60 pt-2 text-xs font-bold text-slate-500 text-left">
                                     🇬🇧 ${line.en}
@@ -404,16 +446,28 @@
             chatStage.scrollTop = 0;
         }
 
+        function handleBubbleClick(lineIndex) {
+            if (state.isRecording) return;
+            if (state.isPlayingFull) {
+                stopStoryPlayback();
+            }
+            const line = state.activeScenario.lines[lineIndex];
+            if (!line) return;
+            speakLine(line.zh, line.speaker, lineIndex);
+        }
+
         // Navigation
         function navigate(viewId) {
             state.view = viewId;
+            stopStoryPlayback();
+            stopPractice();
+
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-practice').classList.add('hidden');
             document.getElementById('view-practice').classList.remove('flex');
             
             if (viewId === 'home') {
                 document.getElementById('view-home').classList.remove('hidden');
-                stopPractice();
                 renderScenarioList();
             } else if (viewId === 'practice') {
                 document.getElementById('view-practice').classList.remove('hidden');
@@ -428,7 +482,19 @@
         }
 
         // Speech & Highlight Logic
+        function clearSpeechTimers() {
+            if (state.activeTimer) {
+                clearInterval(state.activeTimer);
+                state.activeTimer = null;
+            }
+            if (state.fallbackSpeechTimeout) {
+                clearTimeout(state.fallbackSpeechTimeout);
+                state.fallbackSpeechTimeout = null;
+            }
+        }
+
         function clearAllHighlights() {
+            clearSpeechTimers();
             document.querySelectorAll('.char-ruby').forEach(el => {
                 el.classList.remove('highlighted-char');
                 el.classList.remove('border-amber-300');
@@ -440,14 +506,19 @@
             document.querySelectorAll('.avatar-base').forEach(el => el.classList.remove('avatar-speaking'));
         }
 
+        function cancelBrowserSpeech() {
+            clearSpeechTimers();
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                } catch (e) {}
+            }
+        }
+
         function speakLine(text, speakerId, lineIndex, onEndCallback) {
-            // Cancel current and reset iOS audio queue
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.resume(); 
-            
             clearAllHighlights();
 
-            // Highlight Active Bubble & Avatar
+            // Highlight Active Bubble & Avatar immediately
             const lineEl = document.getElementById(`line-${lineIndex}`);
             if (lineEl) {
                 const bubble = lineEl.querySelector('.chat-bubble-a, .chat-bubble-b');
@@ -459,94 +530,204 @@
                 lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'zh-CN';
-            utterance.rate = 0.8;
-            
-            const role = state.activeScenario.roles.find(r => r.id === speakerId);
-            utterance.pitch = role ? role.pitch : 1.0;
+            let hasFinished = false;
+            const finishLine = () => {
+                if (hasFinished) return;
+                hasFinished = true;
+                clearAllHighlights();
+                if (onEndCallback) onEndCallback();
+            };
 
-            // Character highlighting simulation
+            // Karaoke character-by-character highlight stepper
+            const chars = Array.from(text);
             let currChar = 0;
-            const timer = setInterval(() => {
-                while(currChar < text.length && /[，。！？、：；,.!?\s]/.test(text[currChar])) {
+            state.activeTimer = setInterval(() => {
+                while (currChar < chars.length && /[，。！？、：；,.!?\s]/.test(chars[currChar])) {
                     currChar++;
                 }
                 
-                if (currChar < text.length) {
-                    // Remove highlight from previous
+                if (currChar < chars.length) {
                     document.querySelectorAll('.char-ruby').forEach(el => el.classList.remove('highlighted-char'));
-                    // Add to current
                     const target = document.getElementById(`ruby-${lineIndex}-${currChar}`);
                     if (target) {
                         target.classList.add('highlighted-char');
                         target.classList.add('border-amber-300');
                     }
                     currChar++;
+                } else {
+                    clearInterval(state.activeTimer);
+                    state.activeTimer = null;
                 }
-            }, 260); 
+            }, 270);
 
-            utterance.onend = () => {
-                clearInterval(timer);
-                clearAllHighlights();
-                if (onEndCallback) onEndCallback();
-            };
-            
-            utterance.onerror = () => {
-                clearInterval(timer);
-                clearAllHighlights();
-                if (onEndCallback) onEndCallback();
-            };
+            // Safety fallback timer so iPad/Android never hangs if TTS onend doesn't fire
+            const estimatedDurationMs = Math.max(2200, chars.length * 320 + 900);
+            state.fallbackSpeechTimeout = setTimeout(() => {
+                finishLine();
+            }, estimatedDurationMs);
 
-            // Speak immediately
-            window.speechSynthesis.speak(utterance);
-        }
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
 
-        // iOS/iPadOS Audio Context Unlocker
-        function unlockAudio() {
-            if (!state.audioUnlocked && 'speechSynthesis' in window) {
-                const unlockMsg = new SpeechSynthesisUtterance('');
-                window.speechSynthesis.speak(unlockMsg);
-                state.audioUnlocked = true;
+            try {
+                if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                    window.speechSynthesis.cancel();
+                }
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                // Keep global reference so iOS Safari / Android Chrome GC doesn't collect it mid-speech
+                window._activeUtterance = utterance;
+
+                utterance.lang = 'zh-CN';
+                if (!state.zhVoice) loadVoices();
+                if (state.zhVoice) utterance.voice = state.zhVoice;
+                utterance.rate = 0.85;
+                
+                const role = state.activeScenario
+                    ? state.activeScenario.roles.find(r => r.id === speakerId)
+                    : null;
+                utterance.pitch = role ? role.pitch : 1.0;
+
+                utterance.onend = () => {
+                    finishLine();
+                };
+                
+                utterance.onerror = () => {
+                    // Let the visual timer finish naturally if TTS errored immediately, or finish now
+                    if (!state.activeTimer) {
+                        finishLine();
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } catch (err) {
+                console.warn("TTS playback fallback:", err);
             }
         }
 
-        // Full Story Playback
+        // Full Story Playback ("Listen to Story" Button)
+        function stopStoryPlayback() {
+            state.isPlayingFull = false;
+            cancelBrowserSpeech();
+            clearAllHighlights();
+            const btn = document.getElementById('btn-play-all');
+            if (btn) {
+                btn.innerHTML = '<span class="text-lg">▶️</span> Listen to Story';
+                btn.className = 'px-5 py-2.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-2xl font-black text-xs flex items-center gap-2 transition-colors';
+            }
+        }
+
         function playFullConversation() {
-            unlockAudio();
-            
+            // If already playing, toggle stop
             if (state.isPlayingFull) {
-                window.speechSynthesis.cancel();
-                state.isPlayingFull = false;
-                document.getElementById('btn-play-all').innerHTML = '<span class="text-lg">▶️</span> Listen to Story';
+                stopStoryPlayback();
+                return;
             }
-            
-            document.getElementById('practice-hud').classList.remove('hidden');
-            document.getElementById('practice-hud').classList.add('flex');
+
+            // Stop practice mode if active
+            if (state.isPracticing) {
+                stopPractice();
+            }
+
+            if (!state.activeScenario || !state.activeScenario.lines.length) return;
+
+            state.isPlayingFull = true;
+            const btn = document.getElementById('btn-play-all');
+            if (btn) {
+                btn.innerHTML = '<span class="text-lg">⏹️</span> Stop Story';
+                btn.className = 'px-5 py-2.5 bg-rose-500 text-white hover:bg-rose-600 rounded-2xl font-black text-xs flex items-center gap-2 transition-colors shadow-md';
+            }
+
+            let playIndex = 0;
+            const playNextStoryLine = () => {
+                if (!state.isPlayingFull || !state.activeScenario) return;
+                if (playIndex >= state.activeScenario.lines.length) {
+                    stopStoryPlayback();
+                    return;
+                }
+
+                const line = state.activeScenario.lines[playIndex];
+                const currentIdx = playIndex;
+                playIndex++;
+
+                speakLine(line.zh, line.speaker, currentIdx, () => {
+                    if (state.isPlayingFull) {
+                        setTimeout(playNextStoryLine, 350);
+                    }
+                });
+            };
+
+            playNextStoryLine();
+        }
+
+        // Interactive Roleplay Practice Mode
+        function startPractice(roleId) {
+            stopStoryPlayback();
+            cancelBrowserSpeech();
+
+            if (state.recognition && state.isRecording) {
+                try { state.recognition. abort(); } catch (e) {}
+                state.isRecording = false;
+            }
+
+            state.isPracticing = true;
+            state.practiceRole = roleId;
+            state.currentLineIndex = 0;
+
+            updateRoleSelectorUI();
+
+            const roleObj = state.activeScenario.roles.find(r => r.id === roleId);
+            const roleLabel = document.getElementById('hud-role-label');
+            if (roleLabel && roleObj) {
+                roleLabel.textContent = `Practicing as ${roleObj.avatar} ${roleObj.name}`;
+            }
+
+            const hud = document.getElementById('practice-hud');
+            hud.classList.remove('hidden');
+            hud.classList.add('flex');
+
             clearAllHighlights();
             processPracticeLine();
         }
 
-        function startPractice(roleId) {
-            unlockAudio();
-            state.practiceRole = roleId;
+        function stopPractice() {
+            state.isPracticing = false;
+            state.practiceRole = null;
             state.currentLineIndex = 0;
-            window.speechSynthesis.cancel();
+
             if (state.recognition && state.isRecording) {
-                state.recognition.stop();
+                try { state.recognition.abort(); } catch (e) {}
+                state.isRecording = false;
             }
+
+            cancelBrowserSpeech();
             clearAllHighlights();
+            updateRoleSelectorUI();
+
+            const hud = document.getElementById('practice-hud');
+            if (hud) {
+                hud.classList.add('hidden');
+                hud.classList.remove('flex');
+            }
         }
 
         function processPracticeLine() {
-            if (!state.isPracticing) return;
+            if (!state.isPracticing || !state.activeScenario) return;
             
             const sc = state.activeScenario;
             if (state.currentLineIndex >= sc.lines.length) {
                 document.getElementById('hud-status').innerHTML = `
-                    <div class="text-5xl mb-3 drop-shadow-md">🎉</div>
-                    <div class="text-2xl font-black text-amber-400 mb-4">Practice Complete!</div>
-                    <button onclick="stopPractice()" class="px-6 py-3 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black shadow-md transition-colors">Finish & Return</button>
+                    <div class="text-5xl mb-2 drop-shadow-md">🎉</div>
+                    <div class="text-xl sm:text-2xl font-black text-amber-400 mb-2">Practice Complete! 太棒了！</div>
+                    <p class="text-xs font-bold text-slate-300 mb-4">You completed all lines in this conversation!</p>
+                    <div class="flex gap-3">
+                        <button onclick="startPractice('${state.practiceRole}')" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">🔄 Practice Again</button>
+                        <button onclick="stopPractice()" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">✓ Done</button>
+                    </div>
                 `;
                 return;
             }
@@ -565,17 +746,16 @@
             if (isUserTurn) {
                 setupRecordingUI();
             } else {
-                // Animate avatar
-                const avatar = document.getElementById(`avatar-${state.currentLineIndex}`);
-                if (avatar) avatar.classList.add('avatar-speaking');
-
+                const partnerRole = sc.roles.find(r => r.id === line.speaker);
                 document.getElementById('hud-status').innerHTML = `
-                    <div class="text-4xl animate-bounce mb-3">🎧</div>
-                    <div class="text-sm font-bold text-slate-300">Listening to the other character...</div>
+                    <div class="text-4xl animate-bounce mb-2">${partnerRole ? partnerRole.avatar : '🎧'}</div>
+                    <div class="text-sm font-black text-amber-300 mb-1">${partnerRole ? partnerRole.name : 'Partner'} is speaking...</div>
+                    <div class="text-xs font-bold text-slate-300 mb-3">"${line.zh}"</div>
+                    <button onclick="skipCurrentPracticeLine()" class="text-[11px] font-bold text-slate-400 hover:text-white underline">Skip ➤</button>
                 `;
                 
                 speakLine(line.zh, line.speaker, state.currentLineIndex, () => {
-                    if(state.isPracticing) {
+                    if (state.isPracticing) {
                         state.currentLineIndex++;
                         processPracticeLine();
                     }
@@ -583,58 +763,165 @@
             }
         }
 
+        function skipCurrentPracticeLine() {
+            if (!state.isPracticing) return;
+            cancelBrowserSpeech();
+            if (state.recognition && state.isRecording) {
+                try { state.recognition.abort(); } catch (e) {}
+                state.isRecording = false;
+            }
+            state.currentLineIndex++;
+            processPracticeLine();
+        }
+
+        function playHintForUserTurn() {
+            if (!state.isPracticing || !state.activeScenario) return;
+            const line = state.activeScenario.lines[state.currentLineIndex];
+            if (!line) return;
+            speakLine(line.zh, line.speaker, state.currentLineIndex, () => {
+                // Re-highlight current bubble after hint finishes
+                const lineEl = document.getElementById(`line-${state.currentLineIndex}`);
+                if (lineEl) {
+                    const bubble = lineEl.querySelector('.chat-bubble-a, .chat-bubble-b');
+                    if (bubble) bubble.classList.add('chat-bubble-active');
+                }
+            });
+        }
+
         function setupRecordingUI() {
+            const line = state.activeScenario.lines[state.currentLineIndex];
             const hud = document.getElementById('hud-status');
             hud.innerHTML = `
-                <div class="text-amber-400 font-black mb-4 uppercase tracking-widest text-xs bg-amber-400/10 px-4 py-1.5 rounded-full border border-amber-400/30">🎤 Your Turn to Read!</div>
-                <button id="mic-btn" onclick="toggleRecording()" class="relative w-20 h-20 bg-rose-500 rounded-full flex items-center justify-center text-4xl shadow-xl hover:scale-105 transition-transform z-10 border-4 border-rose-400">
-                    🎙️
-                </button>
-                <p id="mic-status" class="mt-5 text-sm font-bold text-slate-400">Tap microphone & say the highlighted line</p>
+                <div class="text-amber-400 font-black mb-2 uppercase tracking-widest text-xs bg-amber-400/10 px-4 py-1 rounded-full border border-amber-400/30">🎤 Your Turn to Read!</div>
+                <div class="text-base sm:text-lg font-black text-white mb-1">${line.zh}</div>
+                <div class="text-xs font-bold text-indigo-300 mb-4">${line.py}</div>
+                <div class="flex items-center justify-center gap-4">
+                    <button onclick="playHintForUserTurn()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Listen to how this line sounds">
+                        🔊 Hear Hint
+                    </button>
+                    <button id="mic-btn" onclick="toggleRecording()" class="relative w-16 h-16 sm:w-20 sm:h-20 bg-rose-500 rounded-full flex items-center justify-center text-3xl sm:text-4xl shadow-xl hover:scale-105 transition-transform z-10 border-4 border-rose-400">
+                        🎙️
+                    </button>
+                    <button onclick="skipCurrentPracticeLine()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Skip to next line">
+                        Next ⏭️
+                    </button>
+                </div>
+                <p id="mic-status" class="mt-3 text-xs font-bold text-slate-400">Tap 🎙️ & read the highlighted line aloud</p>
             `;
         }
 
         function toggleRecording() {
             if (!state.recognition) {
-                alert("Speech recognition is not supported in this browser (Use Chrome/Safari/Edge).");
+                initSpeechRecognition();
+            }
+
+            if (!state.recognition) {
+                const micStatus = document.getElementById('mic-status');
+                if (micStatus) {
+                    micStatus.textContent = "Voice recognition is not supported on this browser. Tap 'Hear Hint' to practice aloud, then tap 'Next ⏭️'!";
+                    micStatus.className = "mt-3 text-xs font-bold text-amber-400";
+                }
                 return;
             }
 
+            // Cancel any ongoing TTS so microphone doesn't record the speaker
+            cancelBrowserSpeech();
+
             if (state.isRecording) {
-                state.recognition.stop();
-            } else {
-                state.recognition.start();
-                state.isRecording = true;
-                
-                document.getElementById('mic-btn').classList.add('mic-active-ring');
-                document.getElementById('mic-btn').classList.replace('bg-rose-500', 'bg-rose-600');
-                document.getElementById('mic-status').textContent = "Listening... Speak now!";
-                document.getElementById('mic-status').classList.replace('text-slate-400', 'text-rose-400');
+                try {
+                    state.recognition.stop();
+                } catch (e) {}
+                return;
             }
 
-            state.recognition.onresult = async (event) => {
-                const transcript = event.results[0][0].transcript;
-                state.isRecording = false;
-                
-                document.getElementById('hud-status').innerHTML = `
-                    <div class="animate-spin text-4xl mb-3 text-indigo-400">⚙️</div>
-                    <div class="text-sm font-bold text-slate-300">Analyzing your pronunciation...</div>
-                    <div class="text-xs text-slate-400 mt-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700">You said: "${transcript}"</div>
-                `;
+            state.lastTranscript = '';
+            let evaluatedThisTurn = false;
 
-                const line = state.activeScenario.lines[state.currentLineIndex];
-                await evaluateSpeech(line.zh, line.py, transcript);
+            state.recognition.onstart = () => {
+                state.isRecording = true;
+                const micBtn = document.getElementById('mic-btn');
+                const micStatus = document.getElementById('mic-status');
+                if (micBtn) {
+                    micBtn.classList.add('mic-active-ring');
+                    micBtn.classList.replace('bg-rose-500', 'bg-rose-600');
+                }
+                if (micStatus) {
+                    micStatus.textContent = "Listening... Speak Mandarin now! (Tap 🎙️ again when done)";
+                    micStatus.className = "mt-3 text-xs font-bold text-rose-400";
+                }
+            };
+
+            state.recognition.onresult = async (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                state.lastTranscript = transcript.trim();
+
+                const micStatus = document.getElementById('mic-status');
+                if (micStatus && state.lastTranscript) {
+                    micStatus.textContent = `Heard: "${state.lastTranscript}"`;
+                }
+
+                // When final result arrives, evaluate immediately
+                const lastResult = event.results[event.results.length - 1];
+                if (lastResult && lastResult.isFinal && state.lastTranscript && !evaluatedThisTurn) {
+                    evaluatedThisTurn = true;
+                    state.isRecording = false;
+                    try { state.recognition.stop(); } catch (e) {}
+                    await processTranscriptEvaluation(state.lastTranscript);
+                }
             };
 
             state.recognition.onerror = (event) => {
                 state.isRecording = false;
                 setupRecordingUI();
-                if (event.error === 'not-allowed') {
-                    document.getElementById('mic-status').textContent = "Microphone blocked! Please allow mic access in browser settings.";
+                const micStatus = document.getElementById('mic-status');
+                if (!micStatus) return;
+
+                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                    micStatus.textContent = "Microphone blocked! Please allow microphone access in Safari/Chrome settings, or tap 'Next ⏭️'.";
+                } else if (event.error === 'no-speech') {
+                    micStatus.textContent = "No speech detected. Tap 🎙️ and speak clearly!";
                 } else {
-                    document.getElementById('mic-status').textContent = "Error: " + event.error + ". Try again.";
+                    micStatus.textContent = "Mic notice (" + event.error + "). Tap 🎙️ to try again or tap 'Next ⏭️'.";
+                }
+                micStatus.className = "mt-3 text-xs font-bold text-amber-400";
+            };
+
+            state.recognition.onend = async () => {
+                state.isRecording = false;
+                if (!evaluatedThisTurn && state.lastTranscript) {
+                    evaluatedThisTurn = true;
+                    await processTranscriptEvaluation(state.lastTranscript);
+                } else if (!evaluatedThisTurn && state.isPracticing) {
+                    const micBtn = document.getElementById('mic-btn');
+                    if (micBtn) {
+                        micBtn.classList.remove('mic-active-ring');
+                        micBtn.classList.replace('bg-rose-600', 'bg-rose-500');
+                    }
                 }
             };
+
+            try {
+                state.recognition.start();
+            } catch (err) {
+                try {
+                    state.recognition.abort();
+                    setTimeout(() => state.recognition.start(), 150);
+                } catch (e) {}
+            }
+        }
+
+        async function processTranscriptEvaluation(transcript) {
+            document.getElementById('hud-status').innerHTML = `
+                <div class="animate-spin text-4xl mb-3 text-indigo-400">⚙️</div>
+                <div class="text-sm font-bold text-slate-300">Analyzing your pronunciation...</div>
+                <div class="text-xs text-slate-400 mt-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700">You said: "${transcript}"</div>
+            `;
+
+            const line = state.activeScenario.lines[state.currentLineIndex];
+            await evaluateSpeech(line.zh, line.py, transcript);
         }
 
         // OpenRouter API Calls
@@ -666,7 +953,31 @@
             return data.choices[0].message.content;
         }
 
+        // Local character-overlap evaluator if offline or no API key is configured
+        function localEvaluateSpeech(targetZh, heardZh) {
+            const cleanTarget = targetZh.replace(/[，。！？、：；,.!?\s]/g, '');
+            const cleanHeard = (heardZh || '').replace(/[，。！？、：；,.!?\s]/g, '');
+            if (!cleanHeard) {
+                return { pass: false, feedback: "I didn't catch that. Tap the microphone and try reading the line again!" };
+            }
+            let matchCount = 0;
+            for (const ch of cleanTarget) {
+                if (cleanHeard.includes(ch)) matchCount++;
+            }
+            const score = cleanTarget.length > 0 ? matchCount / cleanTarget.length : 1;
+            if (score >= 0.4) {
+                return { pass: true, feedback: `Great job! I heard "${heardZh}". Your Mandarin pronunciation is clear!` };
+            }
+            return { pass: false, feedback: `Good try! I heard "${heardZh}". Listen to the hint and try saying "${targetZh}" one more time!` };
+        }
+
         async function evaluateSpeech(targetZh, targetPy, heardZh) {
+            if (!state.apiKey) {
+                const localResult = localEvaluateSpeech(targetZh, heardZh);
+                showFeedbackModal(localResult.pass, localResult.feedback);
+                return;
+            }
+
             const prompt = `You are a friendly primary school Chinese teacher in Singapore.
 The student was supposed to read: "${targetZh}" (${targetPy}).
 The speech recognition heard: "${heardZh}".
@@ -679,11 +990,11 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
                 const resultText = await fetchOpenRouter([{ role: "system", content: prompt }]);
                 const cleanJson = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
                 const evaluation = JSON.parse(cleanJson);
-                showFeedbackModal(evaluation.pass, evaluation.feedback);
+                showFeedbackModal(Boolean(evaluation.pass), evaluation.feedback || "Good effort!");
             } catch (err) {
-                console.error(err);
-                const pass = heardZh.length > 0;
-                showFeedbackModal(pass, pass ? "Good effort!" : "I didn't catch that, please try again.");
+                console.warn("Falling back to local speech evaluation:", err);
+                const localResult = localEvaluateSpeech(targetZh, heardZh);
+                showFeedbackModal(localResult.pass, localResult.feedback);
             }
         }
 
@@ -695,8 +1006,8 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
             document.getElementById('feedback-message').textContent = feedbackText;
             
             const btn = modal.querySelector('button');
-            // Swap button colors based on pass/fail
             btn.className = `w-full py-3.5 text-white text-lg rounded-xl font-black shadow-md transition-transform hover:scale-105 ${isPass ? 'bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600' : 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600'}`;
+            btn.textContent = isPass ? 'Continue ➤' : 'Try Again 🎙️';
 
             btn.onclick = () => {
                 modal.classList.add('hidden');
@@ -725,7 +1036,8 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
             const topic = document.getElementById('gen-topic').value;
             if (!topic.trim()) return;
             if (!state.apiKey) {
-                alert("Please save your OpenRouter API Key in settings first.");
+                document.getElementById('modal-generate').classList.add('hidden');
+                document.getElementById('modal-settings').classList.remove('hidden');
                 return;
             }
 
@@ -734,6 +1046,7 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
 
             const prompt = `Create a fun, natural 4-line Chinese conversation script for primary school students in Singapore based on this topic: "${topic}".
 Characters should be A (adult/staff/friend) and B (the student). Keep Chinese simple (Primary 1-3 level).
+Provide space-separated Hanyu Pinyin syllables (1 syllable per Chinese character).
 Return STRICT JSON matching this schema:
 {
     "title": "Topic Title in Chinese (English)",
@@ -743,7 +1056,7 @@ Return STRICT JSON matching this schema:
         { "id": "B", "name": "Character B Name", "avatar": "emoji", "color": "bg-sky-500", "align": "right", "pitch": 0.9 }
     ],
     "lines": [
-        { "speaker": "A or B", "zh": "Chinese text", "py": "Hanyu Pinyin", "en": "English translation" }
+        { "speaker": "A", "zh": "Chinese text", "py": "Hanyu Pinyin", "en": "English translation" }
     ]
 }`;
 
@@ -753,9 +1066,8 @@ Return STRICT JSON matching this schema:
                 const newScript = JSON.parse(cleanJson);
                 
                 newScript.id = 'custom-' + Date.now();
-                // Ensure bgPattern uses our custom CSS patterns safely
-                if(!newScript.bgPattern.includes('bg-pattern')) {
-                    newScript.bgPattern += ' bg-pattern-dots';
+                if (!newScript.bgPattern || !newScript.bgPattern.includes('bg-pattern')) {
+                    newScript.bgPattern = 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots';
                 }
 
                 state.scripts.unshift(newScript);
@@ -766,7 +1078,7 @@ Return STRICT JSON matching this schema:
             } catch (err) {
                 console.error(err);
                 hideLoader();
-                alert("Failed to generate script. Check your API Key or try again.");
+                showFeedbackModal(false, "Could not generate script. Please check your OpenRouter API Key in Settings ⚙️ and try again.");
             }
         }
     </script>
