@@ -1,314 +1,1723 @@
-<!-- ... existing code ... -->
-        const CORE_PRACTICE_WORDS = [
-            { hz: '人', py: 'rén', en: 'Person' },
-            { hz: '水', py: 'shuǐ', en: 'Water' },
-            { hz: '口', py: 'kǒu', en: 'Mouth' },
-            { hz: '大', py: 'dà', en: 'Big' }
-        ];
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+  Send,
+  Sparkles,
+  BookOpen,
+  Award,
+  RefreshCw,
+  Code,
+  Check,
+  Copy,
+  Turtle,
+  Cpu,
+  Star,
+  Smile,
+  Heart,
+  HelpCircle,
+  Trophy,
+  Wand2
+} from 'lucide-react';
 
-        const App = () => {
-            const [messages, setMessages] = useState([
-                { 
-                    id: 'init-1',
-                    role: 'ai', 
-                    mood: '🤩',
-                    chinese: '嗨！我是你的AI中文伙伴！今天你想聊恐龙、玩猜谜，还是去动物园冒险？',
-                    replyTokens: [
-                        {hz: '嗨', py: 'hāi'}, {hz: '！', py: ''},
-                        {hz: '我', py: 'wǒ'}, {hz: '是', py: 'shì'}, {hz: '你', py: 'nǐ'}, {hz: '的', py: 'de'}, {hz: 'A', py: ''}, {hz: 'I', py: ''}, {hz: '中', py: 'zhōng'}, {hz: '文', py: 'wén'}, {hz: '伙', py: 'huǒ'}, {hz: '伴', py: 'bàn'}, {hz: '！', py: ''},
-                        {hz: '今', py: 'jīn'}, {hz: '天', py: 'tiān'}, {hz: '你', py: 'nǐ'}, {hz: '想', py: 'xiǎng'}, {hz: '聊', py: 'liáo'}, {hz: '恐', py: 'kǒng'}, {hz: '龙', py: 'lóng'}, {hz: '、', py: ''}, {hz: '玩', py: 'wán'}, {hz: '猜', py: 'cāi'}, {hz: '谜', py: 'mí'}, {hz: '，', py: ''}, {hz: '还', py: 'hái'}, {hz: '是', py: 'shì'}, {hz: '去', py: 'qù'}, {hz: '动', py: 'dòng'}, {hz: '物', py: 'wù'}, {hz: '园', py: 'yuán'}, {hz: '冒', py: 'mào'}, {hz: '险', py: 'xiǎn'}, {hz: '？', py: ''}
-                    ],
-                    english: 'Hi there! I am your smart AI Chinese buddy! Today, do you want to chat about dinosaurs, play a guessing riddle, or go on a Zoo adventure?',
-                    mnemonic: '💡 Tip: Tap any Chinese character to hear it spoken clearly, or tap a blue reply below to jump right in!'
-                }
-            ]);
+const DEFAULT_SYSTEM_PROMPT = `You are "乐乐" (Lè Le), a friendly, patient, and encouraging Chinese conversation panda tutor for lower primary students (Primary 1 to 3, ages 7-9) in Singapore. You power an interactive language learning app. 
 
-            // Dynamic Conversation Coaching State (Updates every turn!)
-<!-- ... existing code ... -->
-            const extractJsonObject = (rawText) => {
-                if (!rawText) throw new Error("Empty model output");
-                const cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-                try {
-                    return JSON.parse(cleaned);
-                } catch (e) {
-                    const firstBrace = cleaned.indexOf('{');
-                    const lastBrace = cleaned.lastIndexOf('}');
-                    if (firstBrace !== -1 && lastBrace > firstBrace) {
-                        return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
-                    }
-                    throw e;
-                }
-            };
+Your goal is to help children practice daily Chinese conversations aligned with the Singapore MOE "欢乐伙伴" (Huanle Huoban) syllabus. 
 
-            const buildSystemPrompt = (scen, modeId) => {
-                const modeObj = CONVERSATION_MODES.find(m => m.id === modeId) || CONVERSATION_MODES[0];
-                return `You are ${teacherName}, a witty, warm, and deeply engaging bilingual Mandarin Chinese tutor for a 6-9 year old child in Singapore.
-Current Setting: ${scen.name} (${scen.icon}).
-Conversation Style: ${modeObj.label} — ${modeObj.instruction}
+### CONTEXT & TONE
+1. Use familiar Singaporean environments (e.g., 小贩中心 hawker centre, 组屋 HDB, 食堂 school canteen, 游乐场 playground, 巴士 bus).
+2. Keep vocabulary simple and conversational, strictly within the lower primary level.
+3. Be enthusiastic, warm, and highly encouraging.
+4. Keep responses brief (1 to 2 short sentences).
+5. Always end with a simple question to encourage the child to reply and keep the conversation going.
 
-CRITICAL RULES TO PREVENT MONOTONOUS CONVERSATION (STRICTLY ENFORCED):
-1. NEVER use generic, repetitive praise templates every turn. React specifically and playfully to the exact meaning of what the child just said!
-2. NEVER repeat the same question structure or the same vocabulary words from your previous turns. Force yourself to introduce completely new ideas.
-3. Keep the story or topic moving forward: introduce a funny mini-event, a choice between two silly or exciting things, a sound effect (e.g. 轰隆隆, 喵呜, 叮咚), or a playful riddle.
-4. Speak natural, vivid Mandarin in "chinese" (1 to 2 lively sentences) and provide a warm, natural "english" translation.
-5. CRITICAL: Break down your Mandarin sentence EXACTLY character-by-character into the "replyTokens" array so we can place Pinyin directly below each character! Every single Chinese character and punctuation mark MUST be its own item in the array.
-6. Provide 1 short visual character memory trick or fun discovery in "mnemonic" (e.g. "🔥 火 (huǒ - fire) looks like flames dancing upward!").
-7. Generate 3 brand-new, natural follow-up phrases in "nextReplies" that the child can click or say next to answer your specific question (format: "中文句子! (English meaning)").
-8. Optionally include 1 or 2 fresh vocabulary words from your reply in "newVocab" ({ "hz": "...", "py": "...", "en": "..." }).
+### OUTPUT FORMAT (STRICT JSON)
+You must output ONLY a valid JSON object. The app UI aligns each Pinyin syllable directly underneath its corresponding Chinese character. Therefore, in the "pinyin" field, separate EVERY single character's Pinyin syllable with a space so it maps 1-to-1 with the Chinese characters.
 
-Respond strictly in valid JSON with this exact structure:
+Structure your JSON exactly like this:
 {
-  "heardText": "transcription if audio was sent, else repeat user text",
-  "mood": "single expressive emoji like 🤩, 🥳, 🧐, 😮, or 😄",
-  "chinese": "Vivid Mandarin reply string",
-  "replyTokens": [
-    { "hz": "中", "py": "zhōng" },
-    { "hz": "文", "py": "wén" },
-    { "hz": "！", "py": "" }
-  ],
-  "english": "Natural English translation",
-  "mnemonic": "Fun character visual tip or mini cultural fact",
-  "nextReplies": [
-    "Option 1 in Chinese! (English)",
-    "Option 2 in Chinese! (English)",
-    "Option 3 in Chinese! (English)"
-  ],
-  "newVocab": [
-    { "hz": "词语", "py": "cí yǔ", "en": "Word meaning" }
-  ],
-  "bambooEarned": true
+  "chinese": "Simplified Chinese characters go here.",
+  "pinyin": "Space-separated Hanyu Pinyin syllables (1 syllable per Chinese character) with proper tone marks.",
+  "english": "English translation goes here.",
+  "encouragement": "A short, cheerful English phrase praising the child or teaching a fun word."
 }`;
-            };
 
-            // Call OpenAI-Compatible Open Model Endpoint (OpenRouter, Groq, DeepSeek, OpenAI, or Zero-Key Pollinations Cloud)
-<!-- ... existing code ... -->
-                const payload = {
-                    contents: chatHistory,
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: {
-                        temperature: 0.85,
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                heardText: { type: "STRING" },
-                                mood: { type: "STRING" },
-                                chinese: { type: "STRING" },
-                                replyTokens: {
-                                    type: "ARRAY",
-                                    items: {
-                                        type: "OBJECT",
-                                        properties: {
-                                            hz: { type: "STRING" },
-                                            py: { type: "STRING" }
-                                        },
-                                        propertyOrdering: ["hz", "py"]
-                                    }
-                                },
-                                english: { type: "STRING" },
-                                mnemonic: { type: "STRING" },
-                                nextReplies: {
-                                    type: "ARRAY",
-                                    items: { type: "STRING" }
-                                },
-                                newVocab: {
-                                    type: "ARRAY",
-                                    items: {
-                                        type: "OBJECT",
-                                        properties: {
-                                            hz: { type: "STRING" },
-                                            py: { type: "STRING" },
-                                            en: { type: "STRING" }
-                                        },
-                                        propertyOrdering: ["hz", "py", "en"]
-                                    }
-                                },
-                                bambooEarned: { type: "BOOLEAN" }
-                            },
-                            propertyOrdering: [
-                                "heardText",
-                                "mood",
-                                "chinese",
-                                "replyTokens",
-                                "english",
-                                "mnemonic",
-                                "nextReplies",
-                                "newVocab",
-                                "bambooEarned"
-                            ]
+const STICKER_REWARDS = [
+  { id: 'panda', emoji: '🐼', name: '乐乐好朋友', english: 'Panda Buddy', starsRequired: 1 },
+  { id: 'chickenrice', emoji: '🍛', name: '小贩美食家', english: 'Hawker Foodie', starsRequired: 3 },
+  { id: 'merlion', emoji: '🦁', name: '新加坡小达人', english: 'SG Little Star', starsRequired: 5 },
+  { id: 'bus', emoji: '🚌', name: '搭巴士高手', english: 'Bus Captain', starsRequired: 7 },
+  { id: 'trophy', emoji: '🏆', name: '华语小状元', english: 'Chinese Champion', starsRequired: 10 }
+];
+
+const SCENARIOS = [
+  {
+    id: 'hawker',
+    title: '小贩中心',
+    pinyin: 'xiǎo fàn zhōng xīn',
+    english: 'Hawker Centre',
+    emoji: '🍛',
+    bannerBg: 'from-amber-400 via-orange-400 to-rose-400',
+    cardAccent: 'border-amber-400 bg-amber-50/90',
+    badgeColor: 'bg-amber-100 text-amber-900 border-amber-300',
+    sceneDecor: '🍗 🍜 🧃 🥟',
+    initialMessage: {
+      chinese: '你好！欢迎来到小贩中心。你今天想吃鸡饭还是炒面？',
+      pinyin: 'Nǐ hǎo ! Huān yíng lái dào xiǎo fàn zhōng xīn . Nǐ jīn tiān xiǎng chī jī fàn hái shì chǎo miàn ?',
+      english: 'Hello! Welcome to the hawker centre. Do you want to eat chicken rice or fried noodles today?',
+      encouragement: 'Tap any Chinese word to hear how it sounds, or click "听一听 Listen" to watch the words light up!'
+    },
+    quickReplies: [
+      {
+        chinese: '我想吃鸡饭。',
+        pinyin: 'Wǒ xiǎng chī jī fàn .',
+        english: 'I want to eat chicken rice.'
+      },
+      {
+        chinese: '我喜欢喝美禄。',
+        pinyin: 'Wǒ xǐ huan hē měi lù .',
+        english: 'I like to drink Milo.'
+      },
+      {
+        chinese: '我想吃炒面和喝果汁。',
+        pinyin: 'Wǒ xiǎng chī chǎo miàn hé hē guǒ zhī .',
+        english: 'I want fried noodles and fruit juice.'
+      }
+    ],
+    vocab: [
+      { hanzi: '小贩中心', pinyin: 'xiǎo fàn zhōng xīn', meaning: 'hawker centre', emoji: '🏪' },
+      { hanzi: '鸡饭', pinyin: 'jī fàn', meaning: 'chicken rice', emoji: '🍗' },
+      { hanzi: '炒面', pinyin: 'chǎo miàn', meaning: 'fried noodles', emoji: '🍜' },
+      { hanzi: '好喝', pinyin: 'hǎo hē', meaning: 'tasty (drink)', emoji: '🥤' }
+    ]
+  },
+  {
+    id: 'canteen',
+    title: '学校食堂',
+    pinyin: 'xué xiào shí táng',
+    english: 'School Canteen',
+    emoji: '🏫',
+    bannerBg: 'from-emerald-400 via-teal-400 to-cyan-500',
+    cardAccent: 'border-emerald-400 bg-emerald-50/90',
+    badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+    sceneDecor: '🔔 🍜 🍎 🪙',
+    initialMessage: {
+      chinese: '叮咚！下课了！我们去学校食堂买东西吃吧。你带了多少钱？',
+      pinyin: 'Dīng dōng ! Xià kè le ! Wǒ men qù xué xiào shí táng mǎi dōng xi chī ba . Nǐ dài le duō shao qián ?',
+      english: 'Ding dong! It is recess time! Let us go to the school canteen to buy food. How much money did you bring?',
+      encouragement: 'In Primary 1 & 2, we learn "下课了" (xià kè le) which means recess time!'
+    },
+    quickReplies: [
+      {
+        chinese: '我带了两块钱。',
+        pinyin: 'Wǒ dài le liǎng kuài qián .',
+        english: 'I brought two dollars.'
+      },
+      {
+        chinese: '我想买一碗鱼圆面。',
+        pinyin: 'Wǒ xiǎng mǎi yì wǎn yú yuán miàn .',
+        english: 'I want to buy fishball noodles.'
+      },
+      {
+        chinese: '我们在食堂排队买水果。',
+        pinyin: 'Wǒ men zài shí táng pái duì mǎi shuǐ guǒ .',
+        english: 'We queue up in the canteen to buy fruit.'
+      }
+    ],
+    vocab: [
+      { hanzi: '食堂', pinyin: 'shí táng', meaning: 'canteen', emoji: '🍱' },
+      { hanzi: '下课', pinyin: 'xià kè', meaning: 'recess / class ends', emoji: '🔔' },
+      { hanzi: '排队', pinyin: 'pái duì', meaning: 'queue up', emoji: '🚶' },
+      { hanzi: '鱼圆面', pinyin: 'yú yuán miàn', meaning: 'fishball noodles', emoji: '🍥' }
+    ]
+  },
+  {
+    id: 'playground',
+    title: '组屋游乐场',
+    pinyin: 'zǔ wū yóu lè chǎng',
+    english: 'HDB Playground',
+    emoji: '🛝',
+    bannerBg: 'from-sky-400 via-blue-400 to-indigo-500',
+    cardAccent: 'border-sky-400 bg-sky-50/90',
+    badgeColor: 'bg-sky-100 text-sky-900 border-sky-300',
+    sceneDecor: '🛝 🏢 ⚽ 🎈',
+    initialMessage: {
+      chinese: '下午好！组屋楼下的游乐场真热闹。你喜欢溜滑梯还是荡秋千？',
+      pinyin: 'Xià wǔ hǎo ! Zǔ wū lóu xià de yóu lè chǎng zhēn rè nao . Nǐ xǐ huan liū huá tī hái shì dàng qiū qiān ?',
+      english: 'Good afternoon! The playground downstairs at the HDB block is so lively. Do you like playing on the slide or the swing?',
+      encouragement: 'Fun Singapore word: 组屋 (zǔ wū) means HDB flat!'
+    },
+    quickReplies: [
+      {
+        chinese: '我喜欢溜滑梯！',
+        pinyin: 'Wǒ xǐ huan liū huá tī !',
+        english: 'I like the slide!'
+      },
+      {
+        chinese: '我和好朋友一起荡秋千。',
+        pinyin: 'Wǒ hé hǎo péng you yì qǐ dàng qiū qiān .',
+        english: 'I play on the swing with my good friends.'
+      },
+      {
+        chinese: '我们在游乐场开心地跑。',
+        pinyin: 'Wǒ men zài yóu lè chǎng kāi xīn de pǎo .',
+        english: 'We run happily at the playground.'
+      }
+    ],
+    vocab: [
+      { hanzi: '组屋', pinyin: 'zǔ wū', meaning: 'HDB flat', emoji: '🏢' },
+      { hanzi: '游乐场', pinyin: 'yóu lè chǎng', meaning: 'playground', emoji: '🎠' },
+      { hanzi: '溜滑梯', pinyin: 'liū huá tī', meaning: 'play on the slide', emoji: '🛝' },
+      { hanzi: '荡秋千', pinyin: 'dàng qiū qiān', meaning: 'play on the swing', emoji: '🌳' }
+    ]
+  },
+  {
+    id: 'bus',
+    title: '搭巴士上学',
+    pinyin: 'dā bā shì shàng xué',
+    english: 'Taking the Bus',
+    emoji: '🚌',
+    bannerBg: 'from-violet-400 via-purple-400 to-fuchsia-500',
+    cardAccent: 'border-purple-400 bg-purple-50/90',
+    badgeColor: 'bg-purple-100 text-purple-900 border-purple-300',
+    sceneDecor: '🚌 🚇 🎒 🚦',
+    initialMessage: {
+      chinese: '早安！巴士来了。你每天是怎么去学校的？',
+      pinyin: 'Zǎo ān ! Bā shì lái le . Nǐ měi tiān shì zěn me qù xué xiào de ?',
+      english: 'Good morning! The bus is here. How do you go to school every day?',
+      encouragement: 'In Singapore, we call a bus 巴士 (bā shì) and MRT train 地铁 (dì tiě)!'
+    },
+    quickReplies: [
+      {
+        chinese: '我搭巴士去学校。',
+        pinyin: 'Wǒ dā bā shì qù xué xiào .',
+        english: 'I take the bus to school.'
+      },
+      {
+        chinese: '我和妈妈走路去学校。',
+        pinyin: 'Wǒ hé mā ma zǒu lù qù xué xiào .',
+        english: 'I walk to school with Mum.'
+      },
+      {
+        chinese: '我搭地铁去学校。',
+        pinyin: 'Wǒ dā dì tiě qù xué xiào .',
+        english: 'I take the MRT train to school.'
+      }
+    ],
+    vocab: [
+      { hanzi: '搭巴士', pinyin: 'dā bā shì', meaning: 'take the bus', emoji: '🚌' },
+      { hanzi: '地铁', pinyin: 'dì tiě', meaning: 'MRT / train', emoji: '🚇' },
+      { hanzi: '上学', pinyin: 'shàng xué', meaning: 'go to school', emoji: '🎒' },
+      { hanzi: '走路', pinyin: 'zǒu lù', meaning: 'walk', emoji: '👟' }
+    ]
+  }
+];
+
+// Fallback character-to-pinyin dictionary for common Singapore Primary 1-3 characters
+// in case an external LLM returns mismatched syllable counts
+const CHAR_PINYIN_FALLBACK = {
+  你: 'nǐ', 好: 'hǎo', 欢: 'huān', 迎: 'yíng', 来: 'lái', 到: 'dào', 小: 'xiǎo', 贩: 'fàn',
+  中: 'zhōng', 心: 'xīn', 今: 'jīn', 天: 'tiān', 想: 'xiǎng', 吃: 'chī', 鸡: 'jī', 饭: 'fàn',
+  还: 'hái', 是: 'shì', 炒: 'chǎo', 面: 'miàn', 我: 'wǒ', 喜: 'xǐ', 喝: 'hē', 美: 'měi',
+  禄: 'lù', 和: 'hé', 果: 'guǒ', 汁: 'zhī', 叮: 'dīng', 咚: 'dōng', 下: 'xià', 课: 'kè',
+  了: 'le', 们: 'men', 去: 'qù', 学: 'xué', 校: 'xiào', 食: 'shí', 堂: 'táng', 买: 'mǎi',
+  东: 'dōng', 西: 'xi', 吧: 'ba', 带: 'dài', 多: 'duō', 少: 'shao', 钱: 'qián', 两: 'liǎng',
+  块: 'kuài', 一: 'yī', 碗: 'wǎn', 鱼: 'yú', 圆: 'yuán', 在: 'zài', 排: 'pái', 队: 'duì',
+  水: 'shuǐ', 午: 'wǔ', 组: 'zǔ', 屋: 'wū', 楼: 'lóu', 的: 'de', 游: 'yóu', 乐: 'lè',
+  场: 'chǎng', 真: 'zhēn', 热: 'rè', 闹: 'nao', 溜: 'liū', 滑: 'huá', 梯: 'tī', 荡: 'dàng',
+  秋: 'qiū', 千: 'qiān', 朋: 'péng', 友: 'you', 起: 'qǐ', 玩: 'wán', 开: 'kāi', 地: 'dì',
+  跑: 'pǎo', 早: 'zǎo', 安: 'ān', 巴: 'bā', 士: 'shì', 每: 'měi', 怎: 'zěn', 么: 'me',
+  搭: 'dā', 妈: 'mā', 走: 'zǒu', 路: 'lù', 铁: 'tiě', 太: 'tài', 棒: 'bàng', 继: 'jì',
+  续: 'xù', 说: 'shuō', 华: 'huá', 语: 'yǔ', 吗: 'ma', 呢: 'ne', 啊: 'a', 呀: 'ya',
+  爸: 'bà', 哥: 'gē', 姐: 'jiě', 弟: 'dì', 妹: 'mèi', 老: 'lǎo', 师: 'shī', 同: 'tóng',
+  包: 'bāo', 菜: 'cài', 肉: 'ròu', 蛋: 'dàn', 奶: 'nǎi', 茶: 'chá', 冰: 'bīng', 甜: 'tián',
+  大: 'dà', 高: 'gāo', 兴: 'xìng', 看: 'kàn', 听: 'tīng', 读: 'dú', 写: 'xiě', 画: 'huà',
+  家: 'jiā', 公: 'gōng', 园: 'yuán', 动物: 'dòng', 书: 'shū', 店: 'diàn', 超: 'chāo', 市: 'shì'
+};
+
+/**
+ * Splits a joined Pinyin word (e.g., "xiǎofàn" or "péngyou") into individual Mandarin syllables.
+ */
+function splitCompoundPinyinWord(word) {
+  const cleaned = word.replace(/[^a-zA-ZāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüÜ]/g, '');
+  if (!cleaned) return [];
+
+  // Regex matching standard Hanyu Pinyin syllables with tone marks
+  const syllableRegex =
+    /(?:zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])?(?:[iuvüūúǔùǖǘǚǜ]?[aāáǎàeēéěèoōóǒò](?:i|u|o|n|ng|r)?|[iīíǐìuūúǔùüǖǘǚǜ](?:n|ng|e|ē|é|ě|è|a|ā|á|ǎ|à|o|ō|ó|ǒ|ò)?)/gi;
+
+  const matches = cleaned.match(syllableRegex);
+  if (matches && matches.length > 0) {
+    return matches.filter(Boolean);
+  }
+  return [cleaned];
+}
+
+/**
+ * Aligns a Chinese string with a Pinyin string so every single character has its corresponding
+ * Pinyin directly underneath it, along with its exact character index in the original string.
+ */
+function alignChineseWithPinyin(chineseText = '', pinyinText = '') {
+  const chars = Array.from(chineseText);
+  const isHanzi = (ch) => /[\u4e00-\u9fa5]/.test(ch);
+
+  // Extract raw tokens from pinyin string, stripping standalone punctuation
+  const rawTokens = (pinyinText || '')
+    .trim()
+    .split(/\s+/)
+    .map((t) => t.replace(/[.,!?，。！？、：；“”"''（）()~]/g, ''))
+    .filter(Boolean);
+
+  const hanziCount = chars.filter(isHanzi).length;
+
+  // If the AI joined some multi-character Pinyin words without spaces (fewer tokens than Hanzi),
+  // expand compound words into individual syllables
+  let syllables = [];
+  if (rawTokens.length === hanziCount) {
+    syllables = rawTokens;
+  } else {
+    rawTokens.forEach((token) => {
+      const split = splitCompoundPinyinWord(token);
+      if (split.length > 1 && rawTokens.length < hanziCount) {
+        syllables.push(...split);
+      } else {
+        syllables.push(token);
+      }
+    });
+  }
+
+  let syllableCursor = 0;
+
+  return chars.map((char, index) => {
+    if (isHanzi(char)) {
+      const assignedPinyin =
+        syllables[syllableCursor] || CHAR_PINYIN_FALLBACK[char] || '';
+      syllableCursor += 1;
+      return {
+        char,
+        pinyin: assignedPinyin.toLowerCase(),
+        isHanzi: true,
+        charIndex: index
+      };
+    }
+    return {
+      char,
+      pinyin: '',
+      isHanzi: false,
+      charIndex: index
+    };
+  });
+}
+
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  let delay = 1000;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) return response;
+      if (attempt === maxRetries) return response;
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+    }
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    delay *= 2;
+  }
+}
+
+function CharacterRubyBlock({
+  alignedItems,
+  showPinyin,
+  activeCharIndex,
+  isMessageSpeaking,
+  onClickChar,
+  size = 'large'
+}) {
+  return (
+    <div className="flex flex-wrap items-end gap-x-1.5 gap-y-2.5 leading-none select-none">
+      {alignedItems.map((item) => {
+        const isCurrent = isMessageSpeaking && activeCharIndex === item.charIndex;
+        const isPassed =
+          isMessageSpeaking &&
+          activeCharIndex !== null &&
+          item.charIndex < activeCharIndex;
+
+        // Render punctuation compactly next to characters
+        if (!item.isHanzi) {
+          return (
+            <div
+              key={item.charIndex}
+              className="inline-flex flex-col items-center justify-end px-0.5 pb-1"
+            >
+              <span
+                className={`font-black ${
+                  size === 'large'
+                    ? 'text-xl sm:text-2xl'
+                    : 'text-base sm:text-lg'
+                } ${isCurrent ? 'text-amber-600 scale-110' : 'text-slate-600'}`}
+              >
+                {item.char}
+              </span>
+              {showPinyin && <span className="h-4 sm:h-5 text-[10px]">&nbsp;</span>}
+            </div>
+          );
+        }
+
+        return (
+          <button
+            key={item.charIndex}
+            type="button"
+            onClick={() => onClickChar && onClickChar(item.char, item.charIndex)}
+            title={`Click to hear "${item.char}" (${item.pinyin})`}
+            className={`group relative inline-flex flex-col items-center justify-center rounded-2xl border-2 transition-all duration-150 cursor-pointer ${
+              size === 'large'
+                ? 'px-2.5 py-2 min-w-[3.1rem] sm:min-w-[3.5rem]'
+                : 'px-2 py-1.5 min-w-[2.5rem]'
+            } ${
+              isCurrent
+                ? 'bg-gradient-to-b from-amber-300 to-yellow-300 border-amber-500 shadow-lg shadow-amber-300/60 -translate-y-1.5 scale-110 z-10 ring-4 ring-amber-200'
+                : isPassed
+                ? 'bg-amber-50/90 border-amber-300 text-slate-900'
+                : 'bg-white hover:bg-amber-50/70 border-slate-200/90 hover:border-amber-300 shadow-sm hover:-translate-y-0.5'
+            }`}
+          >
+            {/* Active bouncing indicator dot when speech is on this character */}
+            {isCurrent && (
+              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-black shadow animate-bounce">
+                🔊
+              </span>
+            )}
+
+            {/* Top: Simplified Chinese Character */}
+            <span
+              className={`font-black tracking-tight transition-colors ${
+                size === 'large'
+                  ? 'text-2xl sm:text-3xl'
+                  : 'text-base sm:text-lg'
+              } ${
+                isCurrent
+                  ? 'text-slate-950'
+                  : isPassed
+                  ? 'text-amber-950'
+                  : 'text-slate-800 group-hover:text-amber-700'
+              }`}
+            >
+              {item.char}
+            </span>
+
+            {/* Bottom: Hanyu Pinyin directly underneath the Chinese character */}
+            {showPinyin && (
+              <span
+                className={`mt-1 font-extrabold tracking-tight transition-colors ${
+                  size === 'large'
+                    ? 'text-xs sm:text-sm'
+                    : 'text-[11px]'
+                } ${
+                  isCurrent
+                    ? 'text-rose-700 bg-white/80 px-1.5 rounded-full'
+                    : isPassed
+                    ? 'text-amber-800'
+                    : 'text-indigo-600 group-hover:text-indigo-700'
+                }`}
+              >
+                {item.pinyin || '·'}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function App() {
+  const [activeScenario, setActiveScenario] = useState(SCENARIOS[0]);
+  const [messages, setMessages] = useState([
+    {
+      id: 'init-1',
+      sender: 'tutor',
+      ...SCENARIOS[0].initialMessage
+    }
+  ]);
+  const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [stars, setStars] = useState(3);
+  const [celebratingStar, setCelebratingStar] = useState(false);
+  const [showPinyin, setShowPinyin] = useState(true);
+  const [showEnglish, setShowEnglish] = useState(true);
+  const [activeModal, setActiveModal] = useState(null); // 'settings' | 'json' | 'vocab' | 'stickers' | null
+  const [copiedPrompt, setCopiedPrompt] = useState(false);
+
+  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
+  const [engineMode, setEngineMode] = useState('builtin'); // 'builtin' | 'ollama'
+  const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434/api/chat');
+  const [ollamaModel, setOllamaModel] = useState('qwen2.5:7b');
+  const [lastRawJson, setLastRawJson] = useState(
+    JSON.stringify(SCENARIOS[0].initialMessage, null, 2)
+  );
+  const [errorBanner, setErrorBanner] = useState(null);
+
+  // Speech recognition & synchronized karaoke TTS state
+  const [isListening, setIsListening] = useState(false);
+  const [speechLang, setSpeechLang] = useState('zh-CN'); // 'zh-CN' | 'en-SG'
+  const [speakingState, setSpeakingState] = useState({
+    messageId: null,
+    mode: null, // 'normal' | 'slow' | 'char'
+    charIndex: null
+  });
+
+  const recognitionRef = useRef(null);
+  const speechTimerRef = useRef(null);
+  const boundaryWorkedRef = useRef(false);
+  const chatEndRef = useRef(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
+  // Clean up speech & timers on unmount
+  useEffect(() => {
+    return () => {
+      if (speechTimerRef.current) clearTimeout(speechTimerRef.current);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const stopSpeaking = () => {
+    if (speechTimerRef.current) {
+      clearTimeout(speechTimerRef.current);
+      speechTimerRef.current = null;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setSpeakingState({ messageId: null, mode: null, charIndex: null });
+  };
+
+  /**
+   * Speaks Chinese text and highlights each Chinese character + Pinyin block in real time.
+   * Uses both Web Speech API `onboundary` events AND a calibrated adaptive fallback timer
+   * so highlighting is 100% smooth even on browsers/voices that omit boundary events.
+   */
+  const speakChineseWithHighlight = (text, messageId, slow = false) => {
+    const mode = slow ? 'slow' : 'normal';
+
+    // If user clicks the exact same button while playing, toggle stop
+    if (speakingState.messageId === messageId && speakingState.mode === mode) {
+      stopSpeaking();
+      return;
+    }
+
+    stopSpeaking();
+
+    const chars = Array.from(text || '');
+    if (chars.length === 0) return;
+
+    boundaryWorkedRef.current = false;
+    setSpeakingState({ messageId, mode, charIndex: 0 });
+
+    // Adaptive fallback stepper calibrated to speech speed and punctuation pauses
+    const startAdaptiveHighlightStepper = () => {
+      let currentIdx = 0;
+
+      const stepNext = () => {
+        if (boundaryWorkedRef.current) return; // Native boundary took over
+
+        const ch = chars[currentIdx];
+        const isPausePunctuation = /[，。！？,.!?；：]/.test(ch);
+        const isMinorNonHanzi = !/[\u4e00-\u9fa5]/.test(ch) && !isPausePunctuation;
+
+        // Calculate natural duration per character in milliseconds
+        let baseMs = slow ? 430 : 275;
+        if (isPausePunctuation) baseMs = slow ? 360 : 240;
+        if (isMinorNonHanzi) baseMs = 90;
+
+        speechTimerRef.current = setTimeout(() => {
+          currentIdx += 1;
+          if (currentIdx < chars.length) {
+            if (!boundaryWorkedRef.current) {
+              setSpeakingState((prev) =>
+                prev.messageId === messageId
+                  ? { ...prev, charIndex: currentIdx }
+                  : prev
+              );
+            }
+            stepNext();
+          } else {
+            // If speech synthesis isn't available, finish cleanly after timer completes
+            if (!('speechSynthesis' in window)) {
+              setSpeakingState({ messageId: null, mode: null, charIndex: null });
+            }
+          }
+        }, baseMs);
+      };
+
+      stepNext();
+    };
+
+    startAdaptiveHighlightStepper();
+
+    if (!('speechSynthesis' in window)) return;
+
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = slow ? 0.62 : 0.88;
+      utterance.pitch = 1.1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const zhVoice =
+        voices.find((v) => v.lang.includes('zh-SG')) ||
+        voices.find((v) => v.lang.includes('zh-CN')) ||
+        voices.find((v) => v.lang.includes('zh'));
+      if (zhVoice) utterance.voice = zhVoice;
+
+      utterance.onboundary = (event) => {
+        if (typeof event.charIndex === 'number' && event.charIndex >= 0) {
+          boundaryWorkedRef.current = true;
+          if (speechTimerRef.current) {
+            clearTimeout(speechTimerRef.current);
+            speechTimerRef.current = null;
+          }
+          setSpeakingState((prev) =>
+            prev.messageId === messageId
+              ? { ...prev, charIndex: Math.min(event.charIndex, chars.length - 1) }
+              : prev
+          );
+        }
+      };
+
+      utterance.onend = () => {
+        if (speechTimerRef.current) {
+          clearTimeout(speechTimerRef.current);
+          speechTimerRef.current = null;
+        }
+        setSpeakingState({ messageId: null, mode: null, charIndex: null });
+      };
+
+      utterance.onerror = () => {
+        if (speechTimerRef.current) {
+          clearTimeout(speechTimerRef.current);
+          speechTimerRef.current = null;
+        }
+        setSpeakingState({ messageId: null, mode: null, charIndex: null });
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      // Fallback stepper continues visually if speechSynthesis throws
+    }
+  };
+
+  /**
+   * Speaks a single Chinese character when a child taps its character+Pinyin tile.
+   */
+  const speakSingleCharacter = (char, charIndex, messageId) => {
+    stopSpeaking();
+    setSpeakingState({ messageId, mode: 'char', charIndex });
+
+    speechTimerRef.current = setTimeout(() => {
+      setSpeakingState({ messageId: null, mode: null, charIndex: null });
+    }, 650);
+
+    if (!('speechSynthesis' in window)) return;
+    try {
+      const utterance = new SpeechSynthesisUtterance(char);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 0.75;
+      utterance.pitch = 1.1;
+      const voices = window.speechSynthesis.getVoices();
+      const zhVoice =
+        voices.find((v) => v.lang.includes('zh-SG')) ||
+        voices.find((v) => v.lang.includes('zh-CN')) ||
+        voices.find((v) => v.lang.includes('zh'));
+      if (zhVoice) utterance.voice = zhVoice;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      // Ignore audio errors
+    }
+  };
+
+  const toggleListening = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setErrorBanner(
+        'Your browser does not support voice microphone input. Try tapping a quick reply card or typing below!'
+      );
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = speechLang;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setErrorBanner(null);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const handleSelectScenario = (scenario) => {
+    stopSpeaking();
+    setActiveScenario(scenario);
+    const initMsg = {
+      id: `init-${Date.now()}`,
+      sender: 'tutor',
+      ...scenario.initialMessage
+    };
+    setMessages([initMsg]);
+    setLastRawJson(JSON.stringify(scenario.initialMessage, null, 2));
+    setErrorBanner(null);
+    setTimeout(() => {
+      speakChineseWithHighlight(scenario.initialMessage.chinese, initMsg.id, false);
+    }, 150);
+  };
+
+  const handleSendMessage = async (overrideText) => {
+    const textToSend = (overrideText !== undefined ? overrideText : inputText).trim();
+    if (!textToSend || isLoading) return;
+
+    stopSpeaking();
+    setErrorBanner(null);
+
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      sender: 'user',
+      text: textToSend
+    };
+
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    if (overrideText === undefined) setInputText('');
+    setIsLoading(true);
+
+    const conversationContext = updatedMessages
+      .map((m) =>
+        m.sender === 'user'
+          ? `Child: ${m.text}`
+          : `Tutor (JSON): ${JSON.stringify({
+              chinese: m.chinese,
+              pinyin: m.pinyin,
+              english: m.english,
+              encouragement: m.encouragement
+            })}`
+      )
+      .join('\n');
+
+    const promptForTurn = `Current Scenario: ${activeScenario.title} (${activeScenario.english}).\n\nConversation so far:\n${conversationContext}\n\nRespond to the child's latest message ("${textToSend}") following the system instructions and strict JSON format. Make sure "pinyin" has space-separated syllables matching each Chinese character 1-to-1.`;
+
+    try {
+      let parsedTutorResponse = null;
+
+      if (engineMode === 'ollama') {
+        const response = await fetch(ollamaUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: ollamaModel,
+            format: 'json',
+            stream: false,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: promptForTurn }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Open-source endpoint returned status ${response.status}`);
+        }
+        const data = await response.json();
+        const rawContent = data?.message?.content || data?.response || '{}';
+        parsedTutorResponse = JSON.parse(rawContent);
+      } else {
+        const apiKey = '';
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: promptForTurn }] }],
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          generationConfig: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: 'OBJECT',
+              properties: {
+                chinese: { type: 'STRING' },
+                pinyin: { type: 'STRING' },
+                english: { type: 'STRING' },
+                encouragement: { type: 'STRING' }
+              },
+              required: ['chinese', 'pinyin', 'english', 'encouragement'],
+              propertyOrdering: ['chinese', 'pinyin', 'english', 'encouragement']
+            }
+          }
+        };
+
+        const response = await fetchWithRetry(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const rawText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) {
+          throw new Error('Could not parse response from AI tutor.');
+        }
+        parsedTutorResponse = JSON.parse(rawText);
+      }
+
+      const finalTutorObj = {
+        chinese: parsedTutorResponse.chinese || '太棒了！我们继续说华语吧！',
+        pinyin:
+          parsedTutorResponse.pinyin ||
+          'Tài bàng le ! Wǒ men jì xù shuō huá yǔ ba !',
+        english:
+          parsedTutorResponse.english ||
+          'Awesome! Let us continue speaking Chinese!',
+        encouragement:
+          parsedTutorResponse.encouragement ||
+          'Great job practicing your Chinese today!'
+      };
+
+      setLastRawJson(JSON.stringify(finalTutorObj, null, 2));
+
+      const newTutorMsg = {
+        id: `tutor-${Date.now()}`,
+        sender: 'tutor',
+        ...finalTutorObj
+      };
+
+      setMessages((prev) => [...prev, newTutorMsg]);
+      setStars((prev) => prev + 1);
+      setCelebratingStar(true);
+      setTimeout(() => setCelebratingStar(false), 1800);
+
+      setTimeout(() => {
+        speakChineseWithHighlight(finalTutorObj.chinese, newTutorMsg.id, false);
+      }, 200);
+    } catch (err) {
+      setErrorBanner(
+        engineMode === 'ollama'
+          ? `Could not reach local Ollama at ${ollamaUrl}. Make sure Ollama is running with OLLAMA_ORIGINS="*" or switch back to the Built-in Live AI Engine in Settings.`
+          : 'Oops! Lele the Panda is taking a quick sip of water. Please try sending your message again!'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    setCopiedPrompt(true);
+    setTimeout(() => setCopiedPrompt(false), 2000);
+  };
+
+  const unlockedStickersCount = STICKER_REWARDS.filter(
+    (s) => stars >= s.starsRequired
+  ).length;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-amber-100/70 via-sky-50 to-emerald-50/70 text-slate-800 flex flex-col font-sans">
+      {/* Top Kid-Friendly Navigation Header */}
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-4 border-amber-300 shadow-sm px-3 sm:px-5 py-2.5">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+          {/* Brand & Animated Mascot */}
+          <div className="flex items-center gap-3">
+            <div
+              className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-3xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 flex items-center justify-center text-3xl shadow-md border-2 border-white transition-transform ${
+                speakingState.messageId ? 'animate-bounce' : 'hover:scale-105'
+              }`}
+            >
+              🐼
+              <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white font-black">
+                ✓
+              </span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900">
+                  欢乐小伙伴
+                </h1>
+                <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-200 to-yellow-200 text-amber-950 border border-amber-400 shadow-sm">
+                  SG Pri 1–3 华语伴读
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-semibold">
+                Tap any character to hear it • Watch Pinyin light up as Lele speaks!
+              </p>
+            </div>
+          </div>
+
+          {/* Interactive Kid Controls & Star Sticker Counter */}
+          <div className="flex items-center flex-wrap gap-1.5 sm:gap-2">
+            {/* Star & Sticker Book Button */}
+            <button
+              onClick={() => setActiveModal('stickers')}
+              className={`flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white px-3.5 py-1.5 rounded-full font-black text-xs sm:text-sm shadow-md border-2 border-white transition-transform ${
+                celebratingStar ? 'scale-125 ring-4 ring-yellow-300' : 'hover:scale-105'
+              }`}
+              title="Open My Star Stickers"
+            >
+              <Star className="w-4 h-4 fill-yellow-200 text-yellow-100" />
+              <span>{stars} 颗星</span>
+              <span className="hidden sm:inline text-[11px] bg-white/25 px-1.5 py-0.2 rounded-full">
+                🎁 {unlockedStickersCount}/{STICKER_REWARDS.length}
+              </span>
+            </button>
+
+            {/* Pinyin Under Character Toggle */}
+            <button
+              onClick={() => setShowPinyin(!showPinyin)}
+              className={`px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all ${
+                showPinyin
+                  ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm'
+                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+              }`}
+              title="Show or hide Hanyu Pinyin under each Chinese character"
+            >
+              {showPinyin ? '✓ 拼音 Pinyin' : '拼音 Pinyin'}
+            </button>
+
+            {/* English Meaning Toggle */}
+            <button
+              onClick={() => setShowEnglish(!showEnglish)}
+              className={`px-3 py-1.5 rounded-full text-xs font-extrabold border-2 transition-all ${
+                showEnglish
+                  ? 'bg-sky-500 text-white border-sky-600 shadow-sm'
+                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+              }`}
+              title="Show or hide English translation"
+            >
+              {showEnglish ? '✓ 英文 English' : '英文 English'}
+            </button>
+
+            {/* Word Bank Button */}
+            <button
+              onClick={() => setActiveModal('vocab')}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-500 text-white border-2 border-emerald-600 hover:bg-emerald-600 shadow-sm transition-all"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>词语本</span>
+            </button>
+
+            {/* JSON Output Inspector Button */}
+            <button
+              onClick={() => setActiveModal('json')}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 transition-all"
+              title="Inspect Raw JSON Output"
+            >
+              <Code className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">JSON</span>
+            </button>
+
+            {/* AI Settings & Prompt Button */}
+            <button
+              onClick={() => setActiveModal('settings')}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-white hover:bg-slate-700 transition-all shadow-sm"
+            >
+              <Cpu className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">AI 设置</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Scenario Cards Picker */}
+      <div className="max-w-5xl w-full mx-auto px-3 sm:px-4 pt-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {SCENARIOS.map((sc) => {
+            const isSelected = activeScenario.id === sc.id;
+            return (
+              <button
+                key={sc.id}
+                onClick={() => handleSelectScenario(sc)}
+                className={`group text-left p-2.5 sm:p-3 rounded-3xl border-2 transition-all flex items-center gap-2.5 ${
+                  isSelected
+                    ? 'bg-white border-amber-500 shadow-md ring-4 ring-amber-200/70 -translate-y-0.5'
+                    : 'bg-white/80 border-white hover:bg-white hover:border-amber-300 shadow-sm'
+                }`}
+              >
+                <div
+                  className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${sc.bannerBg} flex items-center justify-center text-2xl shadow-sm shrink-0 group-hover:scale-105 transition-transform`}
+                >
+                  {sc.emoji}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11px] font-extrabold text-indigo-600 truncate">
+                    {sc.pinyin}
+                  </div>
+                  <div className="font-black text-slate-900 text-sm sm:text-base truncate">
+                    {sc.title}
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-500 truncate">
+                    {sc.english}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main Interactive Stage */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 flex flex-col">
+        {/* Active Singapore Scene Banner */}
+        <div
+          className={`mb-3 rounded-3xl bg-gradient-to-r ${activeScenario.bannerBg} p-3 sm:px-5 sm:py-3 text-white shadow-md border-2 border-white flex items-center justify-between gap-2`}
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl sm:text-3xl bg-white/25 p-2 rounded-2xl backdrop-blur-sm">
+              {activeScenario.emoji}
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider bg-black/20 px-2.5 py-0.5 rounded-full">
+                  当前场景 Current Scene
+                </span>
+                <span className="text-sm hidden sm:inline">{activeScenario.sceneDecor}</span>
+              </div>
+              <h2 className="text-base sm:text-xl font-black tracking-wide mt-0.5">
+                {activeScenario.title} • {activeScenario.english}
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {speakingState.messageId && (
+              <button
+                onClick={stopSpeaking}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow border border-white animate-pulse"
+              >
+                <VolumeX className="w-3.5 h-3.5" />
+                <span>停止 Stop</span>
+              </button>
+            )}
+            <button
+              onClick={() => setActiveModal('vocab')}
+              className="px-3 py-1.5 rounded-2xl bg-white/95 hover:bg-white text-slate-900 font-extrabold text-xs shadow-sm flex items-center gap-1 shrink-0"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>学词语 Words</span>
+            </button>
+          </div>
+        </div>
+
+        {errorBanner && (
+          <div className="mb-3 p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs sm:text-sm font-bold flex items-center justify-between gap-3 shadow-sm">
+            <span>⚠️ {errorBanner}</span>
+            <button
+              onClick={() => setErrorBanner(null)}
+              className="px-3 py-1 rounded-xl bg-rose-200 hover:bg-rose-300 font-black shrink-0"
+            >
+              OK
+            </button>
+          </div>
+        )}
+
+        {}
+        <div className="flex-1 bg-white/90 backdrop-blur-sm border-4 border-amber-200/90 rounded-3xl p-3.5 sm:p-5 shadow-inner overflow-y-auto max-h-[50vh] space-y-5">
+          {messages.map((msg) => {
+            if (msg.sender === 'user') {
+              const userAligned = alignChineseWithPinyin(msg.text, msg.pinyin || '');
+              const hasChineseChars = /[\u4e00-\u9fa5]/.test(msg.text);
+              const isUserMsgSpeaking = speakingState.messageId === msg.id;
+
+              return (
+                <div key={msg.id} className="flex justify-end items-end gap-2.5">
+                  <div className="max-w-[88%] sm:max-w-[75%] bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-3xl rounded-br-sm p-4 shadow-md border-2 border-amber-300">
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                      <span className="text-xs text-amber-100 font-extrabold flex items-center gap-1">
+                        <Smile className="w-3.5 h-3.5" /> 我说 (You said):
+                      </span>
+                      {hasChineseChars && (
+                        <button
+                          onClick={() =>
+                            speakChineseWithHighlight(msg.text, msg.id, false)
+                          }
+                          className="px-2.5 py-0.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold flex items-center gap-1"
+                        >
+                          <Volume2 className="w-3 h-3" /> 读一读
+                        </button>
+                      )}
+                    </div>
+
+                    {hasChineseChars ? (
+                      <div className="bg-white/95 rounded-2xl p-2.5 text-slate-900">
+                        <CharacterRubyBlock
+                          alignedItems={userAligned}
+                          showPinyin={showPinyin}
+                          activeCharIndex={
+                            isUserMsgSpeaking ? speakingState.charIndex : null
+                          }
+                          isMessageSpeaking={isUserMsgSpeaking}
+                          onClickChar={(ch, idx) =>
+                            speakSingleCharacter(ch, idx, msg.id)
+                          }
+                          size="small"
+                        />
+                      </div>
+                    ) : (
+                      <p className="text-base sm:text-lg font-extrabold leading-snug">
+                        {msg.text}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="w-10 h-10 rounded-2xl bg-amber-100 border-2 border-amber-400 flex items-center justify-center text-xl shadow-sm shrink-0">
+                    🧒
+                  </div>
+                </div>
+              );
+            }
+
+            // Tutor Message with Character-Aligned Pinyin & Speech Highlight
+            const alignedItems = alignChineseWithPinyin(msg.chinese, msg.pinyin);
+            const isThisMsgSpeaking = speakingState.messageId === msg.id;
+            const isPlayingNormal =
+              isThisMsgSpeaking && speakingState.mode === 'normal';
+            const isPlayingSlow =
+              isThisMsgSpeaking && speakingState.mode === 'slow';
+
+            return (
+              <div key={msg.id} className="flex items-start gap-2.5 sm:gap-3.5">
+                {/* Panda Tutor Avatar */}
+                <div className="flex flex-col items-center shrink-0">
+                  <div
+                    className={`w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-2xl shadow-md border-2 border-white transition-transform ${
+                      isThisMsgSpeaking ? 'scale-110 ring-4 ring-amber-300' : ''
+                    }`}
+                  >
+                    🐼
+                  </div>
+                  <span className="text-[10px] font-black text-amber-800 mt-1 bg-amber-100 px-2 py-0.5 rounded-full">
+                    乐乐老师
+                  </span>
+                </div>
+
+                {/* Tutor Card */}
+                <div className="flex-1 max-w-[92%] sm:max-w-[85%] bg-gradient-to-b from-slate-50 to-amber-50/40 border-2 border-amber-200 rounded-3xl rounded-tl-sm p-3.5 sm:p-5 shadow-md space-y-3.5">
+                  {/* Top Bar: Audio Read-Along Controls */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-200/60 pb-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 bg-amber-100/90 px-2.5 py-1 rounded-full border border-amber-300">
+                        👆 点字发音 • 跟着高亮读
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          speakChineseWithHighlight(msg.chinese, msg.id, false)
                         }
-                    }
-                };
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black transition-all shadow-sm ${
+                          isPlayingNormal
+                            ? 'bg-rose-500 text-white ring-4 ring-rose-200 scale-105'
+                            : 'bg-amber-400 hover:bg-amber-500 text-slate-950 border border-amber-500'
+                        }`}
+                      >
+                        <Volume2 className="w-4 h-4" />
+                        <span>{isPlayingNormal ? '正在读... 停止' : '听一听 Listen'}</span>
+                      </button>
 
-                const res = await fetch(apiUrl, {
-<!-- ... existing code ... -->
-                } catch (allErr) {
-                    console.warn("All cloud AI endpoints unreachable, using dynamic local response:", allErr);
-                    usedEngine = '📴 Offline Backup';
-                    const v = currentScen.vocab[Math.floor(Math.random() * currentScen.vocab.length)];
-                    parsedResponse = {
-                        heardText: userText || '你好!',
-                        mood: '🐼',
-                        chinese: `哇，你说得真有趣！`,
-                        replyTokens: [
-                            {hz: '哇', py: 'wā'}, {hz: '，', py: ''},
-                            {hz: '你', py: 'nǐ'}, {hz: '说', py: 'shuō'}, {hz: '得', py: 'de'}, {hz: '真', py: 'zhēn'}, {hz: '有', py: 'yǒu'}, {hz: '趣', py: 'qù'}, {hz: '！', py: ''}
-                        ],
-                        english: `Wow, what an interesting idea! What do you think happens next?`,
-                        mnemonic: `💡 Spot Word: ${v.hz} (${v.py}) means ${v.en}! Tap the word to hear its tone.`,
-                        nextReplies: [
-                            `我也看到${v.hz}了! (I see ${v.en} too!)`,
-                            `真好玩，再来一个谜语! (So fun, give me a riddle!)`,
-                            `Teach me a funny new word! (教我一个新词!)`
-                        ],
-                        newVocab: [v],
-                        bambooEarned: true
-                    };
+                      <button
+                        onClick={() =>
+                          speakChineseWithHighlight(msg.chinese, msg.id, true)
+                        }
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black transition-all shadow-sm ${
+                          isPlayingSlow
+                            ? 'bg-indigo-600 text-white ring-4 ring-indigo-200 scale-105'
+                            : 'bg-white hover:bg-indigo-50 text-indigo-700 border-2 border-indigo-200'
+                        }`}
+                      >
+                        <Turtle className="w-4 h-4" />
+                        <span>{isPlayingSlow ? '慢读中... 停止' : '慢速读 Slow'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Character-by-Character Chinese with Hanyu Pinyin directly underneath */}
+                  <div className="py-1">
+                    <CharacterRubyBlock
+                      alignedItems={alignedItems}
+                      showPinyin={showPinyin}
+                      activeCharIndex={
+                        isThisMsgSpeaking ? speakingState.charIndex : null
+                      }
+                      isMessageSpeaking={isThisMsgSpeaking}
+                      onClickChar={(ch, idx) =>
+                        speakSingleCharacter(ch, idx, msg.id)
+                      }
+                      size="large"
+                    />
+                  </div>
+
+                  {/* Caption 3: English Translation */}
+                  {showEnglish && (
+                    <div className="bg-sky-50 border-2 border-sky-200/80 rounded-2xl px-3.5 py-2.5 flex items-start gap-2">
+                      <span className="text-base leading-none mt-0.5">🇬🇧</span>
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 block">
+                          英文意思 • English Meaning
+                        </span>
+                        <p className="text-sm sm:text-base font-bold text-sky-950 leading-snug">
+                          {msg.english}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Encouragement & Learning Tip */}
+                  {msg.encouragement && (
+                    <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-3.5 py-2.5 flex items-start gap-2">
+                      <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div className="text-xs sm:text-sm text-emerald-950 font-bold leading-snug">
+                        {msg.encouragement}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {isLoading && (
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-2xl animate-bounce shadow-md border-2 border-white">
+                🐼
+              </div>
+              <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl px-5 py-3.5 text-sm font-black text-amber-900 flex items-center gap-2.5 shadow-sm">
+                <RefreshCw className="w-4 h-4 animate-spin text-amber-600" />
+                <span>乐乐老师正在想... (Preparing Chinese & Pinyin...)</span>
+              </div>
+            </div>
+          )}
+
+          <div ref={chatEndRef} />
+        </div>
+
+        {}
+        <div className="mt-3 space-y-2.5">
+          {/* Kid-Friendly Tap-to-Reply Cards with aligned Pinyin preview */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5 px-1">
+              <span className="text-xs font-black text-slate-700 flex items-center gap-1.5">
+                <Wand2 className="w-3.5 h-3.5 text-amber-600" />
+                试试这样回答 • Tap a sentence to reply (or click 🔊 to practice first):
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {activeScenario.quickReplies.map((qr, idx) => {
+                const qrId = `qr-${activeScenario.id}-${idx}`;
+                const qrAligned = alignChineseWithPinyin(qr.chinese, qr.pinyin);
+                const isQrSpeaking = speakingState.messageId === qrId;
+
+                return (
+                  <div
+                    key={idx}
+                    className={`rounded-2xl border-2 p-2.5 transition-all flex flex-col justify-between gap-2 shadow-sm ${
+                      isQrSpeaking
+                        ? 'bg-amber-50 border-amber-500 ring-2 ring-amber-300'
+                        : 'bg-white hover:bg-amber-50/50 border-amber-300'
+                    }`}
+                  >
+                    {/* Mini aligned Chinese + Pinyin inside quick reply */}
+                    <div className="flex items-start justify-between gap-1">
+                      <div className="flex flex-wrap gap-1">
+                        {qrAligned.map((item) => (
+                          <span
+                            key={item.charIndex}
+                            className={`inline-flex flex-col items-center px-1 py-0.5 rounded-lg ${
+                              isQrSpeaking &&
+                              speakingState.charIndex === item.charIndex
+                                ? 'bg-amber-300 scale-110 font-black'
+                                : ''
+                            }`}
+                          >
+                            <span className="text-sm font-black text-slate-900">
+                              {item.char}
+                            </span>
+                            {showPinyin && item.isHanzi && (
+                              <span className="text-[10px] font-bold text-indigo-600">
+                                {item.pinyin}
+                              </span>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          speakChineseWithHighlight(qr.chinese, qrId, false)
+                        }
+                        className="p-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 shrink-0"
+                        title="Listen to this reply"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                      <span className="text-[11px] font-semibold text-slate-500 truncate">
+                        {qr.english}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={isLoading}
+                        onClick={() => handleSendMessage(qr.chinese)}
+                        className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-[11px] shrink-0 shadow-sm"
+                      >
+                        发送 Send ➤
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Input Box + Voice Microphone */}
+          <div className="bg-white border-4 border-amber-300 rounded-3xl p-2 shadow-md flex items-center gap-2">
+            {/* Voice Language Toggle + Mic Button */}
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={toggleListening}
+                className={`px-3 py-2.5 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all ${
+                  isListening
+                    ? 'bg-rose-500 text-white animate-pulse shadow-md ring-4 ring-rose-200'
+                    : 'bg-amber-100 text-amber-950 hover:bg-amber-200 border border-amber-300'
+                }`}
+                title="Click to speak in Chinese or English"
+              >
+                {isListening ? (
+                  <>
+                    <MicOff className="w-4 h-4" />
+                    <span className="hidden sm:inline">停止 Stop</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-4 h-4" />
+                    <span className="hidden sm:inline">说话 Speak</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setSpeechLang(speechLang === 'zh-CN' ? 'en-SG' : 'zh-CN')
                 }
+                className="px-2 py-2.5 rounded-xl text-[11px] font-black bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300"
+                title="Switch Microphone Language"
+              >
+                {speechLang === 'zh-CN' ? '🇨🇳 华语' : '🇬🇧 ENG'}
+              </button>
+            </div>
 
-                setActiveEngineLabel(usedEngine);
-<!-- ... existing code ... -->
-                const newMsgId = 'msg-' + Date.now();
-                setMessages(prev => [...prev, {
-                    id: newMsgId,
-                    role: 'ai',
-                    mood: parsedResponse.mood || '🤩',
-                    chinese: parsedResponse.chinese,
-                    replyTokens: parsedResponse.replyTokens,
-                    pinyin: parsedResponse.pinyin,
-                    english: parsedResponse.english,
-                    mnemonic: parsedResponse.mnemonic
-                }]);
+            {/* Text Input */}
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSendMessage();
+              }}
+              placeholder="用华语、拼音或英文回答 (Type in Chinese, Pinyin, or English)..."
+              className="flex-1 bg-transparent px-2 py-2 text-sm sm:text-base font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none"
+            />
 
-                if (parsedResponse.chinese) {
-<!-- ... existing code ... -->
-                            {messages.map((msg, idx) => {
-                                const isSpeakingThisMsg = activeSpeechId === msg.id && isSpeaking;
-                                return (
-                                    <div key={msg.id || idx} className={`flex ${msg.role === 'ai' ? 'justify-start' : 'justify-end'} items-end`}>
-                                        {msg.role === 'ai' && (
-                                            <div className="mr-2 mb-1 flex-shrink-0">
-                                                <div className={isSpeakingThisMsg ? "talking-head" : ""}>
-                                                    {renderAvatar("text-3xl", msg.mood)}
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className={`p-3.5 max-w-[86%] leading-relaxed ${msg.role === 'ai' ? 'chat-bubble-ai text-gray-800' : 'chat-bubble-user text-white font-extrabold text-base'}`}>
-                                            {msg.role === 'user' ? (
-                                                <div>{msg.text}</div>
-                                            ) : (
-                                                <div className="flex flex-col gap-1.5">
-                                                    {/* Chinese Characters with Pinyin Aligned Below (Ruby Text) */}
-                                                    {msg.replyTokens ? (
-                                                        <div className="flex flex-wrap items-end gap-x-0.5 gap-y-3 pt-1 pb-1">
-                                                            {msg.replyTokens.map((token, cIdx) => {
-                                                                const isRead = isSpeakingThisMsg && cIdx < activeCharIndex;
-                                                                const isCurrent = isSpeakingThisMsg && (cIdx === activeCharIndex || cIdx === activeCharIndex + 1);
-                                                                
-                                                                let charClass = "flex flex-col items-center justify-end cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
-                                                                if (isSpeakingThisMsg) {
-                                                                    if (isCurrent) {
-                                                                        charClass += "text-pink-600 bg-yellow-300 scale-110 shadow-sm -translate-y-1 rounded-md";
-                                                                    } else if (isRead) {
-                                                                        charClass += "opacity-60";
-                                                                    }
-                                                                }
-                                                                return (
-                                                                    <div
-                                                                        key={cIdx}
-                                                                        onClick={() => speakText(token.hz, null)}
-                                                                        title={`Tap to hear "${token.hz}"`}
-                                                                        className={charClass}
-                                                                    >
-                                                                        <span className="text-xl md:text-2xl font-black tracking-wide text-gray-900 leading-none">{token.hz}</span>
-                                                                        {token.py ? (
-                                                                            <span className="text-pink-600 text-[10px] md:text-[11.5px] font-extrabold leading-none mt-1.5 tracking-tighter">{token.py}</span>
-                                                                        ) : (
-                                                                            <span className="min-h-[10px] md:min-h-[11.5px] mt-1.5 w-full"></span>
-                                                                        )}
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    ) : (
-                                                        /* Fallback for unstructured older messages without replyTokens */
-                                                        msg.chinese && (
-                                                            <div className="text-xl md:text-2xl font-black tracking-wide leading-snug text-gray-800 flex flex-wrap items-center gap-y-1">
-                                                                {Array.from(msg.chinese).map((char, cIdx) => {
-                                                                    const isRead = isSpeakingThisMsg && cIdx < activeCharIndex;
-                                                                    const isCurrent = isSpeakingThisMsg && (cIdx === activeCharIndex || cIdx === activeCharIndex + 1);
-                                                                    let charClass = "cursor-pointer rounded px-0.5 transition-all duration-150 hover:bg-pink-100 ";
-                                                                    if (isSpeakingThisMsg) {
-                                                                        if (isCurrent) charClass += "text-pink-600 bg-yellow-300 scale-115 shadow-sm -translate-y-0.5";
-                                                                        else if (isRead) charClass += "text-pink-400";
-                                                                    }
-                                                                    return <span key={cIdx} onClick={() => speakText(char, null)} className={charClass}>{char}</span>;
-                                                                })}
-                                                            </div>
-                                                        )
-                                                    )}
-                                                    
-                                                    {/* Pinyin (Hidden if Ruby Text is active) & English Translation */}
-                                                    {msg.pinyin && !msg.replyTokens && (
-                                                        <div className="text-xs md:text-sm text-pink-600 font-extrabold tracking-wide">
-                                                            {msg.pinyin}
-                                                        </div>
-                                                    )}
-                                                    {msg.english && (
-                                                        <div className="text-xs md:text-sm text-gray-600 font-bold leading-snug mt-1">
-                                                            {msg.english}
-                                                        </div>
-                                                    )}
+            {/* Send Button */}
+            <button
+              type="button"
+              onClick={() => handleSendMessage()}
+              disabled={!inputText.trim() || isLoading}
+              className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:opacity-40 text-white font-black text-sm flex items-center gap-1.5 shadow-md transition-all"
+            >
+              <span>发送</span>
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </main>
 
-                                                    {/* Fun Character Mnemonic / Discovery Badge */}
-                                                    {msg.mnemonic && (
-                                                        <div className="mt-1 bg-amber-50/90 border border-amber-200 text-amber-900 rounded-xl px-2.5 py-1.5 text-xs font-bold leading-snug">
-                                                            {msg.mnemonic}
-                                                        </div>
-                                                    )}
-<!-- ... existing code ... -->
-                        <div className="mx-3 mb-1.5 bg-white/92 backdrop-blur-md border-2 border-pink-200 rounded-2xl p-2.5 shadow-md z-20 flex-shrink-0">
-                            <div className="flex flex-col gap-1.5">
-                                {/* Live Vocabulary Tray (Grows as the AI introduces new words!) */}
-                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-                                    <span className="text-[11px] font-black text-pink-600 uppercase whitespace-nowrap mr-0.5">
-                                        📚 Words:
-                                    </span>
-                                    {dynamicVocab.map((v, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => handleVocabClick(v)}
-                                            className="flex-shrink-0 bg-pink-50 hover:bg-pink-100 active:scale-95 text-gray-800 px-2.5 py-1 rounded-xl text-xs border border-pink-200 font-extrabold transition-all flex items-center gap-1 shadow-sm"
-                                        >
-                                            <i className="fa-solid fa-volume-high text-pink-500 text-[10px]"></i>
-                                            <span className="text-pink-700">{v.hz}</span>
-                                            <span className="text-gray-500">({v.py})</span>
-                                            <span className="text-gray-600">- {v.en}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                                
-                                {/* Dynamic Turn-by-Turn "Try Saying" Suggestions - Stacked into 3 large buttons! */}
-                                <div className="pt-2 mt-1 border-t border-pink-100 flex flex-col gap-1.5">
-                                    <span className="text-[11px] font-black text-sky-600 uppercase">
-                                        <i className="fa-solid fa-lightbulb"></i> You can reply:
-                                    </span>
-                                    <div className="grid grid-cols-1 gap-1.5">
-                                        {dynamicHints.slice(0, 3).map((hint, i) => (
-                                            <button 
-                                                key={i} 
-                                                onClick={() => handleHintClick(hint)}
-                                                disabled={isLoading}
-                                                className="text-left w-full bg-gradient-to-r from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100 text-sky-900 px-3 py-2.5 rounded-xl text-sm border border-sky-200 font-extrabold transition-all active:scale-95 shadow-sm leading-snug whitespace-normal"
-                                            >
-                                                <span className="mr-1.5 text-sky-500"><i className="fa-solid fa-comment-dots"></i></span>
-                                                {hint}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+      {}
+      {/* Modal 1: Vocabulary Word Bank with Character-Under-Pinyin alignment */}
+      {activeModal === 'vocab' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-emerald-300 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl">
+                  📖
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-slate-900">
+                    我的词语本 • Word Bank ({activeScenario.title})
+                  </h2>
+                  <p className="text-xs text-slate-500 font-semibold">
+                    Tap Listen to watch each character and Pinyin light up!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700"
+              >
+                关闭 Close ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+              {activeScenario.vocab.map((item, idx) => {
+                const vocabId = `vocab-${idx}`;
+                const alignedVocab = alignChineseWithPinyin(item.hanzi, item.pinyin);
+                const isVocabSpeaking = speakingState.messageId === vocabId;
+
+                return (
+                  <div
+                    key={idx}
+                    className="p-3.5 rounded-2xl bg-emerald-50/70 border-2 border-emerald-200 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl bg-white p-2.5 rounded-2xl shadow-sm border border-emerald-100">
+                        {item.emoji}
+                      </span>
+                      <div>
+                        <CharacterRubyBlock
+                          alignedItems={alignedVocab}
+                          showPinyin={true}
+                          activeCharIndex={
+                            isVocabSpeaking ? speakingState.charIndex : null
+                          }
+                          isMessageSpeaking={isVocabSpeaking}
+                          onClickChar={(ch, cIdx) =>
+                            speakSingleCharacter(ch, cIdx, vocabId)
+                          }
+                          size="small"
+                        />
+                        <div className="text-xs font-extrabold text-emerald-900 mt-1.5">
+                          🇬🇧 {item.meaning}
                         </div>
+                      </div>
+                    </div>
 
-                        {/* Footer (Microphone and Input) */}
-<!-- ... existing code ... -->
+                    <button
+                      onClick={() =>
+                        speakChineseWithHighlight(item.hanzi, vocabId, false)
+                      }
+                      className={`px-3.5 py-2 rounded-2xl font-black text-xs flex items-center gap-1.5 shadow-sm transition-all ${
+                        isVocabSpeaking
+                          ? 'bg-rose-500 text-white animate-pulse'
+                          : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                      }`}
+                    >
+                      <Volume2 className="w-4 h-4" />
+                      <span>读一读</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 2: Kid-Friendly Star Sticker Rewards Book */}
+      {activeModal === 'stickers' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-amber-300 space-y-4">
+            <div className="flex items-center justify-between border-b border-amber-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-2xl">
+                  🏆
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-slate-900">
+                    我的星星贴纸簿 • Star Sticker Book
+                  </h2>
+                  <p className="text-xs text-slate-500 font-semibold">
+                    Every Chinese reply earns 1 ⭐ star! Collect them all!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700"
+              >
+                关闭 Close ✕
+              </button>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 text-white flex items-center justify-between shadow-sm">
+              <div>
+                <div className="text-xs font-extrabold uppercase opacity-90">
+                  我的星星 Total Stars
+                </div>
+                <div className="text-2xl font-black">{stars} 颗星 ⭐</div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs font-extrabold uppercase opacity-90">
+                  已解锁贴纸 Unlocked
+                </div>
+                <div className="text-xl font-black">
+                  {unlockedStickersCount} / {STICKER_REWARDS.length}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {STICKER_REWARDS.map((st) => {
+                const unlocked = stars >= st.starsRequired;
+                return (
+                  <div
+                    key={st.id}
+                    className={`p-3.5 rounded-2xl border-2 flex items-center gap-3 transition-all ${
+                      unlocked
+                        ? 'bg-amber-50 border-amber-300 shadow-sm'
+                        : 'bg-slate-100/70 border-slate-200 opacity-60'
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-3xl shadow-sm">
+                      {unlocked ? st.emoji : '🔒'}
+                    </div>
+                    <div>
+                      <div className="font-black text-sm text-slate-900">
+                        {st.name}
+                      </div>
+                      <div className="text-xs font-bold text-slate-500">
+                        {st.english}
+                      </div>
+                      <div className="text-[11px] font-extrabold text-amber-700 mt-0.5">
+                        {unlocked
+                          ? '✓ 已获得 Unlocked!'
+                          : `需要 ${st.starsRequired} 颗星 (${st.starsRequired} stars)`}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 3: Live JSON Output Inspector */}
+      {activeModal === 'json' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Code className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-base font-black text-slate-900">
+                  Latest Structured JSON Response
+                </h2>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700"
+              >
+                Close ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600">
+              Each Chinese character is paired 1-to-1 with its Hanyu Pinyin syllable from this JSON payload and highlighted during speech playback:
+            </p>
+
+            <pre className="p-4 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto leading-relaxed">
+              {lastRawJson}
+            </pre>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 4: AI Connector & System Prompt Settings */}
+      {activeModal === 'settings' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2.5">
+                <Cpu className="w-6 h-6 text-amber-500" />
+                <div>
+                  <h2 className="text-lg font-black text-slate-900">
+                    Open-Source AI Connector & System Prompt
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Test in-browser with the built-in AI or connect to your local Ollama / Open-Source LLM
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700"
+              >
+                Close ✕
+              </button>
+            </div>
+
+            {/* AI Backend Selector */}
+            <div className="space-y-3">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500 block">
+                1. Select AI Backend Engine
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={() => setEngineMode('builtin')}
+                  className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                    engineMode === 'builtin'
+                      ? 'border-amber-500 bg-amber-50/70'
+                      : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="font-extrabold text-sm text-slate-900 flex items-center justify-between">
+                    <span>⚡ Built-in Cloud AI (Instant Preview)</span>
+                    {engineMode === 'builtin' && (
+                      <Check className="w-4 h-4 text-amber-600" />
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Works immediately in this preview with strict JSON schema output.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setEngineMode('ollama')}
+                  className={`p-3.5 rounded-2xl border-2 text-left transition-all ${
+                    engineMode === 'ollama'
+                      ? 'border-indigo-600 bg-indigo-50/70'
+                      : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="font-extrabold text-sm text-slate-900 flex items-center justify-between">
+                    <span>🦙 Local Open-Source LLM (Ollama)</span>
+                    {engineMode === 'ollama' && (
+                      <Check className="w-4 h-4 text-indigo-600" />
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Connects to free local models like <code>qwen2.5:7b</code> or <code>llama3.1</code>.
+                  </p>
+                </button>
+              </div>
+            </div>
+
+            {engineMode === 'ollama' && (
+              <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-indigo-950 block mb-1">
+                      Ollama Endpoint URL
+                    </label>
+                    <input
+                      type="text"
+                      value={ollamaUrl}
+                      onChange={(e) => setOllamaUrl(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-indigo-950 block mb-1">
+                      Open-Source Model Name
+                    </label>
+                    <input
+                      type="text"
+                      value={ollamaModel}
+                      onChange={(e) => setOllamaModel(e.target.value)}
+                      placeholder="qwen2.5:7b"
+                      className="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs font-mono"
+                    />
+                  </div>
+                </div>
+                <p className="text-[11px] text-indigo-800 leading-relaxed">
+                  <strong>Tip:</strong> Run <code>OLLAMA_ORIGINS="*" ollama serve</code> and{' '}
+                  <code>ollama run qwen2.5:7b</code> on your computer so the browser can connect directly to your local model.
+                </p>
+              </div>
+            )}
+
+            {/* Editable System Prompt */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                  2. Active System Prompt (Character-Aligned Pinyin JSON)
+                </label>
+                <button
+                  onClick={() => copyToClipboard(systemPrompt)}
+                  className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800"
+                >
+                  {copiedPrompt ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" /> Copy Prompt
+                    </>
+                  )}
+                </button>
+              </div>
+              <textarea
+                rows={10}
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+                className="w-full p-3.5 rounded-2xl border border-slate-300 font-mono text-xs text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:border-amber-500"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setSystemPrompt(DEFAULT_SYSTEM_PROMPT)}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-100"
+              >
+                Reset Default Prompt
+              </button>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow-sm"
+              >
+                Save & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
