@@ -60,6 +60,16 @@
         }
         .avatar-speaking .speaking-badge { display: flex; }
 
+        @keyframes float-up {
+            0% { transform: translateY(10px) scale(0.8); opacity: 0; }
+            50% { transform: translateY(-6px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(-18px) scale(1); opacity: 0; }
+        }
+        .xp-float { animation: float-up 1.4s ease-out forwards; }
+        .hide-pinyin .py { opacity: 0; height: 0; overflow: hidden; margin: 0; }
+        .hide-pinyin .char-ruby:hover .py,
+        .hide-pinyin .highlighted-char .py { opacity: 1; height: auto; }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
@@ -67,61 +77,144 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-amber-200">
 
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b-4 border-indigo-400 shadow-sm px-4 py-3 flex justify-between items-center">
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-4 border-indigo-400 shadow-sm px-3 sm:px-5 py-2.5 flex flex-wrap justify-between items-center gap-2">
         <div class="flex items-center gap-3 cursor-pointer group" onclick="navigate('home')">
-            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner shadow-indigo-300 group-hover:scale-105 transition-transform">🗣️</div>
+            <div class="w-11 h-11 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-inner shadow-indigo-300 group-hover:scale-105 transition-transform">🗣️</div>
             <div>
-                <h1 class="text-xl font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">畅聊小伙伴</h1>
-                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">SpeakUp Buddy</p>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">畅聊小伙伴</h1>
+                    <span id="header-rank-badge" class="bg-indigo-100 text-indigo-700 border border-indigo-300 text-[10px] font-black px-2 py-0.5 rounded-full">Lv.1 小幼苗</span>
+                </div>
+                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">SpeakUp Buddy • P1–P3 Edition</p>
             </div>
         </div>
-        <div class="flex items-center gap-2 sm:gap-3">
-            <button onclick="document.getElementById('modal-settings').classList.remove('hidden')" class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full shadow-sm transition-colors" title="Settings">
-                ⚙️
+
+        <div class="flex items-center flex-wrap gap-1.5 sm:gap-2.5">
+            <!-- Combo Streak Counter -->
+            <div class="flex items-center gap-1 bg-orange-50 border-2 border-orange-200 text-orange-600 px-2.5 py-1 rounded-full text-xs font-black shadow-2xs" title="Current Speaking Streak">
+                <span>🔥</span>
+                <span id="header-streak">0</span>
+                <span class="hidden md:inline text-[10px] uppercase">连胜</span>
+            </div>
+
+            <!-- Total Stars Counter -->
+            <button onclick="openTrophyModal()" class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 text-amber-700 px-3 py-1 rounded-full text-xs font-black shadow-2xs transition-transform hover:scale-105" title="View Stars & Badges">
+                <span>⭐</span>
+                <span id="header-stars">0</span>
+                <span class="text-slate-400">|</span>
+                <span>⚡ <span id="header-xp">0</span> XP</span>
             </button>
-            <button onclick="document.getElementById('modal-generate').classList.remove('hidden')" class="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-xs rounded-full shadow-md hover:scale-105 transition-transform flex items-center gap-1.5">
-                <span class="text-base">✨</span> <span class="hidden sm:inline">魔法生成器</span>
+
+            <!-- Trophy Cabinet Button -->
+            <button onclick="openTrophyModal()" class="px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-xs rounded-full shadow-md hover:scale-105 transition-transform flex items-center gap-1" title="Trophy Cabinet">
+                <span>🏆</span> <span class="hidden sm:inline">奖章馆</span>
+            </button>
+
+            <!-- Magic Script Generator Button -->
+            <button onclick="document.getElementById('modal-generate').classList.remove('hidden')" class="px-3.5 py-2 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black text-xs rounded-full shadow-md hover:scale-105 transition-transform flex items-center gap-1">
+                <span class="text-sm">✨</span> <span class="hidden sm:inline">AI 故事生成</span>
+            </button>
+
+            <!-- Settings Button -->
+            <button onclick="document.getElementById('modal-settings').classList.remove('hidden')" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full shadow-sm transition-colors" title="Settings">
+                ⚙️
             </button>
         </div>
     </header>
 
-    <main id="app-container" class="flex-1 w-full max-w-5xl mx-auto p-4 flex flex-col gap-4 relative">
+    <main id="app-container" class="flex-1 w-full max-w-5xl mx-auto p-3 sm:p-4 flex flex-col gap-4 relative">
         
         <!-- Home View -->
-        <div id="view-home" class="flex flex-col gap-6">
-            <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 rounded-[2rem] p-6 sm:p-10 text-white shadow-xl border-4 border-white relative overflow-hidden">
-                <div class="relative z-10">
-                    <div class="inline-block bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-black mb-3">🇸🇬 Singapore Scenarios</div>
-                    <h2 class="text-3xl sm:text-4xl font-black mb-3 drop-shadow-md">Select a Story!</h2>
-                    <p class="font-bold text-indigo-100 mb-2 max-w-lg text-sm sm:text-base leading-relaxed">Choose a fun situation, watch the characters talk, and practice your pronunciation with AI!</p>
+        <div id="view-home" class="flex flex-col gap-5">
+            <!-- Hero Banner + Player Level Progress Card -->
+            <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 rounded-[2rem] p-5 sm:p-8 text-white shadow-xl border-4 border-white relative overflow-hidden">
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="max-w-xl">
+                        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-black mb-2">
+                            <span>🇸🇬 MOE 欢乐伙伴 Aligned</span>
+                            <span>•</span>
+                            <span>Primary 1 – Primary 3</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-black mb-2 drop-shadow-md">闯关练口语 • Level Up!</h2>
+                        <p class="font-bold text-indigo-100 text-xs sm:text-sm leading-relaxed">
+                            Pick your school level (小一, 小二, or 小三), roleplay fun Singapore stories, earn up to ⭐⭐⭐ per mission, and unlock special badges!
+                        </p>
+                    </div>
+
+                    <!-- Player XP Card -->
+                    <div class="w-full md:w-72 bg-white/15 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-inner">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span id="hero-rank-title" class="text-sm font-black text-amber-300">🌱 Lv.1 华语小幼苗</span>
+                            <span id="hero-xp-text" class="text-xs font-black text-white">0 / 100 XP</span>
+                        </div>
+                        <div class="w-full h-3.5 bg-slate-900/40 rounded-full overflow-hidden p-0.5 border border-white/20 mb-2.5">
+                            <div id="hero-xp-bar" class="h-full bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 rounded-full transition-all duration-500" style="width: 5%"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] font-bold text-indigo-100">
+                            <span>🎯 Completed: <strong id="hero-completed-count" class="text-white">0/9</strong></span>
+                            <span>🏅 Badges: <strong id="hero-badge-count" class="text-white">0/6</strong></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="absolute -right-6 -bottom-8 text-9xl opacity-30 transform -rotate-12 blur-sm">🎡</div>
+                <div class="absolute -right-6 -bottom-8 text-9xl opacity-20 transform -rotate-12 pointer-events-none">🎡</div>
+            </div>
+
+            <!-- Difficulty Level Filter Tabs (Primary 1 to Primary 3) -->
+            <div class="bg-white rounded-3xl p-2.5 shadow-sm border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full sm:w-auto" id="level-tabs">
+                    <button onclick="setFilterLevel('ALL')" id="tab-ALL" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-900 text-white shadow-sm">
+                        🌟 全部关卡 (All Levels)
+                    </button>
+                    <button onclick="setFilterLevel('P1')" id="tab-P1" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5">
+                        <span>🐣</span> 小一 Primary 1 <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.2 rounded-full">Easy</span>
+                    </button>
+                    <button onclick="setFilterLevel('P2')" id="tab-P2" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5">
+                        <span>🦁</span> 小二 Primary 2 <span class="text-[10px] bg-sky-200/80 text-sky-900 px-1.5 py-0.2 rounded-full">Medium</span>
+                    </button>
+                    <button onclick="setFilterLevel('P3')" id="tab-P3" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5">
+                        <span>🐉</span> 小三 Primary 3 <span class="text-[10px] bg-purple-200/80 text-purple-900 px-1.5 py-0.2 rounded-full">Challenge</span>
+                    </button>
+                </div>
+                <div id="level-desc-pill" class="text-[11px] font-bold text-slate-500 px-3 py-1 bg-slate-50 rounded-xl border border-slate-100">
+                    Choose a level to start your speaking mission!
+                </div>
             </div>
             
+            <!-- Scenario Mission Cards Grid -->
             <div id="scenario-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <!-- Populated by JS -->
             </div>
         </div>
 
         <!-- Practice View -->
-        <div id="view-practice" class="hidden flex-col h-[calc(100vh-140px)] gap-4">
+        <div id="view-practice" class="hidden flex-col h-[calc(100vh-130px)] gap-3">
             
-            <div class="bg-white rounded-3xl p-4 shadow-md border-4 border-white flex flex-wrap items-center justify-between gap-4 z-20">
-                <div class="flex items-center gap-3">
-                    <button onclick="navigate('home')" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xl transition-colors">🔙</button>
+            <div class="bg-white rounded-3xl p-3.5 sm:p-4 shadow-md border-4 border-white flex flex-wrap items-center justify-between gap-3 z-20">
+                <div class="flex items-center gap-2.5">
+                    <button onclick="navigate('home')" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-lg transition-colors" title="Back to Missions">🔙</button>
                     <div>
-                        <h2 id="practice-title" class="text-lg font-black text-slate-900">买食物 (Buying Food)</h2>
-                        <p id="practice-roles-info" class="text-xs font-bold text-slate-500">Pick a role to practice!</p>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span id="practice-level-badge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">🐣 Primary 1</span>
+                            <h2 id="practice-title" class="text-base sm:text-lg font-black text-slate-900">买食物 (Buying Food)</h2>
+                        </div>
+                        <p id="practice-roles-info" class="text-[11px] font-bold text-slate-500">Tap any speech bubble to listen, or pick a character below to earn stars!</p>
                     </div>
                 </div>
                 
-                <div id="practice-actions" class="flex items-center flex-wrap gap-3">
-                    <button id="btn-play-all" onclick="playFullConversation()" class="px-5 py-2.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-2xl font-black text-xs flex items-center gap-2 transition-colors">
-                        <span class="text-lg">▶️</span> Listen to Story
+                <div id="practice-actions" class="flex items-center flex-wrap gap-2">
+                    <!-- Pinyin Challenge Toggle (+Bonus XP) -->
+                    <button id="btn-toggle-pinyin" onclick="togglePinyinBlindMode()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border-2 border-amber-300 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all" title="Hide Pinyin for +5 Bonus XP per line!">
+                        <span>👁️</span> <span id="pinyin-toggle-label">拼音: 显示</span>
                     </button>
-                    <div class="h-8 w-1 bg-slate-100 rounded-full mx-1"></div>
-                    <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100" id="role-selector">
-                        <span class="text-[10px] font-black uppercase text-slate-400 pl-2">Practice as:</span>
+
+                    <!-- Listen to Full Story -->
+                    <button id="btn-play-all" onclick="playFullConversation()" class="px-4 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-colors">
+                        <span class="text-base">▶️</span> Listen to Story
+                    </button>
+
+                    <!-- Role Selector -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-200" id="role-selector">
+                        <span class="text-[10px] font-black uppercase text-slate-400 pl-2">闯关角色:</span>
                         <!-- Roles populated by JS -->
                     </div>
                 </div>
@@ -133,16 +226,30 @@
             </div>
 
             <!-- Active Practice HUD -->
-            <div id="practice-hud" class="hidden bg-slate-900 rounded-[2rem] p-5 sm:p-6 shadow-2xl border-4 border-slate-800 text-white flex-col gap-4 z-20">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full">
-                        <span class="animate-pulse w-3 h-3 rounded-full bg-rose-500"></span>
-                        <span id="hud-role-label" class="font-black text-[10px] sm:text-xs tracking-widest text-rose-400 uppercase">Practice Mode</span>
+            <div id="practice-hud" class="hidden bg-slate-900 rounded-[2rem] p-4 sm:p-5 shadow-2xl border-4 border-slate-800 text-white flex-col gap-3 z-20">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+                            <span class="animate-pulse w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                            <span id="hud-role-label" class="font-black text-[10px] sm:text-xs tracking-wider text-rose-400 uppercase">Practice Mode</span>
+                        </div>
+                        <div id="hud-step-badge" class="bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-xs font-black px-3 py-1 rounded-full">
+                            Line 1 / 4
+                        </div>
+                        <div id="hud-combo-pill" class="hidden bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black px-3 py-1 rounded-full">
+                            🔥 1x Streak
+                        </div>
                     </div>
-                    <button onclick="stopPractice()" class="text-xs font-bold text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">End Practice ✕</button>
+
+                    <button onclick="stopPractice()" class="text-xs font-bold text-slate-400 hover:text-white px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">End Mission ✕</button>
+                </div>
+
+                <!-- Step Progress Bar -->
+                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div id="hud-progress-bar" class="h-full bg-gradient-to-r from-indigo-400 via-amber-400 to-emerald-400 transition-all duration-300" style="width: 25%"></div>
                 </div>
                 
-                <div id="hud-status" class="text-center p-4 sm:p-6 bg-slate-800 rounded-2xl border-2 border-slate-700 min-h-[140px] flex flex-col items-center justify-center relative overflow-hidden">
+                <div id="hud-status" class="text-center p-4 sm:p-5 bg-slate-800 rounded-2xl border-2 border-slate-700 min-h-[135px] flex flex-col items-center justify-center relative overflow-hidden">
                     <!-- Status text, mic button, or feedback shows here -->
                 </div>
             </div>
@@ -155,19 +262,48 @@
     <div id="loader-overlay" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center text-white">
         <div class="text-7xl mb-6 animate-bounce drop-shadow-lg">✨</div>
         <h2 id="loader-text" class="text-2xl font-black mb-2">AI is thinking...</h2>
-        <p class="text-sm font-bold text-slate-300">Preparing the conversation.</p>
+        <p class="text-sm font-bold text-slate-300">Preparing your Singapore Chinese mission.</p>
+    </div>
+
+    <!-- Trophy & Badges Modal -->
+    <div id="modal-trophies" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] max-w-lg w-full p-6 shadow-2xl border-4 border-amber-300 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">🏆 狮城奖章馆 (Trophy Cabinet)</h3>
+                <button onclick="document.getElementById('modal-trophies').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-black">✕</button>
+            </div>
+
+            <div class="bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-2xl mb-5 flex items-center justify-between shadow-md">
+                <div>
+                    <div id="trophy-rank-name" class="text-lg font-black">🌱 Lv.1 华语小幼苗</div>
+                    <div class="text-xs font-bold text-amber-100">Keep practicing P1–P3 stories to rank up!</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-black"><span id="trophy-total-stars">0</span> ⭐</div>
+                    <div class="text-xs font-black"><span id="trophy-total-xp">0</span> XP</div>
+                </div>
+            </div>
+
+            <div id="badge-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+                <!-- Populated by JS -->
+            </div>
+
+            <button onclick="document.getElementById('modal-trophies').classList.add('hidden')" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-sm">
+                Awesome! 继续加油 💪
+            </button>
+        </div>
     </div>
 
     <!-- API Settings Modal -->
     <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-4 border-slate-100">
             <h3 class="text-xl font-black text-slate-900 mb-2 flex items-center gap-2">⚙️ Setup API</h3>
-            <p class="text-xs font-bold text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg border border-slate-100">Paste your OpenRouter API key to power the AI Teacher and script generator.</p>
+            <p class="text-xs font-bold text-slate-500 mb-4 bg-slate-50 p-2 rounded-lg border border-slate-100">Paste your OpenRouter API key to power the AI Teacher and script generator. (Offline grading works automatically if left blank!)</p>
             
             <input type="password" id="openrouter-key" class="w-full p-3 rounded-xl border-2 border-slate-200 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 mb-4 transition-all" placeholder="sk-or-v1-...">
             
             <div class="flex gap-2">
-                <button onclick="document.getElementById('modal-settings').classList.add('hidden')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black transition-colors">Cancel</button>
+                <button onclick="document.getElementById('modal-settings').classList.add('hidden')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-black transition-colors">Close</button>
                 <button onclick="saveApiKey()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black shadow-md transition-colors">Save Key</button>
             </div>
         </div>
@@ -175,11 +311,12 @@
 
     <!-- Feedback Modal -->
     <div id="modal-feedback" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] max-w-sm w-full p-8 shadow-2xl border-4 border-amber-300 text-center transform transition-all scale-100 relative overflow-hidden">
+        <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 shadow-2xl border-4 border-amber-300 text-center transform transition-all scale-100 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-b from-amber-50 to-white -z-10"></div>
-            <div id="feedback-emoji" class="text-7xl mb-4 drop-shadow-md">⭐</div>
-            <h3 id="feedback-title" class="text-2xl font-black text-slate-900 mb-3">Great Job!</h3>
-            <p id="feedback-message" class="text-sm font-bold text-slate-700 mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">You nailed the pronunciation!</p>
+            <div id="feedback-emoji" class="text-6xl mb-3 drop-shadow-md">⭐</div>
+            <div id="feedback-xp-pill" class="inline-block bg-amber-100 text-amber-800 border border-amber-300 text-xs font-black px-3 py-1 rounded-full mb-2">+15 XP</div>
+            <h3 id="feedback-title" class="text-2xl font-black text-slate-900 mb-2">Great Job!</h3>
+            <p id="feedback-message" class="text-sm font-bold text-slate-700 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">You nailed the pronunciation!</p>
             <button onclick="document.getElementById('modal-feedback').classList.add('hidden')" class="w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white text-lg rounded-xl font-black shadow-md transition-transform hover:scale-105">Continue ➤</button>
         </div>
     </div>
@@ -187,22 +324,35 @@
     <!-- Magic Generator Modal -->
     <div id="modal-generate" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-indigo-400">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">✨ Magic Script Generator</h3>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">✨ AI Magic Script Generator</h3>
                 <button onclick="document.getElementById('modal-generate').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 font-black">✕</button>
             </div>
-            <p class="text-xs font-bold text-slate-600 mb-4 bg-indigo-50 p-3 rounded-xl border border-indigo-100">Type a topic and OpenRouter AI will create a brand new 2-way conversation script with background themes and avatars!</p>
+            <p class="text-xs font-bold text-slate-600 mb-3 bg-indigo-50 p-3 rounded-xl border border-indigo-100">Choose a Primary School level and type any Singapore topic! AI will build a custom roleplay mission.</p>
             
-            <textarea id="gen-topic" rows="3" class="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 mb-4 resize-none transition-all" placeholder="e.g., Taking the MRT to Orchard Road, Buying EZ-Link Card, Playing at the beach..."></textarea>
+            <label class="block text-xs font-black text-slate-700 mb-1.5">1. Select Difficulty Level (选择年级难度):</label>
+            <div class="grid grid-cols-3 gap-2 mb-4" id="gen-level-picker">
+                <button type="button" onclick="selectGenLevel('P1')" id="gen-btn-P1" class="p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-black text-xs text-center">
+                    🐣 小一 P1<br><span class="text-[10px] font-bold">Short & Simple</span>
+                </button>
+                <button type="button" onclick="selectGenLevel('P2')" id="gen-btn-P2" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
+                    🦁 小二 P2<br><span class="text-[10px] font-bold">Medium Sentences</span>
+                </button>
+                <button type="button" onclick="selectGenLevel('P3')" id="gen-btn-P3" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
+                    🐉 小三 P3<br><span class="text-[10px] font-bold">Rich & Expressive</span>
+                </button>
+            </div>
+
+            <label class="block text-xs font-black text-slate-700 mb-1.5">2. Story Topic (故事主题):</label>
+            <textarea id="gen-topic" rows="3" class="w-full p-3.5 rounded-2xl border-2 border-slate-200 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none text-sm font-bold text-slate-700 mb-4 resize-none transition-all" placeholder="e.g., Buying ice cream at East Coast Park, Asking for directions at MRT station..."></textarea>
             
-            <button onclick="generateCustomScript()" class="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-2xl font-black text-lg shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
-                Generate My Script ✨
+            <button onclick="generateCustomScript()" class="w-full py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-2xl font-black text-base shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                Generate Mission ✨
             </button>
         </div>
     </div>
 
     <script>
-        // Global State & Data
         // 👉 PASTE YOUR OPENROUTER API KEY DIRECTLY BETWEEN THE QUOTES BELOW:
         const HARDCODED_OPENROUTER_KEY = 'sk-or-v1-YOUR_KEY_HERE';
 
@@ -213,24 +363,113 @@
             return localStorage.getItem('OPENROUTER_API_KEY') || '';
         }
 
+        // Difficulty Configuration for Primary 1, Primary 2, and Primary 3
+        const LEVEL_CONFIG = {
+            P1: {
+                id: 'P1',
+                label: '小一 Primary 1',
+                shortLabel: '🐣 小一 P1',
+                tagText: 'Easy • 基础入门',
+                badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                cardBorder: 'hover:border-emerald-400',
+                speechRate: 0.78,
+                passThreshold: 0.35,
+                xpPerLine: 10,
+                missionClearBonus: 25,
+                description: '🐣 Primary 1: Short, everyday phrases (4–8 chars), slower speech speed & gentle grading!'
+            },
+            P2: {
+                id: 'P2',
+                label: '小二 Primary 2',
+                shortLabel: '🦁 小二 P2',
+                tagText: 'Medium • 进阶生活',
+                badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
+                cardBorder: 'hover:border-sky-400',
+                speechRate: 0.85,
+                passThreshold: 0.50,
+                xpPerLine: 20,
+                missionClearBonus: 40,
+                description: '🦁 Primary 2: Longer sentences with connectors (因为、所以、一起) & natural speaking pace!'
+            },
+            P3: {
+                id: 'P3',
+                label: '小三 Primary 3',
+                shortLabel: '🐉 小三 P3',
+                tagText: 'Challenge • 挑战达人',
+                badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
+                cardBorder: 'hover:border-purple-400',
+                speechRate: 0.92,
+                passThreshold: 0.60,
+                xpPerLine: 30,
+                missionClearBonus: 60,
+                description: '🐉 Primary 3: Expressive multi-clause dialogues, idioms, and higher accuracy targets!'
+            }
+        };
+
+        const BADGES = [
+            { id: 'first_clear', icon: '🌟', title: '初试啼声', desc: 'Complete your 1st story mission', check: (g) => Object.keys(g.completedStories).length >= 1 },
+            { id: 'p1_champ', icon: '🐣', title: '小一新星', desc: 'Complete all Primary 1 stories', check: (g) => ['p1-greeting', 'canteen', 'playground'].every(id => g.completedStories[id] >= 1) },
+            { id: 'p2_champ', icon: '🦁', title: '小二健谈王', desc: 'Complete all Primary 2 stories', check: (g) => ['library', 'p2-mrt', 'p2-clinic'].every(id => g.completedStories[id] >= 1) },
+            { id: 'p3_champ', icon: '🐉', title: '小三小状元', desc: 'Complete all Primary 3 stories', check: (g) => ['p3-hawker', 'p3-zoo', 'p3-lostfound'].every(id => g.completedStories[id] >= 1) },
+            { id: 'streak_5', icon: '🔥', title: '连胜小冠军', desc: 'Reach a 5x speaking streak', check: (g) => g.bestStreak >= 5 },
+            { id: 'blind_master', icon: '🦅', title: '盲读挑战王', desc: 'Pass a line with Pinyin hidden', check: (g) => g.blindPinyinPasses >= 1 }
+        ];
+
+        function loadSavedGame() {
+            try {
+                const raw = localStorage.getItem('SPEAKUP_GAME_DATA');
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return { xp: 0, stars: 0, streak: 0, bestStreak: 0, blindPinyinPasses: 0, completedStories: {} };
+        }
+
+        function saveGameData() {
+            try {
+                localStorage.setItem('SPEAKUP_GAME_DATA', JSON.stringify(state.game));
+            } catch (e) {}
+        }
+
         const state = {
             view: 'home',
+            filterLevel: 'ALL',
+            genSelectedLevel: 'P1',
+            hidePinyin: false,
             activeScenario: null,
             practiceRole: null,
             currentLineIndex: 0,
+            mistakesThisRun: 0,
+            xpEarnedThisRun: 0,
             isPracticing: false,
             isPlayingFull: false,
             apiKey: getInitialApiKey(),
             isRecording: false,
             lastTranscript: '',
             recognition: null,
-            audioUnlocked: false,
             activeTimer: null,
             fallbackSpeechTimeout: null,
             zhVoice: null,
+            game: loadSavedGame(),
             scripts: [
+                // ================= PRIMARY 1 (小一) =================
+                {
+                    id: 'p1-greeting',
+                    level: 'P1',
+                    title: '礼貌早安 (Morning Greetings)',
+                    bgPattern: 'bg-gradient-to-br from-emerald-100 to-teal-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '陈老师', avatar: '👩‍🏫', color: 'bg-emerald-500', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '小丽', avatar: '👧', color: 'bg-pink-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '小丽，早安！', py: 'Xiǎo lì, zǎo ān!', en: 'Xiaoli, good morning!' },
+                        { speaker: 'B', zh: '陈老师，早安！', py: 'Chén lǎo shī, zǎo ān!', en: 'Good morning, Teacher Tan!' },
+                        { speaker: 'A', zh: '你吃早餐了吗？', py: 'Nǐ chī zǎo cān le ma?', en: 'Have you eaten breakfast?' },
+                        { speaker: 'B', zh: '我吃了面包和牛奶。', py: 'Wǒ chī le miàn bāo hé niú nǎi.', en: 'I ate bread and milk.' }
+                    ]
+                },
                 {
                     id: 'canteen',
+                    level: 'P1',
                     title: '食堂买饭 (Buying Food at Canteen)',
                     bgPattern: 'bg-gradient-to-br from-emerald-100 to-cyan-100 bg-pattern-dots',
                     roles: [
@@ -245,37 +484,239 @@
                     ]
                 },
                 {
-                    id: 'library',
-                    title: '图书馆借书 (Borrowing Books)',
-                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-waves',
-                    roles: [
-                        { id: 'A', name: '管理员', avatar: '👨‍🏫', color: 'bg-purple-500', align: 'left', pitch: 1.0 },
-                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-rose-400', align: 'right', pitch: 1.3 }
-                    ],
-                    lines: [
-                        { speaker: 'B', zh: '叔叔，我要借这两本书。', py: 'Shū shu, wǒ yào jiè zhè liǎng běn shū.', en: 'Uncle, I want to borrow these two books.' },
-                        { speaker: 'A', zh: '好的，请把学生证给我。', py: 'Hǎo de, qǐng bǎ xué shēng zhèng gěi wǒ.', en: 'Okay, please give me your student card.' },
-                        { speaker: 'B', zh: '给你。', py: 'Gěi nǐ.', en: 'Here you go.' },
-                        { speaker: 'A', zh: '借好了。记得在两个星期后还书哦。', py: 'Jiè hǎo le. Jì de zài liǎng gè xīng qī hòu huán shū o.', en: 'Borrowed. Remember to return the books in two weeks.' }
-                    ]
-                },
-                {
                     id: 'playground',
+                    level: 'P1',
                     title: '游乐场玩耍 (Playing at Playground)',
                     bgPattern: 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots',
                     roles: [
                         { id: 'A', name: '文华', avatar: '👦', color: 'bg-amber-500', align: 'left', pitch: 1.0 },
-                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.35 }
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.3 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '丽丽，我们一起去荡秋千吧！', py: 'Lì li, wǒ men yì qǐ qù dàng qiū qiān ba!', en: 'Lili, let\'s go play on the swings together!' },
+                        { speaker: 'A', zh: '丽丽，我们去荡秋千吧！', py: 'Lì li, wǒ men qù dàng qiū qiān ba!', en: 'Lili, let\'s go play on the swings!' },
                         { speaker: 'B', zh: '好啊！我最喜欢荡秋千了。', py: 'Hǎo a! Wǒ zuì xǐ huan dàng qiū qiān le.', en: 'Sure! I love playing on the swings the most.' },
-                        { speaker: 'A', zh: '你推我，我推你，好不好？', py: 'Nǐ tuī wǒ, wǒ tuī nǐ, hǎo bu hǎo?', en: 'You push me, and I push you, okay?' },
-                        { speaker: 'B', zh: '没问题，我们轮流玩。', py: 'Méi wèn tí, wǒ men lún liú wán.', en: 'No problem, we will take turns.' }
+                        { speaker: 'A', zh: '你先玩，我推你。', py: 'Nǐ xiān wán, wǒ tuī nǐ.', en: 'You play first, I will push you.' },
+                        { speaker: 'B', zh: '谢谢你，我们轮流玩。', py: 'Xiè xie nǐ, wǒ men lún liú wán.', en: 'Thank you, we will take turns.' }
+                    ]
+                },
+
+                // ================= PRIMARY 2 (小二) =================
+                {
+                    id: 'library',
+                    level: 'P2',
+                    title: '图书馆借书 (Borrowing Books)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '管理员', avatar: '👨‍🏫', color: 'bg-purple-500', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-rose-400', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '叔叔，请问我可以借这两本故事书吗？', py: 'Shū shu, qǐng wèn wǒ kě yǐ jiè zhè liǎng běn gù shi shū ma?', en: 'Uncle, may I borrow these two storybooks?' },
+                        { speaker: 'A', zh: '当然可以，请把你的学生证给我。', py: 'Dāng rán kě yǐ, qǐng bǎ nǐ de xué shēng zhèng gěi wǒ.', en: 'Of course, please give me your student card.' },
+                        { speaker: 'B', zh: '给你。我很喜欢看动物的故事。', py: 'Gěi nǐ. Wǒ hěn xǐ huan kàn dòng wù de gù shi.', en: 'Here you go. I really like reading animal stories.' },
+                        { speaker: 'A', zh: '借好了。记得在两个星期后还书哦。', py: 'Jiè hǎo le. Jì de zài liǎng gè xīng qī hòu huán shū o.', en: 'Borrowed. Remember to return the books in two weeks.' }
+                    ]
+                },
+                {
+                    id: 'p2-mrt',
+                    level: 'P2',
+                    title: '搭地铁让座 (Giving Up Seat on MRT)',
+                    bgPattern: 'bg-gradient-to-br from-sky-100 to-blue-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '国强', avatar: '👦', color: 'bg-sky-600', align: 'left', pitch: 1.05 },
+                        { id: 'B', name: '老奶奶', avatar: '👵', color: 'bg-amber-600', align: 'right', pitch: 0.9 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '老奶奶，地铁开了，请您坐这里吧！', py: 'Lǎo nǎi nai, dì tiě kāi le, qǐng nín zuò zhè lǐ ba!', en: 'Grandma, the MRT train is moving, please sit here!' },
+                        { speaker: 'B', zh: '谢谢你，小朋友，你真是一个懂事的孩子。', py: 'Xiè xie nǐ, xiǎo péng you, nǐ zhēn shì yí gè dǒng shì de hái zi.', en: 'Thank you, little friend, you are such a sensible child.' },
+                        { speaker: 'A', zh: '不用客气，老师教我们要关心老人家。', py: 'Bú yòng kè qi, lǎo shī jiāo wǒ men yào guān xīn lǎo rén jiā.', en: 'You\'re welcome, teacher taught us to care for the elderly.' },
+                        { speaker: 'B', zh: '你在哪一站下车呢？我在碧山站下车。', py: 'Nǐ zài nǎ yí zhàn xià chē ne? Wǒ zài Bì shān zhàn xià chē.', en: 'Which station are you alighting at? I am getting off at Bishan.' }
+                    ]
+                },
+                {
+                    id: 'p2-clinic',
+                    level: 'P2',
+                    title: '生病看医生 (Seeing the Doctor)',
+                    bgPattern: 'bg-gradient-to-br from-cyan-100 to-emerald-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '林医生', avatar: '👨‍⚕️', color: 'bg-teal-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '小杰', avatar: '🤒', color: 'bg-orange-500', align: 'right', pitch: 1.15 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '小杰，你今天觉得哪里不舒服？', py: 'Xiǎo jié, nǐ jīn tiān jué de nǎ lǐ bù shū fu?', en: 'Xiaojie, where do you feel unwell today?' },
+                        { speaker: 'B', zh: '林医生，我从早上开始头疼，还有点发烧。', py: 'Lín yī shēng, wǒ cóng zǎo shang kāi shǐ tóu téng, hái yǒu diǎn fā shāo.', en: 'Dr Lim, I had a headache since morning, and a slight fever.' },
+                        { speaker: 'A', zh: '让我检查一下。你感冒了，回家要按时吃药。', py: 'Ràng wǒ jiǎn chá yí xià. Nǐ gǎn mào le, huí jiā yào àn shí chī yào.', en: 'Let me check. You caught a cold; take your medicine on time at home.' },
+                        { speaker: 'B', zh: '好的，我回家会多喝温水和多休息。', py: 'Hǎo de, wǒ huí jiā huì duō hē wēn shuǐ hé duō xiū xi.', en: 'Okay, I will drink more warm water and rest more at home.' }
+                    ]
+                },
+
+                // ================= PRIMARY 3 (小三) =================
+                {
+                    id: 'p3-hawker',
+                    level: 'P3',
+                    title: '小贩中心归还托盘 (Hawker Centre & Tray Return)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '家乐', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.15 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '家乐，这盘海南鸡饭真香，你吃饱了吗？', py: 'Jiā lè, zhè pán Hǎi nán jī fàn zhēn xiāng, nǐ chī bǎo le ma?', en: 'Jiale, this plate of Hainanese chicken rice smells great, are you full?' },
+                        { speaker: 'B', zh: '爸爸，我已经吃饱了，今天的小贩中心真热闹！', py: 'Bà ba, wǒ yǐ jīng chī bǎo le, jīn tiān de xiǎo fàn zhōng xīn zhēn rè nao!', en: 'Dad, I am already full. The hawker centre is so lively today!' },
+                        { speaker: 'A', zh: '离开之前，我们应该把托盘和碗筷送去哪里呢？', py: 'Lí kāi zhī qián, wǒ men yīng gāi bǎ tuō pán hé wǎn kuài sòng qù nǎ lǐ ne?', en: 'Before leaving, where should we bring our trays and crockery?' },
+                        { speaker: 'B', zh: '我们要把托盘放回归还架，这样桌子才会干净！', py: 'Wǒ men yào bǎ tuō pán fàng huí guī huán jià, zhè yàng zhuō zi cái huì gān jìng!', en: 'We must return the tray to the return rack so the table stays clean!' }
+                    ]
+                },
+                {
+                    id: 'p3-zoo',
+                    level: 'P3',
+                    title: '游览新加坡动物园 (Visiting Singapore Zoo)',
+                    bgPattern: 'bg-gradient-to-br from-lime-100 to-emerald-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '导游姐姐', avatar: '🤠', color: 'bg-emerald-600', align: 'left', pitch: 1.2 },
+                        { id: 'B', name: '欣怡', avatar: '👧', color: 'bg-purple-600', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '欢迎大家来到新加坡动物园！今天你们最想看什么动物？', py: 'Huān yíng dà jiā lái dào Xīn jiā pō dòng wù yuán! Jīn tiān nǐ men zuì xiǎng kàn shén me dòng wù?', en: 'Welcome to the Singapore Zoo! What animal do you want to see most today?' },
+                        { speaker: 'B', zh: '导游姐姐，我最想看大熊猫凯凯，因为它非常可爱！', py: 'Dǎo yóu jiě jie, wǒ zuì xiǎng kàn dà xióng māo Kǎi kǎi, yīn wèi tā fēi cháng kě ài!', en: 'Sister Guide, I want to see Giant Panda Kai Kai most because it is super cute!' },
+                        { speaker: 'A', zh: '你看，大熊猫正在竹林里津津有味地吃着新鲜的竹叶呢。', py: 'Nǐ kàn, dà xióng māo zhèng zài zhú lín lǐ jīn jīn yǒu wèi de chī zhe xīn xiān de zhú yè ne.', en: 'Look, the giant panda is relishing fresh bamboo leaves in the bamboo forest.' },
+                        { speaker: 'B', zh: '太有趣了！我一定要提醒同学们拍照时不要开闪光灯。', py: 'Tài yǒu qù le! Wǒ yí dìng yào tí xǐng tóng xué men pāi zhào shí bú yào kāi shǎn guāng dēng.', en: 'So interesting! I must remind my classmates not to use flash when taking photos.' }
+                    ]
+                },
+                {
+                    id: 'p3-lostfound',
+                    level: 'P3',
+                    title: '拾金不昧好榜样 (Returning a Lost Wallet)',
+                    bgPattern: 'bg-gradient-to-br from-purple-100 to-pink-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '训导主任', avatar: '👨‍💼', color: 'bg-indigo-700', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '志豪', avatar: '👦', color: 'bg-rose-600', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '老师，我刚才在操场旁边的长椅上捡到了这个蓝色钱包。', py: 'Lǎo shī, wǒ gāng cái zài cāo chǎng páng biān de cháng yǐ shàng jiǎn dào le zhè gè lán sè qián bāo.', en: 'Teacher, I just found this blue wallet on the bench beside the school field.' },
+                        { speaker: 'A', zh: '志豪，谢谢你把钱包交到办公室。里面有学生证和零用钱吗？', py: 'Zhì háo, xiè xie nǐ bǎ qián bāo jiāo dào bàn gōng shì. Lǐ miàn yǒu xué shēng zhèng hé líng yòng qián ma?', en: 'Zhihao, thank you for bringing the wallet to the office. Are there a student card and pocket money inside?' },
+                        { speaker: 'B', zh: '有的，失主一定很着急，希望我们可以尽快还给他。', py: 'Yǒu de, shī zhǔ yí dìng hěn zháo jí, xī wàng wǒ men kě yǐ jǐn kuài huán gěi tā.', en: 'Yes, the owner must be very anxious. I hope we can return it to him soon.' },
+                        { speaker: 'A', zh: '你拾金不昧的精神值得表扬，我会在周会上称赞你！', py: 'Nǐ shí jīn bú mèi de jīng shén zhí de biǎo yáng, wǒ huì zài zhōu huì shàng chēng zàn nǐ!', en: 'Your honesty is praiseworthy; I will commend you during assembly!' }
                     ]
                 }
             ]
         };
+
+        // Synthesized Sound Effects (No external MP3 needed; works on iPad/Android)
+        function playGameSound(type) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                if (!window._gameAudioCtx) window._gameAudioCtx = new AudioCtx();
+                const ctx = window._gameAudioCtx;
+                if (ctx.state === 'suspended') ctx.resume();
+
+                const now = ctx.currentTime;
+                if (type === 'pass') {
+                    // Cheerful 2-note chime
+                    [523.25, 659.25, 783.99].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.09);
+                        gain.gain.setValueAtTime(0.15, now + i * 0.09);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.09);
+                        osc.stop(now + i * 0.09 + 0.26);
+                    });
+                } else if (type === 'retry') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(220, now + 0.22);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.26);
+                } else if (type === 'victory') {
+                    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.11);
+                        gain.gain.setValueAtTime(0.18, now + i * 0.11);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.11 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.11);
+                        osc.stop(now + i * 0.11 + 0.36);
+                    });
+                }
+            } catch (e) {}
+        }
+
+        function getPlayerRankInfo(xp) {
+            const ranks = [
+                { min: 0, max: 100, level: 1, title: '🌱 Lv.1 华语小幼苗', short: 'Lv.1 小幼苗' },
+                { min: 100, max: 250, level: 2, title: '🐣 Lv.2 朗读小能手', short: 'Lv.2 小能手' },
+                { min: 250, max: 450, level: 3, title: '🦁 Lv.3 畅聊小达人', short: 'Lv.3 小达人' },
+                { min: 450, max: 700, level: 4, title: '🐉 Lv.4 华语小博士', short: 'Lv.4 小博士' },
+                { min: 700, max: 1200, level: 5, title: '👑 Lv.5 狮城小状元', short: 'Lv.5 小状元' }
+            ];
+            const r = ranks.find(item => xp < item.max) || ranks[ranks.length - 1];
+            const progress = Math.min(100, Math.max(6, Math.round(((xp - r.min) / (r.max - r.min)) * 100)));
+            return { ...r, progress };
+        }
+
+        function updateGameHeaderUI() {
+            const g = state.game;
+            const rank = getPlayerRankInfo(g.xp);
+
+            document.getElementById('header-stars').textContent = g.stars;
+            document.getElementById('header-xp').textContent = g.xp;
+            document.getElementById('header-streak').textContent = g.streak;
+            document.getElementById('header-rank-badge').textContent = rank.short;
+
+            const heroRank = document.getElementById('hero-rank-title');
+            if (heroRank) heroRank.textContent = rank.title;
+            const heroXpText = document.getElementById('hero-xp-text');
+            if (heroXpText) heroXpText.textContent = `${g.xp} / ${rank.max} XP`;
+            const heroBar = document.getElementById('hero-xp-bar');
+            if (heroBar) heroBar.style.width = `${rank.progress}%`;
+
+            const completedCount = Object.keys(g.completedStories).length;
+            const completedEl = document.getElementById('hero-completed-count');
+            if (completedEl) completedEl.textContent = `${completedCount}/${state.scripts.length}`;
+
+            const unlockedBadges = BADGES.filter(b => b.check(g)).length;
+            const badgeEl = document.getElementById('hero-badge-count');
+            if (badgeEl) badgeEl.textContent = `${unlockedBadges}/${BADGES.length}`;
+        }
+
+        function openTrophyModal() {
+            const g = state.game;
+            const rank = getPlayerRankInfo(g.xp);
+            document.getElementById('trophy-rank-name').textContent = rank.title;
+            document.getElementById('trophy-total-stars').textContent = g.stars;
+            document.getElementById('trophy-total-xp').textContent = g.xp;
+
+            const grid = document.getElementById('badge-grid');
+            grid.innerHTML = BADGES.map(b => {
+                const unlocked = b.check(g);
+                return `
+                    <div class="p-3.5 rounded-2xl border-2 text-center flex flex-col items-center gap-1.5 transition-all ${unlocked ? 'bg-amber-50 border-amber-300 shadow-sm' : 'bg-slate-100 border-slate-200 opacity-55'}">
+                        <div class="text-4xl">${unlocked ? b.icon : '🔒'}</div>
+                        <div class="text-xs font-black text-slate-900">${b.title}</div>
+                        <div class="text-[10px] font-bold text-slate-500 leading-tight">${b.desc}</div>
+                        <span class="mt-1 text-[9px] font-black px-2 py-0.5 rounded-full ${unlocked ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'}">
+                            ${unlocked ? '✓ 已解锁 Unlocked' : '未解锁 Locked'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('modal-trophies').classList.remove('hidden');
+        }
 
         // Preload Chinese TTS Voices for iPad Safari & Android Chrome
         function loadVoices() {
@@ -310,10 +751,9 @@
         window.onload = () => {
             initSpeechRecognition();
             loadVoices();
+            updateGameHeaderUI();
             renderScenarioList();
-            if (!state.apiKey) {
-                document.getElementById('modal-settings').classList.remove('hidden');
-            } else {
+            if (state.apiKey) {
                 document.getElementById('openrouter-key').value = state.apiKey;
             }
         };
@@ -324,6 +764,49 @@
                 state.apiKey = key;
                 localStorage.setItem('OPENROUTER_API_KEY', key);
                 document.getElementById('modal-settings').classList.add('hidden');
+            }
+        }
+
+        function setFilterLevel(lvl) {
+            state.filterLevel = lvl;
+            ['ALL', 'P1', 'P2', 'P3'].forEach(id => {
+                const btn = document.getElementById(`tab-${id}`);
+                if (!btn) return;
+                if (id === lvl) {
+                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-900 text-white shadow-md scale-105 flex items-center gap-1.5';
+                } else if (id === 'P1') {
+                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5';
+                } else if (id === 'P2') {
+                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5';
+                } else if (id === 'P3') {
+                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5';
+                } else {
+                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-100 text-slate-700 hover:bg-slate-200';
+                }
+            });
+
+            const descPill = document.getElementById('level-desc-pill');
+            if (descPill) {
+                descPill.textContent = lvl === 'ALL'
+                    ? 'Showing all 9 Singapore stories across Primary 1, 2 & 3!'
+                    : LEVEL_CONFIG[lvl].description;
+            }
+            renderScenarioList();
+        }
+
+        function togglePinyinBlindMode() {
+            state.hidePinyin = !state.hidePinyin;
+            const chatStage = document.getElementById('chat-stage');
+            const label = document.getElementById('pinyin-toggle-label');
+            const btn = document.getElementById('btn-toggle-pinyin');
+            if (state.hidePinyin) {
+                chatStage.classList.add('hide-pinyin');
+                label.textContent = '盲读挑战 (+5 XP/句)';
+                btn.className = 'px-3 py-2 bg-purple-600 text-white border-2 border-purple-400 rounded-2xl font-black text-xs flex items-center gap-1.5 shadow-md transition-all';
+            } else {
+                chatStage.classList.remove('hide-pinyin');
+                label.textContent = '拼音: 显示';
+                btn.className = 'px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border-2 border-amber-300 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-all';
             }
         }
 
@@ -359,32 +842,59 @@
 
         function renderScenarioList() {
             const container = document.getElementById('scenario-list');
-            container.innerHTML = state.scripts.map(script => `
-                <button onclick="loadScenario('${script.id}')" class="bg-white p-6 rounded-[2rem] border-4 border-slate-100 shadow-sm hover:border-indigo-400 hover:shadow-xl transition-all text-left flex flex-col gap-4 group hover:-translate-y-1">
-                    <div class="flex justify-between items-start">
-                        <h3 class="text-xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">${script.title}</h3>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="flex -space-x-3">
-                            ${script.roles.map(r => `
-                                <div class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-xl shadow-sm ${r.color} z-10">${r.avatar}</div>
-                            `).join('')}
+            const filtered = state.filterLevel === 'ALL'
+                ? state.scripts
+                : state.scripts.filter(s => (s.level || 'P1') === state.filterLevel);
+
+            container.innerHTML = filtered.map(script => {
+                const lvlKey = script.level || 'P1';
+                const cfg = LEVEL_CONFIG[lvlKey] || LEVEL_CONFIG.P1;
+                const earnedStars = state.game.completedStories[script.id] || 0;
+                const starsDisplay = [1, 2, 3].map(n =>
+                    `<span class="${n <= earnedStars ? 'text-amber-400 drop-shadow-2xs' : 'text-slate-200'} text-lg">★</span>`
+                ).join('');
+
+                return `
+                <button onclick="loadScenario('${script.id}')" class="bg-white p-5 sm:p-6 rounded-[2rem] border-4 ${earnedStars > 0 ? 'border-amber-200' : 'border-slate-100'} shadow-sm ${cfg.cardBorder} hover:shadow-xl transition-all text-left flex flex-col justify-between gap-4 group hover:-translate-y-1 relative overflow-hidden">
+                    <div>
+                        <div class="flex justify-between items-center gap-2 mb-2.5">
+                            <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full border ${cfg.badgeClass}">
+                                ${cfg.shortLabel} • ${cfg.tagText}
+                            </span>
+                            <div class="flex items-center gap-0.5 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-100" title="Earned Stars">
+                                ${starsDisplay}
+                            </div>
                         </div>
-                        <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-xl text-xs font-black">${script.lines.length} lines</span>
+                        <h3 class="text-lg sm:text-xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">${script.title}</h3>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex -space-x-2.5">
+                                ${script.roles.map(r => `
+                                    <div class="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-lg shadow-sm ${r.color} z-10">${r.avatar}</div>
+                                `).join('')}
+                            </div>
+                            <span class="text-xs font-bold text-slate-500">${script.roles.map(r => r.name).join(' & ')}</span>
+                        </div>
+                        <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-xl text-[11px] font-black">
+                            +${cfg.xpPerLine * script.lines.length} XP
+                        </span>
                     </div>
                 </button>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function updateRoleSelectorUI() {
             const sc = state.activeScenario;
             if (!sc) return;
             const roleContainer = document.getElementById('role-selector');
-            roleContainer.innerHTML = `<span class="text-[10px] font-black uppercase text-slate-400 pl-2">Practice as:</span>` + sc.roles.map(r => {
+            roleContainer.innerHTML = `<span class="text-[10px] font-black uppercase text-slate-400 pl-2">闯关角色:</span>` + sc.roles.map(r => {
                 const isSelected = state.isPracticing && state.practiceRole === r.id;
                 const ringClass = isSelected ? 'ring-4 ring-amber-400 scale-105' : ' opacity-90 hover:opacity-100';
                 return `
-                    <button onclick="startPractice('${r.id}')" class="px-4 py-2 rounded-xl text-white font-black text-xs ${r.color} ${ringClass} hover:scale-105 shadow-sm transition-all flex items-center gap-1.5">
+                    <button onclick="startPractice('${r.id}')" class="px-3.5 py-1.5 rounded-xl text-white font-black text-xs ${r.color} ${ringClass} hover:scale-105 shadow-sm transition-all flex items-center gap-1.5">
                         <span class="text-sm">${r.avatar}</span> ${r.name} ${isSelected ? '✓' : ''}
                     </button>
                 `;
@@ -395,11 +905,18 @@
             const sc = state.activeScenario;
             if (!sc) return;
 
+            const cfg = LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1;
+            const badgeEl = document.getElementById('practice-level-badge');
+            if (badgeEl) {
+                badgeEl.textContent = `${cfg.shortLabel} (+${cfg.xpPerLine} XP/句)`;
+                badgeEl.className = `text-[10px] font-black px-2.5 py-0.5 rounded-full border ${cfg.badgeClass}`;
+            }
+
             document.getElementById('practice-title').textContent = sc.title;
             
             // Set Background Pattern
             const chatStage = document.getElementById('chat-stage');
-            chatStage.className = `flex-1 rounded-[2rem] p-4 sm:p-6 shadow-inner border-4 border-white overflow-y-auto flex flex-col gap-6 scroll-smooth transition-colors duration-500 ${sc.bgPattern}`;
+            chatStage.className = `flex-1 rounded-[2rem] p-4 sm:p-6 shadow-inner border-4 border-white overflow-y-auto flex flex-col gap-6 scroll-smooth transition-colors duration-500 ${sc.bgPattern} ${state.hidePinyin ? 'hide-pinyin' : ''}`;
 
             // Render Role Selector
             updateRoleSelectorUI();
@@ -431,6 +948,7 @@
                             <div class="p-4 sm:p-5 ${bubbleClass} cursor-pointer shadow-sm hover:shadow-md transition-all" onclick="handleBubbleClick(${index})">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-[10px] font-black uppercase tracking-wider text-indigo-500 bg-indigo-50 px-2.5 py-0.5 rounded-full">🔊 Tap to Listen</span>
+                                    <span class="text-[10px] font-bold text-slate-400">Line ${index + 1}</span>
                                 </div>
                                 <div class="mb-3">${generateRubyHTML(line.zh, line.py, index)}</div>
                                 <div class="border-t border-slate-200/60 pt-2 text-xs font-bold text-slate-500 text-left">
@@ -461,6 +979,7 @@
             state.view = viewId;
             stopStoryPlayback();
             stopPractice();
+            updateGameHeaderUI();
 
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-practice').classList.add('hidden');
@@ -518,6 +1037,9 @@
         function speakLine(text, speakerId, lineIndex, onEndCallback) {
             clearAllHighlights();
 
+            const sc = state.activeScenario;
+            const cfg = sc ? (LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1) : LEVEL_CONFIG.P1;
+
             // Highlight Active Bubble & Avatar immediately
             const lineEl = document.getElementById(`line-${lineIndex}`);
             if (lineEl) {
@@ -538,9 +1060,11 @@
                 if (onEndCallback) onEndCallback();
             };
 
-            // Karaoke character-by-character highlight stepper
+            // Karaoke character-by-character highlight stepper calibrated to P1/P2/P3 speed
             const chars = Array.from(text);
             let currChar = 0;
+            const charIntervalMs = Math.round(240 / cfg.speechRate);
+
             state.activeTimer = setInterval(() => {
                 while (currChar < chars.length && /[，。！？、：；,.!?\s]/.test(chars[currChar])) {
                     currChar++;
@@ -558,10 +1082,10 @@
                     clearInterval(state.activeTimer);
                     state.activeTimer = null;
                 }
-            }, 270);
+            }, charIntervalMs);
 
             // Safety fallback timer so iPad/Android never hangs if TTS onend doesn't fire
-            const estimatedDurationMs = Math.max(2200, chars.length * 320 + 900);
+            const estimatedDurationMs = Math.max(2200, chars.length * (charIntervalMs + 45) + 900);
             state.fallbackSpeechTimeout = setTimeout(() => {
                 finishLine();
             }, estimatedDurationMs);
@@ -579,16 +1103,15 @@
                 }
 
                 const utterance = new SpeechSynthesisUtterance(text);
-                // Keep global reference so iOS Safari / Android Chrome GC doesn't collect it mid-speech
                 window._activeUtterance = utterance;
 
                 utterance.lang = 'zh-CN';
                 if (!state.zhVoice) loadVoices();
                 if (state.zhVoice) utterance.voice = state.zhVoice;
-                utterance.rate = 0.85;
+                utterance.rate = cfg.speechRate;
                 
-                const role = state.activeScenario
-                    ? state.activeScenario.roles.find(r => r.id === speakerId)
+                const role = sc
+                    ? sc.roles.find(r => r.id === speakerId)
                     : null;
                 utterance.pitch = role ? role.pitch : 1.0;
 
@@ -597,7 +1120,6 @@
                 };
                 
                 utterance.onerror = () => {
-                    // Let the visual timer finish naturally if TTS errored immediately, or finish now
                     if (!state.activeTimer) {
                         finishLine();
                     }
@@ -616,19 +1138,17 @@
             clearAllHighlights();
             const btn = document.getElementById('btn-play-all');
             if (btn) {
-                btn.innerHTML = '<span class="text-lg">▶️</span> Listen to Story';
-                btn.className = 'px-5 py-2.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-2xl font-black text-xs flex items-center gap-2 transition-colors';
+                btn.innerHTML = '<span class="text-base">▶️</span> Listen to Story';
+                btn.className = 'px-4 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-colors';
             }
         }
 
         function playFullConversation() {
-            // If already playing, toggle stop
             if (state.isPlayingFull) {
                 stopStoryPlayback();
                 return;
             }
 
-            // Stop practice mode if active
             if (state.isPracticing) {
                 stopPractice();
             }
@@ -638,8 +1158,8 @@
             state.isPlayingFull = true;
             const btn = document.getElementById('btn-play-all');
             if (btn) {
-                btn.innerHTML = '<span class="text-lg">⏹️</span> Stop Story';
-                btn.className = 'px-5 py-2.5 bg-rose-500 text-white hover:bg-rose-600 rounded-2xl font-black text-xs flex items-center gap-2 transition-colors shadow-md';
+                btn.innerHTML = '<span class="text-base">⏹️</span> Stop Story';
+                btn.className = 'px-4 py-2 bg-rose-500 text-white hover:bg-rose-600 rounded-2xl font-black text-xs flex items-center gap-1.5 transition-colors shadow-md';
             }
 
             let playIndex = 0;
@@ -670,20 +1190,22 @@
             cancelBrowserSpeech();
 
             if (state.recognition && state.isRecording) {
-                try { state.recognition. abort(); } catch (e) {}
+                try { state.recognition.abort(); } catch (e) {}
                 state.isRecording = false;
             }
 
             state.isPracticing = true;
             state.practiceRole = roleId;
             state.currentLineIndex = 0;
+            state.mistakesThisRun = 0;
+            state.xpEarnedThisRun = 0;
 
             updateRoleSelectorUI();
 
             const roleObj = state.activeScenario.roles.find(r => r.id === roleId);
             const roleLabel = document.getElementById('hud-role-label');
             if (roleLabel && roleObj) {
-                roleLabel.textContent = `Practicing as ${roleObj.avatar} ${roleObj.name}`;
+                roleLabel.textContent = `Role: ${roleObj.avatar} ${roleObj.name}`;
             }
 
             const hud = document.getElementById('practice-hud');
@@ -715,22 +1237,73 @@
             }
         }
 
+        function updateHudProgressUI() {
+            const sc = state.activeScenario;
+            if (!sc) return;
+            const total = sc.lines.length;
+            const current = Math.min(total, state.currentLineIndex + 1);
+            const pct = Math.round((state.currentLineIndex / total) * 100);
+
+            const stepBadge = document.getElementById('hud-step-badge');
+            if (stepBadge) stepBadge.textContent = `Line ${current} / ${total}`;
+
+            const bar = document.getElementById('hud-progress-bar');
+            if (bar) bar.style.width = `${Math.max(12, pct)}%`;
+
+            const comboPill = document.getElementById('hud-combo-pill');
+            if (comboPill) {
+                if (state.game.streak > 0) {
+                    comboPill.classList.remove('hidden');
+                    comboPill.textContent = `🔥 ${state.game.streak}x Streak`;
+                } else {
+                    comboPill.classList.add('hidden');
+                }
+            }
+        }
+
         function processPracticeLine() {
             if (!state.isPracticing || !state.activeScenario) return;
             
             const sc = state.activeScenario;
+            const cfg = LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1;
+
             if (state.currentLineIndex >= sc.lines.length) {
+                // Mission Complete! Calculate Stars (1 to 3) & Bonus XP
+                const bar = document.getElementById('hud-progress-bar');
+                if (bar) bar.style.width = '100%';
+
+                const earnedStars = state.mistakesThisRun === 0 ? 3 : (state.mistakesThisRun <= 1 ? 2 : 1);
+                const prevBestStars = state.game.completedStories[sc.id] || 0;
+                const newStarsDelta = Math.max(0, earnedStars - prevBestStars);
+
+                state.game.completedStories[sc.id] = Math.max(prevBestStars, earnedStars);
+                state.game.stars += newStarsDelta;
+                state.game.xp += cfg.missionClearBonus;
+                state.xpEarnedThisRun += cfg.missionClearBonus;
+                saveGameData();
+                updateGameHeaderUI();
+                playGameSound('victory');
+
+                const starIcons = [1, 2, 3].map(n =>
+                    `<span class="text-4xl ${n <= earnedStars ? 'text-amber-400 animate-bounce' : 'text-slate-600'}">⭐</span>`
+                ).join(' ');
+
                 document.getElementById('hud-status').innerHTML = `
-                    <div class="text-5xl mb-2 drop-shadow-md">🎉</div>
-                    <div class="text-xl sm:text-2xl font-black text-amber-400 mb-2">Practice Complete! 太棒了！</div>
-                    <p class="text-xs font-bold text-slate-300 mb-4">You completed all lines in this conversation!</p>
-                    <div class="flex gap-3">
-                        <button onclick="startPractice('${state.practiceRole}')" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">🔄 Practice Again</button>
-                        <button onclick="stopPractice()" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">✓ Done</button>
+                    <div class="flex items-center justify-center gap-2 mb-2">${starIcons}</div>
+                    <div class="text-xl sm:text-2xl font-black text-amber-400 mb-1">闯关成功！Mission Complete!</div>
+                    <p class="text-xs font-bold text-slate-300 mb-3">
+                        Earned <strong class="text-emerald-400">+${state.xpEarnedThisRun} XP</strong> ${newStarsDelta > 0 ? `& <strong class="text-amber-300">+${newStarsDelta} New ⭐</strong>` : ''}!
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2.5">
+                        <button onclick="startPractice('${state.practiceRole}')" class="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">🔄 Play Again</button>
+                        <button onclick="openTrophyModal()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-black text-xs shadow-md transition-colors">🏆 View Badges</button>
+                        <button onclick="navigate('home')" class="px-4 py-2 bg-white hover:bg-slate-100 text-slate-900 rounded-xl font-black text-xs shadow-md transition-colors">✓ Next Mission</button>
                     </div>
                 `;
                 return;
             }
+
+            updateHudProgressUI();
 
             const line = sc.lines[state.currentLineIndex];
             const isUserTurn = line.speaker === state.practiceRole;
@@ -779,7 +1352,6 @@
             const line = state.activeScenario.lines[state.currentLineIndex];
             if (!line) return;
             speakLine(line.zh, line.speaker, state.currentLineIndex, () => {
-                // Re-highlight current bubble after hint finishes
                 const lineEl = document.getElementById(`line-${state.currentLineIndex}`);
                 if (lineEl) {
                     const bubble = lineEl.querySelector('.chat-bubble-a, .chat-bubble-b');
@@ -789,24 +1361,31 @@
         }
 
         function setupRecordingUI() {
-            const line = state.activeScenario.lines[state.currentLineIndex];
+            const sc = state.activeScenario;
+            const cfg = LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1;
+            const line = sc.lines[state.currentLineIndex];
             const hud = document.getElementById('hud-status');
+            const totalLineXp = cfg.xpPerLine + (state.hidePinyin ? 5 : 0);
+
             hud.innerHTML = `
-                <div class="text-amber-400 font-black mb-2 uppercase tracking-widest text-xs bg-amber-400/10 px-4 py-1 rounded-full border border-amber-400/30">🎤 Your Turn to Read!</div>
-                <div class="text-base sm:text-lg font-black text-white mb-1">${line.zh}</div>
-                <div class="text-xs font-bold text-indigo-300 mb-4">${line.py}</div>
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span class="text-amber-400 font-black uppercase tracking-widest text-[11px] bg-amber-400/10 px-3 py-0.5 rounded-full border border-amber-400/30">🎤 Your Turn!</span>
+                    <span class="text-emerald-300 font-black text-[11px] bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-400/30">+${totalLineXp} XP</span>
+                </div>
+                <div class="text-base sm:text-lg font-black text-white mb-0.5">${line.zh}</div>
+                <div class="text-xs font-bold text-indigo-300 mb-3">${state.hidePinyin ? '🙈 (Pinyin Hidden • +5 Bonus XP!)' : line.py}</div>
                 <div class="flex items-center justify-center gap-4">
                     <button onclick="playHintForUserTurn()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Listen to how this line sounds">
                         🔊 Hear Hint
                     </button>
-                    <button id="mic-btn" onclick="toggleRecording()" class="relative w-16 h-16 sm:w-20 sm:h-20 bg-rose-500 rounded-full flex items-center justify-center text-3xl sm:text-4xl shadow-xl hover:scale-105 transition-transform z-10 border-4 border-rose-400">
+                    <button id="mic-btn" onclick="toggleRecording()" class="relative w-16 h-16 sm:w-18 sm:h-18 bg-rose-500 rounded-full flex items-center justify-center text-3xl shadow-xl hover:scale-105 transition-transform z-10 border-4 border-rose-400">
                         🎙️
                     </button>
                     <button onclick="skipCurrentPracticeLine()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Skip to next line">
                         Next ⏭️
                     </button>
                 </div>
-                <p id="mic-status" class="mt-3 text-xs font-bold text-slate-400">Tap 🎙️ & read the highlighted line aloud</p>
+                <p id="mic-status" class="mt-2.5 text-xs font-bold text-slate-400">Tap 🎙️ & read the line aloud in Mandarin</p>
             `;
         }
 
@@ -819,12 +1398,11 @@
                 const micStatus = document.getElementById('mic-status');
                 if (micStatus) {
                     micStatus.textContent = "Voice recognition is not supported on this browser. Tap 'Hear Hint' to practice aloud, then tap 'Next ⏭️'!";
-                    micStatus.className = "mt-3 text-xs font-bold text-amber-400";
+                    micStatus.className = "mt-2.5 text-xs font-bold text-amber-400";
                 }
                 return;
             }
 
-            // Cancel any ongoing TTS so microphone doesn't record the speaker
             cancelBrowserSpeech();
 
             if (state.isRecording) {
@@ -847,7 +1425,7 @@
                 }
                 if (micStatus) {
                     micStatus.textContent = "Listening... Speak Mandarin now! (Tap 🎙️ again when done)";
-                    micStatus.className = "mt-3 text-xs font-bold text-rose-400";
+                    micStatus.className = "mt-2.5 text-xs font-bold text-rose-400";
                 }
             };
 
@@ -863,7 +1441,6 @@
                     micStatus.textContent = `Heard: "${state.lastTranscript}"`;
                 }
 
-                // When final result arrives, evaluate immediately
                 const lastResult = event.results[event.results.length - 1];
                 if (lastResult && lastResult.isFinal && state.lastTranscript && !evaluatedThisTurn) {
                     evaluatedThisTurn = true;
@@ -886,7 +1463,7 @@
                 } else {
                     micStatus.textContent = "Mic notice (" + event.error + "). Tap 🎙️ to try again or tap 'Next ⏭️'.";
                 }
-                micStatus.className = "mt-3 text-xs font-bold text-amber-400";
+                micStatus.className = "mt-2.5 text-xs font-bold text-amber-400";
             };
 
             state.recognition.onend = async () => {
@@ -953,8 +1530,9 @@
             return data.choices[0].message.content;
         }
 
-        // Local character-overlap evaluator if offline or no API key is configured
-        function localEvaluateSpeech(targetZh, heardZh) {
+        // Level-calibrated local character-overlap evaluator if offline or no API key is configured
+        function localEvaluateSpeech(targetZh, heardZh, levelId = 'P1') {
+            const cfg = LEVEL_CONFIG[levelId] || LEVEL_CONFIG.P1;
             const cleanTarget = targetZh.replace(/[，。！？、：；,.!?\s]/g, '');
             const cleanHeard = (heardZh || '').replace(/[，。！？、：；,.!?\s]/g, '');
             if (!cleanHeard) {
@@ -965,45 +1543,89 @@
                 if (cleanHeard.includes(ch)) matchCount++;
             }
             const score = cleanTarget.length > 0 ? matchCount / cleanTarget.length : 1;
-            if (score >= 0.4) {
-                return { pass: true, feedback: `Great job! I heard "${heardZh}". Your Mandarin pronunciation is clear!` };
+            const pct = Math.round(score * 100);
+            if (score >= cfg.passThreshold) {
+                return { pass: true, feedback: `Awesome (${pct}% match)! I heard "${heardZh}". Your ${cfg.label} pronunciation is clear!` };
             }
-            return { pass: false, feedback: `Good try! I heard "${heardZh}". Listen to the hint and try saying "${targetZh}" one more time!` };
+            return { pass: false, feedback: `Good try! I heard "${heardZh}". Tap 'Hear Hint' and try reading "${targetZh}" again!` };
         }
 
         async function evaluateSpeech(targetZh, targetPy, heardZh) {
+            const lvlId = state.activeScenario ? (state.activeScenario.level || 'P1') : 'P1';
+            const cfg = LEVEL_CONFIG[lvlId] || LEVEL_CONFIG.P1;
+
             if (!state.apiKey) {
-                const localResult = localEvaluateSpeech(targetZh, heardZh);
-                showFeedbackModal(localResult.pass, localResult.feedback);
+                const localResult = localEvaluateSpeech(targetZh, heardZh, lvlId);
+                handleEvaluationResult(localResult.pass, localResult.feedback);
                 return;
             }
 
-            const prompt = `You are a friendly primary school Chinese teacher in Singapore.
+            const prompt = `You are a friendly primary school Chinese teacher in Singapore grading a ${cfg.label} student.
 The student was supposed to read: "${targetZh}" (${targetPy}).
 The speech recognition heard: "${heardZh}".
-Determine if they passed. Minor recognition errors are fine as long as meaning/sounds are close.
-If pass, give short encouraging feedback (e.g. "Great job!").
-If fail, gently point out the mistake and encourage them to try again. Keep it under 2 sentences in English.
+For ${cfg.label}, required accuracy threshold is ${Math.round(cfg.passThreshold * 100)}%.
+If pass, give short, enthusiastic feedback in English (1-2 sentences).
+If fail, gently point out the missing words and encourage them to try again.
 Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
 
             try {
                 const resultText = await fetchOpenRouter([{ role: "system", content: prompt }]);
                 const cleanJson = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
                 const evaluation = JSON.parse(cleanJson);
-                showFeedbackModal(Boolean(evaluation.pass), evaluation.feedback || "Good effort!");
+                handleEvaluationResult(Boolean(evaluation.pass), evaluation.feedback || "Good effort!");
             } catch (err) {
                 console.warn("Falling back to local speech evaluation:", err);
-                const localResult = localEvaluateSpeech(targetZh, heardZh);
-                showFeedbackModal(localResult.pass, localResult.feedback);
+                const localResult = localEvaluateSpeech(targetZh, heardZh, lvlId);
+                handleEvaluationResult(localResult.pass, localResult.feedback);
             }
         }
 
-        function showFeedbackModal(isPass, feedbackText) {
+        function handleEvaluationResult(isPass, feedbackText) {
+            const sc = state.activeScenario;
+            const cfg = sc ? (LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1) : LEVEL_CONFIG.P1;
+
+            if (isPass) {
+                state.game.streak += 1;
+                if (state.game.streak > state.game.bestStreak) {
+                    state.game.bestStreak = state.game.streak;
+                }
+                if (state.hidePinyin) {
+                    state.game.blindPinyinPasses += 1;
+                }
+                const streakBonus = state.game.streak >= 3 ? 5 : 0;
+                const blindBonus = state.hidePinyin ? 5 : 0;
+                const gainedXp = cfg.xpPerLine + streakBonus + blindBonus;
+
+                state.game.xp += gainedXp;
+                state.xpEarnedThisRun += gainedXp;
+                saveGameData();
+                updateGameHeaderUI();
+                playGameSound('pass');
+                showFeedbackModal(true, feedbackText, gainedXp);
+            } else {
+                state.mistakesThisRun += 1;
+                state.game.streak = 0;
+                saveGameData();
+                updateGameHeaderUI();
+                playGameSound('retry');
+                showFeedbackModal(false, feedbackText, 0);
+            }
+        }
+
+        function showFeedbackModal(isPass, feedbackText, gainedXp = 0) {
             const modal = document.getElementById('modal-feedback');
             document.getElementById('feedback-emoji').textContent = isPass ? '🌟' : '💡';
-            document.getElementById('feedback-title').textContent = isPass ? 'Great Job!' : 'Almost There!';
-            document.getElementById('feedback-title').className = `text-2xl font-black mb-3 ${isPass ? 'text-amber-500' : 'text-indigo-500'}`;
+            document.getElementById('feedback-title').textContent = isPass ? 'Great Job! 太棒了!' : 'Almost There! 再试一次!';
+            document.getElementById('feedback-title').className = `text-2xl font-black mb-2 ${isPass ? 'text-amber-500' : 'text-indigo-500'}`;
             document.getElementById('feedback-message').textContent = feedbackText;
+
+            const xpPill = document.getElementById('feedback-xp-pill');
+            if (isPass) {
+                xpPill.classList.remove('hidden');
+                xpPill.textContent = `⚡ +${gainedXp} XP ${state.game.streak >= 2 ? `• 🔥 ${state.game.streak}x Streak!` : ''}`;
+            } else {
+                xpPill.classList.add('hidden');
+            }
             
             const btn = modal.querySelector('button');
             btn.className = `w-full py-3.5 text-white text-lg rounded-xl font-black shadow-md transition-transform hover:scale-105 ${isPass ? 'bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600' : 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600'}`;
@@ -1032,6 +1654,19 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
             document.getElementById('loader-overlay').classList.remove('flex');
         }
 
+        function selectGenLevel(lvl) {
+            state.genSelectedLevel = lvl;
+            ['P1', 'P2', 'P3'].forEach(id => {
+                const btn = document.getElementById(`gen-btn-${id}`);
+                if (!btn) return;
+                if (id === lvl) {
+                    btn.className = 'p-2.5 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-indigo-900 font-black text-xs text-center shadow-sm scale-105';
+                } else {
+                    btn.className = 'p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center';
+                }
+            });
+        }
+
         async function generateCustomScript() {
             const topic = document.getElementById('gen-topic').value;
             if (!topic.trim()) return;
@@ -1041,19 +1676,29 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
                 return;
             }
 
-            document.getElementById('modal-generate').classList.add('hidden');
-            showLoader("Writing a new story just for you...");
+            const lvl = state.genSelectedLevel || 'P1';
+            const cfg = LEVEL_CONFIG[lvl] || LEVEL_CONFIG.P1;
 
-            const prompt = `Create a fun, natural 4-line Chinese conversation script for primary school students in Singapore based on this topic: "${topic}".
-Characters should be A (adult/staff/friend) and B (the student). Keep Chinese simple (Primary 1-3 level).
+            document.getElementById('modal-generate').classList.add('hidden');
+            showLoader(`Writing a ${cfg.label} story for you...`);
+
+            const levelGuidelines = {
+                P1: 'Primary 1 (ages 7): Use very short, basic sentences (5-8 Chinese characters per line) and simple everyday words.',
+                P2: 'Primary 2 (ages 8): Use medium sentences (8-13 Chinese characters per line) with connectors like 因为、所以、一起、请问.',
+                P3: 'Primary 3 (ages 9): Use expressive sentences (12-18 Chinese characters per line) with descriptive adjectives or simple idioms.'
+            };
+
+            const prompt = `Create a fun, natural 4-line Chinese conversation script for students in Singapore based on this topic: "${topic}".
+Target Difficulty: ${levelGuidelines[lvl]}
+Characters should be A (adult/staff/friend) and B (the student).
 Provide space-separated Hanyu Pinyin syllables (1 syllable per Chinese character).
 Return STRICT JSON matching this schema:
 {
     "title": "Topic Title in Chinese (English)",
-    "bgPattern": "Tailwind classes for a bright background, e.g., 'bg-gradient-to-br from-yellow-100 to-red-100 bg-pattern-dots'",
+    "bgPattern": "bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots",
     "roles": [
         { "id": "A", "name": "Character A Name", "avatar": "emoji", "color": "bg-emerald-500", "align": "left", "pitch": 1.2 },
-        { "id": "B", "name": "Character B Name", "avatar": "emoji", "color": "bg-sky-500", "align": "right", "pitch": 0.9 }
+        { "id": "B", "name": "Character B Name", "avatar": "emoji", "color": "bg-sky-500", "align": "right", "pitch": 0.95 }
     ],
     "lines": [
         { "speaker": "A", "zh": "Chinese text", "py": "Hanyu Pinyin", "en": "English translation" }
@@ -1066,6 +1711,7 @@ Return STRICT JSON matching this schema:
                 const newScript = JSON.parse(cleanJson);
                 
                 newScript.id = 'custom-' + Date.now();
+                newScript.level = lvl;
                 if (!newScript.bgPattern || !newScript.bgPattern.includes('bg-pattern')) {
                     newScript.bgPattern = 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots';
                 }
