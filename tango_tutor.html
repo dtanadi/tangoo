@@ -450,7 +450,7 @@
             zhVoice: null,
             game: loadSavedGame(),
             scripts: [
-                // ================= PRIMARY 1 (小一) =================
+                // ================= PRIMARY 1 (小一) - 10 Stories =================
                 {
                     id: 'p1-greeting',
                     level: 'P1',
@@ -463,8 +463,14 @@
                     lines: [
                         { speaker: 'A', zh: '小丽，早安！', py: 'Xiǎo lì, zǎo ān!', en: 'Xiaoli, good morning!' },
                         { speaker: 'B', zh: '陈老师，早安！', py: 'Chén lǎo shī, zǎo ān!', en: 'Good morning, Teacher Tan!' },
+                        { speaker: 'A', zh: '你好吗？', py: 'Nǐ hǎo ma?', en: 'How are you?' },
+                        { speaker: 'B', zh: '我很好，谢谢。', py: 'Wǒ hěn hǎo, xiè xie.', en: 'I am very good, thank you.' },
                         { speaker: 'A', zh: '你吃早餐了吗？', py: 'Nǐ chī zǎo cān le ma?', en: 'Have you eaten breakfast?' },
-                        { speaker: 'B', zh: '我吃了面包和牛奶。', py: 'Wǒ chī le miàn bāo hé niú nǎi.', en: 'I ate bread and milk.' }
+                        { speaker: 'B', zh: '我吃了。', py: 'Wǒ chī le.', en: 'I have eaten.' },
+                        { speaker: 'A', zh: '你吃什么？', py: 'Nǐ chī shén me?', en: 'What did you eat?' },
+                        { speaker: 'B', zh: '我吃面包。', py: 'Wǒ chī miàn bāo.', en: 'I ate bread.' },
+                        { speaker: 'A', zh: '真棒，我们去课室吧。', py: 'Zhēn bàng, wǒ men qù kè shì ba.', en: 'Great, let us go to the classroom.' },
+                        { speaker: 'B', zh: '好的，老师。', py: 'Hǎo de, lǎo shī.', en: 'Okay, teacher.' }
                     ]
                 },
                 {
@@ -478,9 +484,15 @@
                     ],
                     lines: [
                         { speaker: 'A', zh: '小同学，你要吃什么？', py: 'Xiǎo tóng xué, nǐ yào chī shén me?', en: 'Little student, what do you want to eat?' },
-                        { speaker: 'B', zh: '安娣，我要一碗鱼圆面。', py: 'Ān dì, wǒ yào yì wǎn yú yuán miàn.', en: 'Auntie, I want a bowl of fishball noodles.' },
-                        { speaker: 'A', zh: '好的，你要加辣椒吗？', py: 'Hǎo de, nǐ yào jiā là jiāo ma?', en: 'Okay, do you want to add chili?' },
-                        { speaker: 'B', zh: '不要辣椒，谢谢。', py: 'Bú yào là jiāo, xiè xie.', en: 'No chili, thank you.' }
+                        { speaker: 'B', zh: '安娣，我要鱼圆面。', py: 'Ān dì, wǒ yào yú yuán miàn.', en: 'Auntie, I want fishball noodles.' },
+                        { speaker: 'A', zh: '好的，两块钱。', py: 'Hǎo de, liǎng kuài qián.', en: 'Okay, two dollars.' },
+                        { speaker: 'B', zh: '给你钱。', py: 'Gěi nǐ qián.', en: 'Here is the money.' },
+                        { speaker: 'A', zh: '谢谢。你要辣椒吗？', py: 'Xiè xie. Nǐ yào là jiāo ma?', en: 'Thank you. Do you want chili?' },
+                        { speaker: 'B', zh: '不要辣椒，谢谢。', py: 'Bú yào là jiāo, xiè xie.', en: 'No chili, thank you.' },
+                        { speaker: 'A', zh: '还要买水吗？', py: 'Hái yào mǎi shuǐ ma?', en: 'Want to buy a drink too?' },
+                        { speaker: 'B', zh: '我要一杯美禄。', py: 'Wǒ yào yì bēi měi lù.', en: 'I want a cup of Milo.' },
+                        { speaker: 'A', zh: '给你。拿好哦。', py: 'Gěi nǐ. Ná hǎo o.', en: 'Here you go. Hold it well.' },
+                        { speaker: 'B', zh: '谢谢安娣，再见。', py: 'Xiè xie Ān dì, zài jiàn.', en: 'Thank you Auntie, goodbye.' }
                     ]
                 },
                 {
@@ -493,14 +505,174 @@
                         { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.3 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '丽丽，我们去荡秋千吧！', py: 'Lì li, wǒ men qù dàng qiū qiān ba!', en: 'Lili, let\'s go play on the swings!' },
-                        { speaker: 'B', zh: '好啊！我最喜欢荡秋千了。', py: 'Hǎo a! Wǒ zuì xǐ huan dàng qiū qiān le.', en: 'Sure! I love playing on the swings the most.' },
-                        { speaker: 'A', zh: '你先玩，我推你。', py: 'Nǐ xiān wán, wǒ tuī nǐ.', en: 'You play first, I will push you.' },
-                        { speaker: 'B', zh: '谢谢你，我们轮流玩。', py: 'Xiè xie nǐ, wǒ men lún liú wán.', en: 'Thank you, we will take turns.' }
+                        { speaker: 'A', zh: '丽丽，我们去游乐场吧！', py: 'Lì li, wǒ men qù yóu lè chǎng ba!', en: 'Lili, let\'s go to the playground!' },
+                        { speaker: 'B', zh: '好啊！', py: 'Hǎo a!', en: 'Okay!' },
+                        { speaker: 'A', zh: '你想玩什么？', py: 'Nǐ xiǎng wán shén me?', en: 'What do you want to play?' },
+                        { speaker: 'B', zh: '我想荡秋千。', py: 'Wǒ xiǎng dàng qiū qiān.', en: 'I want to play on the swings.' },
+                        { speaker: 'A', zh: '我来推你。', py: 'Wǒ lái tuī nǐ.', en: 'I will push you.' },
+                        { speaker: 'B', zh: '谢谢你。', py: 'Xiè xie nǐ.', en: 'Thank you.' },
+                        { speaker: 'A', zh: '换我玩了。', py: 'Huàn wǒ wán le.', en: 'My turn to play.' },
+                        { speaker: 'B', zh: '你去玩溜滑梯吧。', py: 'Nǐ qù wán liū huá tī ba.', en: 'You go play on the slide.' },
+                        { speaker: 'A', zh: '溜滑梯很好玩。', py: 'Liū huá tī hěn hǎo wán.', en: 'The slide is very fun.' },
+                        { speaker: 'B', zh: '我们真开心！', py: 'Wǒ men zhēn kāi xīn!', en: 'We are very happy!' }
+                    ]
+                },
+                {
+                    id: 'p1-colors',
+                    level: 'P1',
+                    title: '颜色和气球 (Colors & Balloons)',
+                    bgPattern: 'bg-gradient-to-br from-pink-100 to-rose-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-rose-500', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-fuchsia-500', align: 'right', pitch: 1.35 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '美美，你看！', py: 'Měi mei, nǐ kàn!', en: 'Meimei, look!' },
+                        { speaker: 'B', zh: '哇，很多气球！', py: 'Wa, hěn duō qì qiú!', en: 'Wow, so many balloons!' },
+                        { speaker: 'A', zh: '这是什么颜色？', py: 'Zhè shì shén me yán sè?', en: 'What color is this?' },
+                        { speaker: 'B', zh: '这是红色。', py: 'Zhè shì hóng sè.', en: 'This is red.' },
+                        { speaker: 'A', zh: '有几个红气球？', py: 'Yǒu jǐ gè hóng qì qiú?', en: 'How many red balloons are there?' },
+                        { speaker: 'B', zh: '一、二、三。', py: 'Yī, èr, sān.', en: 'One, two, three.' },
+                        { speaker: 'A', zh: '对，三个红气球。', py: 'Duì, sān gè hóng qì qiú.', en: 'Correct, three red balloons.' },
+                        { speaker: 'B', zh: '我要蓝色的。', py: 'Wǒ yào lán sè de.', en: 'I want the blue one.' },
+                        { speaker: 'A', zh: '好，给你蓝气球。', py: 'Hǎo, gěi nǐ lán qì qiú.', en: 'Okay, here is the blue balloon.' },
+                        { speaker: 'B', zh: '谢谢妈妈。', py: 'Xiè xie mā ma.', en: 'Thank you Mom.' }
+                    ]
+                },
+                {
+                    id: 'p1-bus',
+                    level: 'P1',
+                    title: '坐校车 (Taking School Bus)',
+                    bgPattern: 'bg-gradient-to-br from-yellow-100 to-amber-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '司机叔叔', avatar: '👨‍✈️', color: 'bg-blue-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '汤姆', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.15 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '叔叔，早安。', py: 'Shū shu, zǎo ān.', en: 'Good morning Uncle.' },
+                        { speaker: 'A', zh: '汤姆，早安。', py: 'Tāng mǔ, zǎo ān.', en: 'Morning Tom.' },
+                        { speaker: 'A', zh: '快坐下吧。', py: 'Kuài zuò xià ba.', en: 'Sit down quickly.' },
+                        { speaker: 'B', zh: '好的。', py: 'Hǎo de.', en: 'Okay.' },
+                        { speaker: 'A', zh: '书包放在这里。', py: 'Shū bāo fàng zài zhè lǐ.', en: 'Put your bag here.' },
+                        { speaker: 'B', zh: '谢谢叔叔。', py: 'Xiè xie shū shu.', en: 'Thank you Uncle.' },
+                        { speaker: 'A', zh: '系好安全带。', py: 'Jì hǎo ān quán dài.', en: 'Fasten your seatbelt.' },
+                        { speaker: 'B', zh: '我系好了。', py: 'Wǒ jì hǎo le.', en: 'I have fastened it.' },
+                        { speaker: 'A', zh: '我们去学校咯。', py: 'Wǒ men qù xué xiào lo.', en: 'We are going to school.' },
+                        { speaker: 'B', zh: '我喜欢去学校。', py: 'Wǒ xǐ huan qù xué xiào.', en: 'I like going to school.' }
+                    ]
+                },
+                {
+                    id: 'p1-market',
+                    level: 'P1',
+                    title: '在巴刹买水果 (At the Market)',
+                    bgPattern: 'bg-gradient-to-br from-lime-100 to-green-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '安哥', avatar: '👨‍🌾', color: 'bg-lime-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '阿里', avatar: '👦🏽', color: 'bg-orange-500', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '安哥，你好。', py: 'Ān gē, nǐ hǎo.', en: 'Hello Uncle.' },
+                        { speaker: 'A', zh: '阿里，你好。', py: 'Ā lǐ, nǐ hǎo.', en: 'Hello Ali.' },
+                        { speaker: 'B', zh: '我要买苹果。', py: 'Wǒ yào mǎi píng guǒ.', en: 'I want to buy apples.' },
+                        { speaker: 'A', zh: '红的还是绿的？', py: 'Hóng de hái shì lǜ de?', en: 'Red ones or green ones?' },
+                        { speaker: 'B', zh: '红苹果。', py: 'Hóng píng guǒ.', en: 'Red apples.' },
+                        { speaker: 'A', zh: '你要几个？', py: 'Nǐ yào jǐ gè?', en: 'How many do you want?' },
+                        { speaker: 'B', zh: '我要五个。', py: 'Wǒ yào wǔ gè.', en: 'I want five.' },
+                        { speaker: 'A', zh: '还要买什么？', py: 'Hái yào mǎi shén me?', en: 'What else do you want to buy?' },
+                        { speaker: 'B', zh: '还要买香蕉。', py: 'Hái yào mǎi xiāng jiāo.', en: 'I also want to buy bananas.' },
+                        { speaker: 'A', zh: '好的，给你。', py: 'Hǎo de, gěi nǐ.', en: 'Okay, here you go.' }
+                    ]
+                },
+                {
+                    id: 'p1-family',
+                    level: 'P1',
+                    title: '我的家人 (My Family)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '老师', avatar: '👩‍🏫', color: 'bg-purple-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '小美', avatar: '👧', color: 'bg-pink-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '你家有谁？', py: 'Nǐ jiā yǒu shéi?', en: 'Who is in your family?' },
+                        { speaker: 'B', zh: '有爸爸、妈妈和我。', py: 'Yǒu bà ba, mā ma hé wǒ.', en: 'There is Papa, Mama, and me.' },
+                        { speaker: 'A', zh: '你有哥哥吗？', py: 'Nǐ yǒu gē ge ma?', en: 'Do you have an older brother?' },
+                        { speaker: 'B', zh: '没有哥哥。', py: 'Méi yǒu gē ge.', en: 'No older brother.' },
+                        { speaker: 'A', zh: '你有妹妹吗？', py: 'Nǐ yǒu mèi mei ma?', en: 'Do you have a younger sister?' },
+                        { speaker: 'B', zh: '没有妹妹。', py: 'Méi yǒu mèi mei.', en: 'No younger sister.' },
+                        { speaker: 'A', zh: '你是独生女。', py: 'Nǐ shì dú shēng nǚ.', en: 'You are an only child.' },
+                        { speaker: 'B', zh: '我爱爸爸和妈妈。', py: 'Wǒ ài bà ba hé mā ma.', en: 'I love Papa and Mama.' },
+                        { speaker: 'A', zh: '他们也爱你。', py: 'Tā men yě ài nǐ.', en: 'They love you too.' },
+                        { speaker: 'B', zh: '我们很开心。', py: 'Wǒ men hěn kāi xīn.', en: 'We are very happy.' }
+                    ]
+                },
+                {
+                    id: 'p1-zoo',
+                    level: 'P1',
+                    title: '动物园 (At the Zoo)',
+                    bgPattern: 'bg-gradient-to-br from-green-100 to-emerald-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '杰克', avatar: '👦', color: 'bg-sky-500', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '看那只猴子。', py: 'Kàn nà zhī hóu zi.', en: 'Look at that monkey.' },
+                        { speaker: 'B', zh: '猴子很小。', py: 'Hóu zi hěn xiǎo.', en: 'The monkey is small.' },
+                        { speaker: 'A', zh: '看那头大象。', py: 'Kàn nà tóu dà xiàng.', en: 'Look at that elephant.' },
+                        { speaker: 'B', zh: '大象很大。', py: 'Dà xiàng hěn dà.', en: 'The elephant is big.' },
+                        { speaker: 'A', zh: '大象鼻子长。', py: 'Dà xiàng bí zi cháng.', en: 'The elephant has a long nose.' },
+                        { speaker: 'B', zh: '我要看狮子。', py: 'Wǒ yào kàn shī zi.', en: 'I want to see the lion.' },
+                        { speaker: 'A', zh: '狮子在睡觉。', py: 'Shī zi zài shuì jiào.', en: 'The lion is sleeping.' },
+                        { speaker: 'B', zh: '我们要安静。', py: 'Wǒ men yào ān jìng.', en: 'We must be quiet.' },
+                        { speaker: 'A', zh: '去看斑马吧。', py: 'Qù kàn bān mǎ ba.', en: 'Let\'s go see the zebra.' },
+                        { speaker: 'B', zh: '好，我们走。', py: 'Hǎo, wǒ men zǒu.', en: 'Okay, let\'s go.' }
+                    ]
+                },
+                {
+                    id: 'p1-birthday',
+                    level: 'P1',
+                    title: '生日快乐 (Happy Birthday)',
+                    bgPattern: 'bg-gradient-to-br from-fuchsia-100 to-pink-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-rose-500', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-fuchsia-600', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '丽丽，生日快乐！', py: 'Lì li, shēng rì kuài lè!', en: 'Lili, happy birthday!' },
+                        { speaker: 'B', zh: '谢谢妈妈。', py: 'Xiè xie mā ma.', en: 'Thank you Mom.' },
+                        { speaker: 'A', zh: '这是你的蛋糕。', py: 'Zhè shì nǐ de dàn gāo.', en: 'This is your cake.' },
+                        { speaker: 'B', zh: '哇，巧克力蛋糕！', py: 'Wa, qiǎo kè lì dàn gāo!', en: 'Wow, a chocolate cake!' },
+                        { speaker: 'A', zh: '许个愿吧。', py: 'Xǔ gè yuàn ba.', en: 'Make a wish.' },
+                        { speaker: 'B', zh: '我要一个玩具熊。', py: 'Wǒ yào yí gè wán jù xióng.', en: 'I want a toy bear.' },
+                        { speaker: 'A', zh: '吹蜡烛咯。', py: 'Chuī là zhú lo.', en: 'Blow the candles.' },
+                        { speaker: 'B', zh: '一、二、三，吹！', py: 'Yī, èr, sān, chuī!', en: 'One, two, three, blow!' },
+                        { speaker: 'A', zh: '我们吃蛋糕吧。', py: 'Wǒ men chī dàn gāo ba.', en: 'Let\'s eat the cake.' },
+                        { speaker: 'B', zh: '真好吃！', py: 'Zhēn hǎo chī!', en: 'So yummy!' }
+                    ]
+                },
+                {
+                    id: 'p1-rainy',
+                    level: 'P1',
+                    title: '下雨天 (Rainy Day)',
+                    bgPattern: 'bg-gradient-to-br from-cyan-100 to-blue-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-blue-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '小明', avatar: '👦', color: 'bg-sky-500', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '哎呀，下雨了。', py: 'Āi yā, xià yǔ le.', en: 'Oh no, it is raining.' },
+                        { speaker: 'B', zh: '不能出去了。', py: 'Bù néng chū qù le.', en: 'Cannot go out.' },
+                        { speaker: 'A', zh: '在家也可以玩。', py: 'Zài jiā yě kě yǐ wán.', en: 'We can play at home too.' },
+                        { speaker: 'B', zh: '玩什么呢？', py: 'Wán shén me ne?', en: 'Play what?' },
+                        { speaker: 'A', zh: '我们画画吧。', py: 'Wǒ men huà huà ba.', en: 'Let\'s draw.' },
+                        { speaker: 'B', zh: '我喜欢画画。', py: 'Wǒ xǐ huan huà huà.', en: 'I like to draw.' },
+                        { speaker: 'A', zh: '画一道彩虹。', py: 'Huà yí dào cǎi hóng.', en: 'Draw a rainbow.' },
+                        { speaker: 'B', zh: '红、橙、黄……', py: 'Hóng, chéng, huáng...', en: 'Red, orange, yellow...' },
+                        { speaker: 'A', zh: '雨停了！', py: 'Yǔ tíng le!', en: 'The rain stopped!' },
+                        { speaker: 'B', zh: '看，真的有彩虹！', py: 'Kàn, zhēn de yǒu cǎi hóng!', en: 'Look, a real rainbow!' }
                     ]
                 },
 
-                // ================= PRIMARY 2 (小二) =================
+                // ================= PRIMARY 2 (小二) - 10 Stories =================
                 {
                     id: 'library',
                     level: 'P2',
@@ -511,10 +683,16 @@
                         { id: 'B', name: '美美', avatar: '👧', color: 'bg-rose-400', align: 'right', pitch: 1.25 }
                     ],
                     lines: [
-                        { speaker: 'B', zh: '叔叔，请问我可以借这两本故事书吗？', py: 'Shū shu, qǐng wèn wǒ kě yǐ jiè zhè liǎng běn gù shi shū ma?', en: 'Uncle, may I borrow these two storybooks?' },
-                        { speaker: 'A', zh: '当然可以，请把你的学生证给我。', py: 'Dāng rán kě yǐ, qǐng bǎ nǐ de xué shēng zhèng gěi wǒ.', en: 'Of course, please give me your student card.' },
-                        { speaker: 'B', zh: '给你。我很喜欢看动物的故事。', py: 'Gěi nǐ. Wǒ hěn xǐ huan kàn dòng wù de gù shi.', en: 'Here you go. I really like reading animal stories.' },
-                        { speaker: 'A', zh: '借好了。记得在两个星期后还书哦。', py: 'Jiè hǎo le. Jì de zài liǎng gè xīng qī hòu huán shū o.', en: 'Borrowed. Remember to return the books in two weeks.' }
+                        { speaker: 'B', zh: '叔叔，我可以借书吗？', py: 'Shū shu, wǒ kě yǐ jiè shū ma?', en: 'Uncle, may I borrow books?' },
+                        { speaker: 'A', zh: '可以，请给我学生证。', py: 'Kě yǐ, qǐng gěi wǒ xué shēng zhèng.', en: 'Yes, please give me your student card.' },
+                        { speaker: 'B', zh: '给你。我借了两本。', py: 'Gěi nǐ. Wǒ jiè le liǎng běn.', en: 'Here. I borrowed two books.' },
+                        { speaker: 'A', zh: '你喜欢动物故事。', py: 'Nǐ xǐ huan dòng wù gù shi.', en: 'You like animal stories.' },
+                        { speaker: 'B', zh: '对，动物很可爱。', py: 'Duì, dòng wù hěn kě ài.', en: 'Yes, animals are cute.' },
+                        { speaker: 'A', zh: '记得两个星期后还书。', py: 'Jì de liǎng gè xīng qī hòu huán shū.', en: 'Remember to return them in two weeks.' },
+                        { speaker: 'B', zh: '好的，我会记得。', py: 'Hǎo de, wǒ huì jì de.', en: 'Okay, I will remember.' },
+                        { speaker: 'A', zh: '不要弄破书页哦。', py: 'Bú yào nòng pò shū yè o.', en: 'Do not tear the book pages.' },
+                        { speaker: 'B', zh: '我会好好爱护。', py: 'Wǒ huì hǎo hǎo ài hù.', en: 'I will take good care of them.' },
+                        { speaker: 'A', zh: '阅读愉快！', py: 'Yuè dú yú kuài!', en: 'Happy reading!' }
                     ]
                 },
                 {
@@ -527,10 +705,16 @@
                         { id: 'B', name: '老奶奶', avatar: '👵', color: 'bg-amber-600', align: 'right', pitch: 0.9 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '老奶奶，地铁开了，请您坐这里吧！', py: 'Lǎo nǎi nai, dì tiě kāi le, qǐng nín zuò zhè lǐ ba!', en: 'Grandma, the MRT train is moving, please sit here!' },
-                        { speaker: 'B', zh: '谢谢你，小朋友，你真是一个懂事的孩子。', py: 'Xiè xie nǐ, xiǎo péng you, nǐ zhēn shì yí gè dǒng shì de hái zi.', en: 'Thank you, little friend, you are such a sensible child.' },
-                        { speaker: 'A', zh: '不用客气，老师教我们要关心老人家。', py: 'Bú yòng kè qi, lǎo shī jiāo wǒ men yào guān xīn lǎo rén jiā.', en: 'You\'re welcome, teacher taught us to care for the elderly.' },
-                        { speaker: 'B', zh: '你在哪一站下车呢？我在碧山站下车。', py: 'Nǐ zài nǎ yí zhàn xià chē ne? Wǒ zài Bì shān zhàn xià chē.', en: 'Which station are you alighting at? I am getting off at Bishan.' }
+                        { speaker: 'A', zh: '奶奶，请您坐这里吧！', py: 'Nǎi nai, qǐng nín zuò zhè lǐ ba!', en: 'Grandma, please sit here!' },
+                        { speaker: 'B', zh: '谢谢你，好孩子。', py: 'Xiè xie nǐ, hǎo hái zi.', en: 'Thank you, good child.' },
+                        { speaker: 'A', zh: '小心，地铁开了。', py: 'Xiǎo xīn, dì tiě kāi le.', en: 'Be careful, the MRT is moving.' },
+                        { speaker: 'B', zh: '你真是一个懂事的好孩子。', py: 'Nǐ zhēn shì yí gè dǒng shì de hǎo hái zi.', en: 'You are truly a sensible good child.' },
+                        { speaker: 'A', zh: '老师教我们要帮助老人。', py: 'Lǎo shī jiāo wǒ men yào bāng zhù lǎo rén.', en: 'Teacher taught us to help the elderly.' },
+                        { speaker: 'B', zh: '你要去哪里呢？', py: 'Nǐ yào qù nǎ lǐ ne?', en: 'Where are you going?' },
+                        { speaker: 'A', zh: '我要去碧山站。', py: 'Wǒ yào qù Bì shān zhàn.', en: 'I am going to Bishan station.' },
+                        { speaker: 'B', zh: '我要去大巴窑站。', py: 'Wǒ yào qù Dà bā yáo zhàn.', en: 'I am going to Toa Payoh station.' },
+                        { speaker: 'A', zh: '奶奶再见。', py: 'Nǎi nai zài jiàn.', en: 'Goodbye Grandma.' },
+                        { speaker: 'B', zh: '再见，好好读书！', py: 'Zài jiàn, hǎo hǎo dú shū!', en: 'Goodbye, study hard!' }
                     ]
                 },
                 {
@@ -543,60 +727,392 @@
                         { id: 'B', name: '小杰', avatar: '🤒', color: 'bg-orange-500', align: 'right', pitch: 1.15 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '小杰，你今天觉得哪里不舒服？', py: 'Xiǎo jié, nǐ jīn tiān jué de nǎ lǐ bù shū fu?', en: 'Xiaojie, where do you feel unwell today?' },
-                        { speaker: 'B', zh: '林医生，我从早上开始头疼，还有点发烧。', py: 'Lín yī shēng, wǒ cóng zǎo shang kāi shǐ tóu téng, hái yǒu diǎn fā shāo.', en: 'Dr Lim, I had a headache since morning, and a slight fever.' },
-                        { speaker: 'A', zh: '让我检查一下。你感冒了，回家要按时吃药。', py: 'Ràng wǒ jiǎn chá yí xià. Nǐ gǎn mào le, huí jiā yào àn shí chī yào.', en: 'Let me check. You caught a cold; take your medicine on time at home.' },
-                        { speaker: 'B', zh: '好的，我回家会多喝温水和多休息。', py: 'Hǎo de, wǒ huí jiā huì duō hē wēn shuǐ hé duō xiū xi.', en: 'Okay, I will drink more warm water and rest more at home.' }
+                        { speaker: 'A', zh: '小杰，你哪里不舒服？', py: 'Xiǎo jié, nǐ nǎ lǐ bù shū fu?', en: 'Xiaojie, where do you feel unwell?' },
+                        { speaker: 'B', zh: '医生，我头疼，还发烧。', py: 'Yī shēng, wǒ tóu téng, hái fā shāo.', en: 'Doctor, I have a headache, and also a fever.' },
+                        { speaker: 'A', zh: '什么时候开始的？', py: 'Shén me shí hou kāi shǐ de?', en: 'When did it start?' },
+                        { speaker: 'B', zh: '从今天早上开始的。', py: 'Cóng jīn tiān zǎo shang kāi shǐ de.', en: 'Started since this morning.' },
+                        { speaker: 'A', zh: '让我检查你的喉咙。', py: 'Ràng wǒ jiǎn chá nǐ de hóu lóng.', en: 'Let me check your throat.' },
+                        { speaker: 'B', zh: '啊——喉咙有点痛。', py: 'A——hóu lóng yǒu diǎn tòng.', en: 'Ah——my throat hurts a little.' },
+                        { speaker: 'A', zh: '你感冒了，要吃药。', py: 'Nǐ gǎn mào le, yào chī yào.', en: 'You caught a cold, need to take medicine.' },
+                        { speaker: 'B', zh: '需要打针吗？', py: 'Xū yào dǎ zhēn ma?', en: 'Do I need an injection?' },
+                        { speaker: 'A', zh: '不用，回家多喝水多休息。', py: 'Bú yòng, huí jiā duō hē shuǐ duō xiū xi.', en: 'No need, go home drink more water and rest.' },
+                        { speaker: 'B', zh: '好的，谢谢林医生。', py: 'Hǎo de, xiè xie Lín yī shēng.', en: 'Okay, thank you Dr Lim.' }
+                    ]
+                },
+                {
+                    id: 'p2-cca',
+                    level: 'P2',
+                    title: '课外活动 (CCA Choices)',
+                    bgPattern: 'bg-gradient-to-br from-lime-100 to-green-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '老师', avatar: '👨‍🏫', color: 'bg-emerald-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '文华', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '文华，你想参加什么课外活动？', py: 'Wén huá, nǐ xiǎng cān jiā shén me kè wài huó dòng?', en: 'Wenhua, what CCA do you want to join?' },
+                        { speaker: 'B', zh: '我想参加羽毛球。', py: 'Wǒ xiǎng cān jiā yǔ máo qiú.', en: 'I want to join Badminton.' },
+                        { speaker: 'A', zh: '为什么喜欢羽毛球？', py: 'Wèi shén me xǐ huan yǔ máo qiú?', en: 'Why do you like badminton?' },
+                        { speaker: 'B', zh: '因为我想让身体健康。', py: 'Yīn wèi wǒ xiǎng ràng shēn tǐ jiàn kāng.', en: 'Because I want to make my body healthy.' },
+                        { speaker: 'A', zh: '这是一个好理由。', py: 'Zhè shì yí gè hǎo lǐ yóu.', en: 'That is a good reason.' },
+                        { speaker: 'B', zh: '可是我打得不太好。', py: 'Kě shì wǒ dǎ de bú tài hǎo.', en: 'But I don\'t play very well.' },
+                        { speaker: 'A', zh: '没关系，教练会教你。', py: 'Méi guān xi, jiào liàn huì jiāo nǐ.', en: 'It\'s okay, the coach will teach you.' },
+                        { speaker: 'B', zh: '我们星期几训练呢？', py: 'Wǒ men xīng qī jǐ xùn liàn ne?', en: 'Which day of the week do we train?' },
+                        { speaker: 'A', zh: '每个星期二下午。', py: 'Měi gè xīng qī èr xià wǔ.', en: 'Every Tuesday afternoon.' },
+                        { speaker: 'B', zh: '太好了，我会准时去！', py: 'Tài hǎo le, wǒ huì zhǔn shí qù!', en: 'Great, I will go on time!' }
+                    ]
+                },
+                {
+                    id: 'p2-lostitem',
+                    level: 'P2',
+                    title: '找东西 (Finding Lost Item)',
+                    bgPattern: 'bg-gradient-to-br from-rose-100 to-orange-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '安娣', avatar: '👩‍🍳', color: 'bg-rose-500', align: 'left', pitch: 1.2 },
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-pink-600', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '丽丽，你为什么哭？', py: 'Lì li, nǐ wèi shén me kū?', en: 'Lili, why are you crying?' },
+                        { speaker: 'B', zh: '我的水壶不见了。', py: 'Wǒ de shuǐ hú bú jiàn le.', en: 'My water bottle is missing.' },
+                        { speaker: 'A', zh: '你放在哪里了？', py: 'Nǐ fàng zài nǎ lǐ le?', en: 'Where did you put it?' },
+                        { speaker: 'B', zh: '我放在食堂的桌子上。', py: 'Wǒ fàng zài shí táng de zhuō zi shàng.', en: 'I put it on the canteen table.' },
+                        { speaker: 'A', zh: '别哭，我们去看看。', py: 'Bié kū, wǒ men qù kàn kan.', en: 'Don\'t cry, let\'s go take a look.' },
+                        { speaker: 'B', zh: '我的水壶是蓝色的。', py: 'Wǒ de shuǐ hú shì lán sè de.', en: 'My water bottle is blue.' },
+                        { speaker: 'A', zh: '你看，是不是那个？', py: 'Nǐ kàn, shì bu shì nà gè?', en: 'Look, is it that one?' },
+                        { speaker: 'B', zh: '对，上面有我的贴纸。', py: 'Duì, shàng miàn yǒu wǒ de tiē zhǐ.', en: 'Yes, it has my sticker on it.' },
+                        { speaker: 'A', zh: '找到了就好，下次要小心。', py: 'Zhǎo dào le jiù hǎo, xià cì yào xiǎo xīn.', en: 'Good that we found it, be careful next time.' },
+                        { speaker: 'B', zh: '谢谢安娣帮忙。', py: 'Xiè xie Ān dì bāng máng.', en: 'Thank you Auntie for helping.' }
+                    ]
+                },
+                {
+                    id: 'p2-recess',
+                    level: 'P2',
+                    title: '下课游戏 (Recess Games)',
+                    bgPattern: 'bg-gradient-to-br from-yellow-100 to-green-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '小明', avatar: '👦', color: 'bg-sky-500', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '阿里', avatar: '👦🏽', color: 'bg-amber-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '阿里，我们来玩抓人游戏！', py: 'Ā lǐ, wǒ men lái wán zhuā rén yóu xì!', en: 'Ali, let\'s play catching!' },
+                        { speaker: 'B', zh: '好啊，谁先抓？', py: 'Hǎo a, shéi xiān zhuā?', en: 'Sure, who catches first?' },
+                        { speaker: 'A', zh: '你先抓我吧！', py: 'Nǐ xiān zhuā wǒ ba!', en: 'You catch me first!' },
+                        { speaker: 'B', zh: '一、二、三，快跑！', py: 'Yī, èr, sān, kuài pǎo!', en: 'One, two, three, run!' },
+                        { speaker: 'A', zh: '我跑得很快，你抓不到。', py: 'Wǒ pǎo de hěn kuài, nǐ zhuā bú dào.', en: 'I run very fast, you cannot catch me.' },
+                        { speaker: 'B', zh: '小心前面的台阶！', py: 'Xiǎo xīn qián miàn de tái jiē!', en: 'Watch out for the steps ahead!' },
+                        { speaker: 'A', zh: '哎呀，我摔倒了。', py: 'Āi yā, wǒ shuāi dǎo le.', en: 'Oh no, I fell down.' },
+                        { speaker: 'B', zh: '你没事吧？痛不痛？', py: 'Nǐ méi shì ba? Tòng bu tòng?', en: 'Are you okay? Does it hurt?' },
+                        { speaker: 'A', zh: '只有一点擦伤，我没事。', py: 'Zhǐ yǒu yì diǎn cā shāng, wǒ méi shì.', en: 'Just a little scratch, I am fine.' },
+                        { speaker: 'B', zh: '我们去洗洗手吧。', py: 'Wǒ men qù xǐ xi shǒu ba.', en: 'Let\'s go wash hands.' }
+                    ]
+                },
+                {
+                    id: 'p2-grandpa',
+                    level: 'P2',
+                    title: '探望爷爷 (Visiting Grandpa)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '爷爷', avatar: '👴', color: 'bg-emerald-600', align: 'left', pitch: 0.8 },
+                        { id: 'B', name: '小美', avatar: '👧', color: 'bg-pink-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '爷爷，我来看您了！', py: 'Yé ye, wǒ lái kàn nín le!', en: 'Grandpa, I came to see you!' },
+                        { speaker: 'A', zh: '小美，快进来坐。', py: 'Xiǎo měi, kuài jìn lái zuò.', en: 'Xiaomei, come in and sit.' },
+                        { speaker: 'B', zh: '我给您带了橙子。', py: 'Wǒ gěi nín dài le chéng zi.', en: 'I brought oranges for you.' },
+                        { speaker: 'A', zh: '谢谢，你真乖。', py: 'Xiè xie, nǐ zhēn guāi.', en: 'Thank you, you are so sweet.' },
+                        { speaker: 'B', zh: '您吃午饭了吗？', py: 'Nín chī wǔ fàn le ma?', en: 'Have you eaten lunch?' },
+                        { speaker: 'A', zh: '我吃了云吞面。你呢？', py: 'Wǒ chī le yún tūn miàn. Nǐ ne?', en: 'I ate wanton noodles. You?' },
+                        { speaker: 'B', zh: '我吃了海南鸡饭。', py: 'Wǒ chī le Hǎi nán jī fàn.', en: 'I ate Hainanese chicken rice.' },
+                        { speaker: 'A', zh: '我们一起看电视吧。', py: 'Wǒ men yì qǐ kàn diàn shì ba.', en: 'Let\'s watch TV together.' },
+                        { speaker: 'B', zh: '我想看卡通片。', py: 'Wǒ xiǎng kàn kǎ tōng piàn.', en: 'I want to watch cartoons.' },
+                        { speaker: 'A', zh: '好，爷爷陪你一起看。', py: 'Hǎo, yé ye péi nǐ yì qǐ kàn.', en: 'Okay, Grandpa will watch with you.' }
+                    ]
+                },
+                {
+                    id: 'p2-beach',
+                    level: 'P2',
+                    title: '去海边玩 (Trip to the Beach)',
+                    bgPattern: 'bg-gradient-to-br from-cyan-100 to-blue-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '杰克', avatar: '👦', color: 'bg-sky-500', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '杰克，我们去东海岸公园。', py: 'Jié kè, wǒ men qù Dōng hǎi àn gōng yuán.', en: 'Jack, let\'s go to East Coast Park.' },
+                        { speaker: 'B', zh: '太棒了！我们可以骑脚踏车吗？', py: 'Tài bàng le! Wǒ men kě yǐ qí jiǎo tà chē ma?', en: 'Awesome! Can we ride bicycles?' },
+                        { speaker: 'A', zh: '可以，那里能租脚踏车。', py: 'Kě yǐ, nà lǐ néng zū jiǎo tà chē.', en: 'Yes, we can rent bicycles there.' },
+                        { speaker: 'B', zh: '我还想在沙滩堆沙堡。', py: 'Wǒ hái xiǎng zài shā tān duī shā bǎo.', en: 'I also want to build sandcastles on the beach.' },
+                        { speaker: 'A', zh: '那你记得带上小桶和铲子。', py: 'Nà nǐ jì de dài shàng xiǎo tǒng hé chǎn zi.', en: 'Then remember to bring your bucket and spade.' },
+                        { speaker: 'B', zh: '晚餐我们可以吃海鲜吗？', py: 'Wǎn cān wǒ men kě yǐ chī hǎi xiān ma?', en: 'Can we eat seafood for dinner?' },
+                        { speaker: 'A', zh: '我们晚餐吃辣椒螃蟹。', py: 'Wǒ men wǎn cān chī là jiāo páng xiè.', en: 'We will eat chili crab for dinner.' },
+                        { speaker: 'B', zh: '那是我最爱吃的食物！', py: 'Nà shì wǒ zuì ài chī de shí wù!', en: 'That is my favorite food!' },
+                        { speaker: 'A', zh: '快点去准备吧。', py: 'Kuài diǎn qù zhǔn bèi ba.', en: 'Go and get ready quickly.' },
+                        { speaker: 'B', zh: '好的，我马上去。', py: 'Hǎo de, wǒ mǎ shàng qù.', en: 'Okay, I will go immediately.' }
+                    ]
+                },
+                {
+                    id: 'p2-stationery',
+                    level: 'P2',
+                    title: '买文具 (Buying Stationery)',
+                    bgPattern: 'bg-gradient-to-br from-pink-100 to-purple-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '店员', avatar: '👩‍💼', color: 'bg-purple-500', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-pink-600', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '你好，你想找什么文具？', py: 'Nǐ hǎo, nǐ xiǎng zhǎo shén me wén jù?', en: 'Hello, what stationery are you looking for?' },
+                        { speaker: 'B', zh: '阿姨，我想买一个铅笔盒。', py: 'Ā yí, wǒ xiǎng mǎi yí gè qiān bǐ hé.', en: 'Auntie, I want to buy a pencil case.' },
+                        { speaker: 'A', zh: '铅笔盒都在那个架子上。', py: 'Qiān bǐ hé dōu zài nà gè jià zi shàng.', en: 'The pencil cases are all on that shelf.' },
+                        { speaker: 'B', zh: '这个粉红色的很漂亮。', py: 'Zhè gè fěn hóng sè de hěn piào liang.', en: 'This pink one is very pretty.' },
+                        { speaker: 'A', zh: '这个铅笔盒是五块钱。', py: 'Zhè gè qiān bǐ hé shì wǔ kuài qián.', en: 'This pencil case is five dollars.' },
+                        { speaker: 'B', zh: '我还需要买一块橡皮。', py: 'Wǒ hái xū yào mǎi yí kuài xiàng pí.', en: 'I also need to buy an eraser.' },
+                        { speaker: 'A', zh: '橡皮一块是五角钱。', py: 'Xiàng pí yí kuài shì wǔ jiǎo qián.', en: 'Erasers are fifty cents a piece.' },
+                        { speaker: 'B', zh: '我买这两个，给您六块钱。', py: 'Wǒ mǎi zhè liǎng gè, gěi nín liù kuài qián.', en: 'I will buy these two, here is six dollars.' },
+                        { speaker: 'A', zh: '找你五角钱。', py: 'Zhǎo nǐ wǔ jiǎo qián.', en: 'Here is your change, fifty cents.' },
+                        { speaker: 'B', zh: '谢谢阿姨，再见。', py: 'Xiè xie ā yí, zài jiàn.', en: 'Thank you Auntie, goodbye.' }
+                    ]
+                },
+                {
+                    id: 'p2-chores',
+                    level: 'P2',
+                    title: '帮妈妈做家务 (Helping with Chores)',
+                    bgPattern: 'bg-gradient-to-br from-emerald-100 to-teal-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-rose-500', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '文华', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '文华，你可以来帮妈妈吗？', py: 'Wén huá, nǐ kě yǐ lái bāng mā ma ma?', en: 'Wenhua, can you come help Mama?' },
+                        { speaker: 'B', zh: '好的妈妈，我能做什么？', py: 'Hǎo de mā ma, wǒ néng zuò shén me?', en: 'Sure Mama, what can I do?' },
+                        { speaker: 'A', zh: '请你帮忙擦一下桌子。', py: 'Qǐng nǐ bāng máng cā yí xià zhuō zi.', en: 'Please help wipe the table.' },
+                        { speaker: 'B', zh: '没问题，抹布在哪里？', py: 'Méi wèn tí, mā bù zài nǎ lǐ?', en: 'No problem, where is the cloth?' },
+                        { speaker: 'A', zh: '抹布在厨房的水槽旁边。', py: 'Mā bù zài chú fáng de shuǐ cáo páng biān.', en: 'The cloth is beside the kitchen sink.' },
+                        { speaker: 'B', zh: '妈妈，我已经把桌子擦干净了。', py: 'Mā ma, wǒ yǐ jīng bǎ zhuō zi cā gān jìng le.', en: 'Mama, I have already wiped the table clean.' },
+                        { speaker: 'A', zh: '谢谢你，现在可以扫地吗？', py: 'Xiè xie nǐ, xiàn zài kě yǐ sǎo dì ma?', en: 'Thank you, can you sweep the floor now?' },
+                        { speaker: 'B', zh: '好的，我去扫客厅的地。', py: 'Hǎo de, wǒ qù sǎo kè tīng de dì.', en: 'Okay, I will go sweep the living room floor.' },
+                        { speaker: 'A', zh: '你真是妈妈的好帮手。', py: 'Nǐ zhēn shì mā ma de hǎo bāng shǒu.', en: 'You are truly Mama\'s good helper.' },
+                        { speaker: 'B', zh: '不用客气，妈妈辛苦了。', py: 'Bú yòng kè qi, mā ma xīn kǔ le.', en: 'You are welcome, Mama you worked hard.' }
                     ]
                 },
 
-                // ================= PRIMARY 3 (小三) =================
+                // ================= PRIMARY 3 (小三) - 10 Stories =================
                 {
                     id: 'p3-hawker',
                     level: 'P3',
-                    title: '小贩中心归还托盘 (Hawker Centre & Tray Return)',
+                    title: '小贩中心归还托盘 (Hawker Centre Tray Return)',
                     bgPattern: 'bg-gradient-to-br from-amber-100 via-orange-100 to-rose-100 bg-pattern-dots',
                     roles: [
                         { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
                         { id: 'B', name: '家乐', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.15 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '家乐，这盘海南鸡饭真香，你吃饱了吗？', py: 'Jiā lè, zhè pán Hǎi nán jī fàn zhēn xiāng, nǐ chī bǎo le ma?', en: 'Jiale, this plate of Hainanese chicken rice smells great, are you full?' },
-                        { speaker: 'B', zh: '爸爸，我已经吃饱了，今天的小贩中心真热闹！', py: 'Bà ba, wǒ yǐ jīng chī bǎo le, jīn tiān de xiǎo fàn zhōng xīn zhēn rè nao!', en: 'Dad, I am already full. The hawker centre is so lively today!' },
-                        { speaker: 'A', zh: '离开之前，我们应该把托盘和碗筷送去哪里呢？', py: 'Lí kāi zhī qián, wǒ men yīng gāi bǎ tuō pán hé wǎn kuài sòng qù nǎ lǐ ne?', en: 'Before leaving, where should we bring our trays and crockery?' },
-                        { speaker: 'B', zh: '我们要把托盘放回归还架，这样桌子才会干净！', py: 'Wǒ men yào bǎ tuō pán fàng huí guī huán jià, zhè yàng zhuō zi cái huì gān jìng!', en: 'We must return the tray to the return rack so the table stays clean!' }
+                        { speaker: 'A', zh: '这盘海南鸡饭真香，你吃饱了吗？', py: 'Zhè pán Hǎi nán jī fàn zhēn xiāng, nǐ chī bǎo le ma?', en: 'This plate of Hainanese chicken rice smells great, are you full?' },
+                        { speaker: 'B', zh: '我已经吃饱了，今天小贩中心真热闹！', py: 'Wǒ yǐ jīng chī bǎo le, jīn tiān xiǎo fàn zhōng xīn zhēn rè nao!', en: 'I am already full. The hawker centre is so lively today!' },
+                        { speaker: 'A', zh: '离开前，我们应该把托盘送去哪里？', py: 'Lí kāi qián, wǒ men yīng gāi bǎ tuō pán sòng qù nǎ lǐ?', en: 'Before leaving, where should we bring our trays?' },
+                        { speaker: 'B', zh: '我们要把托盘放回归还架。', py: 'Wǒ men yào bǎ tuō pán fàng huí guī huán jià.', en: 'We must return the tray to the return rack.' },
+                        { speaker: 'A', zh: '你知道为什么要这么做吗？', py: 'Nǐ zhī dào wèi shén me yào zhè yàng zuò ma?', en: 'Do you know why we must do this?' },
+                        { speaker: 'B', zh: '这样清洁工人就能更快清理桌子。', py: 'Zhè yàng qīng jié gōng rén jiù néng gèng kuài qīng lǐ zhuō zi.', en: 'This way the cleaners can clear the tables faster.' },
+                        { speaker: 'A', zh: '对，下一个人也有干净的桌子用。', py: 'Duì, xià yí gè rén yě yǒu gān jìng de zhuō zi yòng.', en: 'Yes, and the next person will have a clean table to use.' },
+                        { speaker: 'B', zh: '我也把纸巾和骨头丢进垃圾桶了。', py: 'Wǒ yě bǎ zhǐ jīn hé gǔ tou diū jìn lā jī tǒng le.', en: 'I also threw the tissue and bones into the bin.' },
+                        { speaker: 'A', zh: '很好，让我们一起保持新加坡的整洁。', py: 'Hěn hǎo, ràng wǒ men yì qǐ bǎo chí Xīn jiā pō de zhěng jié.', en: 'Very good, let\'s keep Singapore clean together.' },
+                        { speaker: 'B', zh: '没问题，这是我们应该做的！', py: 'Méi wèn tí, zhè shì wǒ men yīng gāi zuò de!', en: 'No problem, this is what we should do!' }
                     ]
                 },
                 {
                     id: 'p3-zoo',
                     level: 'P3',
-                    title: '游览新加坡动物园 (Visiting Singapore Zoo)',
+                    title: '夜间野生动物园 (Night Safari)',
                     bgPattern: 'bg-gradient-to-br from-lime-100 to-emerald-100 bg-pattern-waves',
                     roles: [
                         { id: 'A', name: '导游姐姐', avatar: '🤠', color: 'bg-emerald-600', align: 'left', pitch: 1.2 },
                         { id: 'B', name: '欣怡', avatar: '👧', color: 'bg-purple-600', align: 'right', pitch: 1.3 }
                     ],
                     lines: [
-                        { speaker: 'A', zh: '欢迎大家来到新加坡动物园！今天你们最想看什么动物？', py: 'Huān yíng dà jiā lái dào Xīn jiā pō dòng wù yuán! Jīn tiān nǐ men zuì xiǎng kàn shén me dòng wù?', en: 'Welcome to the Singapore Zoo! What animal do you want to see most today?' },
-                        { speaker: 'B', zh: '导游姐姐，我最想看大熊猫凯凯，因为它非常可爱！', py: 'Dǎo yóu jiě jie, wǒ zuì xiǎng kàn dà xióng māo Kǎi kǎi, yīn wèi tā fēi cháng kě ài!', en: 'Sister Guide, I want to see Giant Panda Kai Kai most because it is super cute!' },
-                        { speaker: 'A', zh: '你看，大熊猫正在竹林里津津有味地吃着新鲜的竹叶呢。', py: 'Nǐ kàn, dà xióng māo zhèng zài zhú lín lǐ jīn jīn yǒu wèi de chī zhe xīn xiān de zhú yè ne.', en: 'Look, the giant panda is relishing fresh bamboo leaves in the bamboo forest.' },
-                        { speaker: 'B', zh: '太有趣了！我一定要提醒同学们拍照时不要开闪光灯。', py: 'Tài yǒu qù le! Wǒ yí dìng yào tí xǐng tóng xué men pāi zhào shí bú yào kāi shǎn guāng dēng.', en: 'So interesting! I must remind my classmates not to use flash when taking photos.' }
+                        { speaker: 'A', zh: '欢迎来到夜间野生动物园！', py: 'Huān yíng lái dào yè jiān yě shēng dòng wù yuán!', en: 'Welcome to the Night Safari!' },
+                        { speaker: 'B', zh: '导游姐姐，我想看老虎和大象。', py: 'Dǎo yóu jiě jie, wǒ xiǎng kàn lǎo hǔ hé dà xiàng.', en: 'Sister Guide, I want to see tigers and elephants.' },
+                        { speaker: 'A', zh: '我们将乘坐导览车去看它们。', py: 'Wǒ men jiāng chéng zuò dǎo lǎn chē qù kàn tā men.', en: 'We will take the tram to see them.' },
+                        { speaker: 'B', zh: '这里好暗，动物能看到我们吗？', py: 'Zhè lǐ hǎo àn, dòng wù néng kàn dào wǒ men ma?', en: 'It is so dark here, can the animals see us?' },
+                        { speaker: 'A', zh: '夜间活动的动物视力非常敏锐。', py: 'Yè jiān huó dòng de dòng wù shì lì fēi cháng mǐn ruì.', en: 'Nocturnal animals have very sharp eyesight.' },
+                        { speaker: 'B', zh: '你看！那边有一只马来亚虎。', py: 'Nǐ kàn! Nà biān yǒu yì zhī Mǎ lái yà hǔ.', en: 'Look! There is a Malayan tiger over there.' },
+                        { speaker: 'A', zh: '它看起来是不是很威风？', py: 'Tā kàn qǐ lái shì bu shì hěn wēi fēng?', en: 'Does it look very majestic?' },
+                        { speaker: 'B', zh: '是的，但是我们不能开闪光灯拍照。', py: 'Shì de, dàn shì wǒ men bù néng kāi shǎn guāng dēng pāi zhào.', en: 'Yes, but we cannot use flash to take photos.' },
+                        { speaker: 'A', zh: '没错，那样会惊吓到动物们。', py: 'Méi cuò, nà yàng huì jīng xià dào dòng wù men.', en: 'Correct, that would scare the animals.' },
+                        { speaker: 'B', zh: '我会小声说话，不打扰它们。', py: 'Wǒ huì xiǎo shēng shuō huà, bù dǎ rǎo tā men.', en: 'I will speak softly and not disturb them.' }
                     ]
                 },
                 {
                     id: 'p3-lostfound',
                     level: 'P3',
-                    title: '拾金不昧好榜样 (Returning a Lost Wallet)',
+                    title: '拾金不昧好榜样 (Returning Lost Wallet)',
                     bgPattern: 'bg-gradient-to-br from-purple-100 to-pink-100 bg-pattern-dots',
                     roles: [
                         { id: 'A', name: '训导主任', avatar: '👨‍💼', color: 'bg-indigo-700', align: 'left', pitch: 0.9 },
                         { id: 'B', name: '志豪', avatar: '👦', color: 'bg-rose-600', align: 'right', pitch: 1.1 }
                     ],
                     lines: [
-                        { speaker: 'B', zh: '老师，我刚才在操场旁边的长椅上捡到了这个蓝色钱包。', py: 'Lǎo shī, wǒ gāng cái zài cāo chǎng páng biān de cháng yǐ shàng jiǎn dào le zhè gè lán sè qián bāo.', en: 'Teacher, I just found this blue wallet on the bench beside the school field.' },
-                        { speaker: 'A', zh: '志豪，谢谢你把钱包交到办公室。里面有学生证和零用钱吗？', py: 'Zhì háo, xiè xie nǐ bǎ qián bāo jiāo dào bàn gōng shì. Lǐ miàn yǒu xué shēng zhèng hé líng yòng qián ma?', en: 'Zhihao, thank you for bringing the wallet to the office. Are there a student card and pocket money inside?' },
-                        { speaker: 'B', zh: '有的，失主一定很着急，希望我们可以尽快还给他。', py: 'Yǒu de, shī zhǔ yí dìng hěn zháo jí, xī wàng wǒ men kě yǐ jǐn kuài huán gěi tā.', en: 'Yes, the owner must be very anxious. I hope we can return it to him soon.' },
-                        { speaker: 'A', zh: '你拾金不昧的精神值得表扬，我会在周会上称赞你！', py: 'Nǐ shí jīn bú mèi de jīng shén zhí de biǎo yáng, wǒ huì zài zhōu huì shàng chēng zàn nǐ!', en: 'Your honesty is praiseworthy; I will commend you during assembly!' }
+                        { speaker: 'B', zh: '老师，我在操场捡到了一个钱包。', py: 'Lǎo shī, wǒ zài cāo chǎng jiǎn dào le yí gè qián bāo.', en: 'Teacher, I found a wallet at the field.' },
+                        { speaker: 'A', zh: '谢谢你把钱包交到办公室来。', py: 'Xiè xie nǐ bǎ qián bāo jiāo dào bàn gōng shì lái.', en: 'Thank you for bringing the wallet to the office.' },
+                        { speaker: 'B', zh: '里面有学生证和零用钱。', py: 'Lǐ miàn yǒu xué shēng zhèng hé líng yòng qián.', en: 'There are a student card and pocket money inside.' },
+                        { speaker: 'A', zh: '失主现在一定非常着急。', py: 'Shī zhǔ xiàn zài yí dìng fēi cháng zháo jí.', en: 'The owner must be very anxious right now.' },
+                        { speaker: 'B', zh: '希望我们可以尽快还给他。', py: 'Xī wàng wǒ men kě yǐ jǐn kuài huán gěi tā.', en: 'I hope we can return it to him soon.' },
+                        { speaker: 'A', zh: '我来看看，这是二年级学生的钱包。', py: 'Wǒ lái kàn kan, zhè shì èr nián jí xué shēng de qián bāo.', en: 'Let me see, this is a Primary Two student\'s wallet.' },
+                        { speaker: 'B', zh: '太好了，这样就能找到他了。', py: 'Tài hǎo le, zhè yàng jiù néng zhǎo dào tā le.', en: 'Great, then we can find him.' },
+                        { speaker: 'A', zh: '你拾金不昧的精神值得表扬。', py: 'Nǐ shí jīn bú mèi de jīng shén zhí de biǎo yáng.', en: 'Your honesty is praiseworthy.' },
+                        { speaker: 'B', zh: '父母教我不能拿别人的东西。', py: 'Fù mǔ jiāo wǒ bù néng ná bié rén de dōng xi.', en: 'My parents taught me not to take others\' things.' },
+                        { speaker: 'A', zh: '我会在明天的周会上称赞你！', py: 'Wǒ huì zài míng tiān de zhōu huì shàng chēng zàn nǐ!', en: 'I will commend you during assembly tomorrow!' }
+                    ]
+                },
+                {
+                    id: 'p3-project',
+                    level: 'P3',
+                    title: '小组作业 (Group Project)',
+                    bgPattern: 'bg-gradient-to-br from-blue-100 to-indigo-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '小明', avatar: '👦', color: 'bg-sky-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '丽丽', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '丽丽，我们怎么做华文小组作业？', py: 'Lì li, wǒ men zěn me zuò huá wén xiǎo zǔ zuò yè?', en: 'Lili, how do we do our Chinese group project?' },
+                        { speaker: 'B', zh: '我们需要做一张关于环保的海报。', py: 'Wǒ men xū yào zuò yì zhāng guān yú huán bǎo de hǎi bào.', en: 'We need to make a poster about recycling.' },
+                        { speaker: 'A', zh: '我擅长画画，我可以负责画插图。', py: 'Wǒ shàn cháng huà huà, wǒ kě yǐ fù zé huà chā tú.', en: 'I am good at drawing, I can be in charge of drawing.' },
+                        { speaker: 'B', zh: '太棒了！我来写海报上的华文句子。', py: 'Tài bàng le! Wǒ lái xiě hǎi bào shàng de huá wén jù zi.', en: 'Awesome! I will write the Chinese sentences on the poster.' },
+                        { speaker: 'A', zh: '我们应该在海报上画些什么呢？', py: 'Wǒ men yīng gāi zài hǎi bào shàng huà xiē shén me ne?', en: 'What should we draw on the poster?' },
+                        { speaker: 'B', zh: '可以画蓝色的回收箱和塑料瓶。', py: 'Kě yǐ huà lán sè de huí shōu xiāng hé sù liào píng.', en: 'We can draw blue recycling bins and plastic bottles.' },
+                        { speaker: 'A', zh: '还要提醒大家把瓶子洗干净再扔。', py: 'Hái yào tí xǐng dà jiā bǎ píng zi xǐ gān jìng zài rēng.', en: 'Also remind everyone to wash the bottles clean before throwing.' },
+                        { speaker: 'B', zh: '好主意，我们明天放学后去图书馆做吧。', py: 'Hǎo zhǔ yì, wǒ men míng tiān fàng xué hòu qù tú shū guǎn zuò ba.', en: 'Good idea, let\'s go to the library to do it after school tomorrow.' },
+                        { speaker: 'A', zh: '没问题，记得带上你的彩色笔！', py: 'Méi wèn tí, jì de dài shàng nǐ de cǎi sè bǐ!', en: 'No problem, remember to bring your color pencils!' },
+                        { speaker: 'B', zh: '我会带的，明天见！', py: 'Wǒ huì dài de, míng tiān jiàn!', en: 'I will bring them, see you tomorrow!' }
+                    ]
+                },
+                {
+                    id: 'p3-nationalday',
+                    level: 'P3',
+                    title: '庆祝国庆日 (National Day)',
+                    bgPattern: 'bg-gradient-to-br from-red-100 to-rose-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '老师', avatar: '👩‍🏫', color: 'bg-rose-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '美美', avatar: '👧', color: 'bg-fuchsia-600', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '同学们，明天就是新加坡的国庆日了！', py: 'Tóng xué men, míng tiān jiù shì Xīn jiā pō de guó qìng rì le!', en: 'Class, tomorrow is Singapore\'s National Day!' },
+                        { speaker: 'B', zh: '我们会一起唱国庆主题曲吗？', py: 'Wǒ men huì yì qǐ chàng guó qìng zhǔ tí qǔ ma?', en: 'Are we going to sing National Day theme songs together?' },
+                        { speaker: 'A', zh: '是的，大家还要穿红白颜色的衣服。', py: 'Shì de, dà jiā hái yào chuān hóng bái yán sè de yī fu.', en: 'Yes, everyone also needs to wear red and white clothes.' },
+                        { speaker: 'B', zh: '我有一件印着白色星星的红裙子！', py: 'Wǒ yǒu yí jiàn yìn zhe bái sè xīng xing de hóng qún zi!', en: 'I have a red dress printed with white stars!' },
+                        { speaker: 'A', zh: '真好！我们也要牢记国家的历史。', py: 'Zhēn hǎo! Wǒ men yě yào láo jì guó jiā de lì shǐ.', en: 'That is great! We must also remember the country\'s history.' },
+                        { speaker: 'B', zh: '爷爷给我讲过以前新加坡建国的故事。', py: 'Yé ye gěi wǒ jiǎng guò yǐ qián Xīn jiā pō jiàn guó de gù shi.', en: 'Grandpa told me stories about Singapore building the nation in the past.' },
+                        { speaker: 'A', zh: '以前生活很艰苦，所以要珍惜现在。', py: 'Yǐ qián shēng huó hěn jiān kǔ, suǒ yǐ yào zhēn xī xiàn zài.', en: 'Life was tough in the past, so we must cherish the present.' },
+                        { speaker: 'B', zh: '我爱新加坡，我很期待晚上的烟花！', py: 'Wǒ ài Xīn jiā pō, wǒ hěn qī dài wǎn shang de yān huā!', en: 'I love Singapore, I am looking forward to the fireworks at night!' },
+                        { speaker: 'A', zh: '滨海湾的烟花表演一定会非常壮观。', py: 'Bīn hǎi wān de yān huā biǎo yǎn yí dìng huì fēi cháng zhuàng guān.', en: 'The fireworks performance at Marina Bay will definitely be spectacular.' },
+                        { speaker: 'B', zh: '祝新加坡生日快乐！', py: 'Zhù Xīn jiā pō shēng rì kuài lè!', en: 'Happy birthday to Singapore!' }
+                    ]
+                },
+                {
+                    id: 'p3-orderfood',
+                    level: 'P3',
+                    title: '自己点餐 (Ordering Food Independently)',
+                    bgPattern: 'bg-gradient-to-br from-orange-100 to-amber-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '安娣', avatar: '👩‍🍳', color: 'bg-emerald-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '文华', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '小弟弟，你今天想点什么食物？', py: 'Xiǎo dì di, nǐ jīn tiān xiǎng diǎn shén me shí wù?', en: 'Little boy, what food would you like to order today?' },
+                        { speaker: 'B', zh: '安娣，麻烦您给我一盘鸡饭。', py: 'Ān dì, má fan nín gěi wǒ yì pán jī fàn.', en: 'Auntie, please give me a plate of chicken rice.' },
+                        { speaker: 'A', zh: '你想吃烧鸡还是白斩鸡？', py: 'Nǐ xiǎng chī shāo jī hái shì bái zhǎn jī?', en: 'Would you like roasted chicken or steamed chicken?' },
+                        { speaker: 'B', zh: '我要白斩鸡，请不要放黄瓜。', py: 'Wǒ yào bái zhǎn jī, qǐng bú yào fàng huáng guā.', en: 'I want steamed chicken, and please do not put cucumber.' },
+                        { speaker: 'A', zh: '没问题！需要加一碗热汤吗？', py: 'Méi wèn tí! Xū yào jiā yì wǎn rè tāng ma?', en: 'No problem! Need to add a bowl of hot soup?' },
+                        { speaker: 'B', zh: '好的，请给我一碗热汤。', py: 'Hǎo de, qǐng gěi wǒ yì wǎn rè tāng.', en: 'Yes, please give me a bowl of hot soup.' },
+                        { speaker: 'A', zh: '一共是三块半，在这边吃吗？', py: 'Yí gòng shì sān kuài bàn, zài zhè biān chī ma?', en: 'Total is three dollars and fifty cents, eating here?' },
+                        { speaker: 'B', zh: '是的。给您一张五块钱的钞票。', py: 'Shì de. Gěi nín yì zhāng wǔ kuài qián de chāo piào.', en: 'Yes. Here is a five-dollar note.' },
+                        { speaker: 'A', zh: '找你一块半，汤很烫要小心端哦。', py: 'Zhǎo nǐ yí kuài bàn, tāng hěn tàng yào xiǎo xīn duān o.', en: 'Your change is one dollar and fifty cents, the soup is hot so carry it carefully.' },
+                        { speaker: 'B', zh: '谢谢安娣，祝您生意兴隆！', py: 'Xiè xie Ān dì, zhù nín shēng yì xīng lóng!', en: 'Thank you Auntie, wishing you a prosperous business!' }
+                    ]
+                },
+                {
+                    id: 'p3-gardens',
+                    level: 'P3',
+                    title: '参观滨海湾花园 (Gardens by the Bay)',
+                    bgPattern: 'bg-gradient-to-br from-green-100 to-teal-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-rose-500', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '杰克', avatar: '👦', color: 'bg-indigo-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '杰克，你看那些擎天树，多壮观啊！', py: 'Jié kè, nǐ kàn nà xiē qíng tiān shù, duō zhuàng guān a!', en: 'Jack, look at those Supertrees, how spectacular!' },
+                        { speaker: 'B', zh: '它们看起来就像科幻电影里的外星植物！', py: 'Tā men kàn qǐ lái jiù xiàng kē huàn diàn yǐng lǐ de wài xīng zhí wù!', en: 'They look like alien plants from a sci-fi movie!' },
+                        { speaker: 'A', zh: '我们上去空中走道走走，风景会更好。', py: 'Wǒ men shàng qù kōng zhōng zǒu dào zǒu zou, fēng jǐng huì gèng hǎo.', en: 'Let\'s go walk on the skyway, the view will be better.' },
+                        { speaker: 'B', zh: '我有点怕高，但我愿意勇敢尝试一下。', py: 'Wǒ yǒu diǎn pà gāo, dàn wǒ yuàn yì yǒng gǎn cháng shì yí xià.', en: 'I am a little afraid of heights, but I am willing to brave it and try.' },
+                        { speaker: 'A', zh: '别担心，把手紧紧牵着妈妈就好。', py: 'Bié dān xīn, bǎ shǒu jǐn jǐn qiān zhe mā ma jiù hǎo.', en: 'Don\'t worry, just hold Mama\'s hand tightly.' },
+                        { speaker: 'B', zh: '哇，从这里竟然能清楚地看到摩天观景轮！', py: 'Wa, cóng zhè lǐ jìng rán néng qīng chǔ de kàn dào mó tiān guān jǐng lún!', en: 'Wow, I can actually see the Singapore Flyer clearly from here!' },
+                        { speaker: 'A', zh: '待会儿我们还要进去花穹温室参观呢。', py: 'Dāi huǐ r wǒ men hái yào jìn qù huā qióng wēn shì cān guān ne.', en: 'Later we are also going inside the Flower Dome to visit.' },
+                        { speaker: 'B', zh: '里面有很多五颜六色的奇花异草吗？', py: 'Lǐ miàn yǒu hěn duō wǔ yán liù sè de qí huā yì cǎo ma?', en: 'Are there many colorful exotic flowers and plants inside?' },
+                        { speaker: 'A', zh: '是的，而且里面非常凉爽，像开了冷气一样。', py: 'Shì de, ér qiě lǐ miàn fēi cháng liáng shuǎng, xiàng kāi le lěng qì yí yàng.', en: 'Yes, and it is very cool inside, like air-conditioning is on.' },
+                        { speaker: 'B', zh: '太期待了，我们一定要多拍几张照片留念！', py: 'Tài qī dài le, wǒ men yí dìng yào duō pāi jǐ zhāng zhào piàn liú niàn!', en: 'So excited, we must definitely take more photos for memory!' }
+                    ]
+                },
+                {
+                    id: 'p3-misunderstanding',
+                    level: 'P3',
+                    title: '同学之间的误会 (A Misunderstanding)',
+                    bgPattern: 'bg-gradient-to-br from-yellow-100 to-amber-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '阿里', avatar: '👦🏽', color: 'bg-amber-600', align: 'left', pitch: 1.05 },
+                        { id: 'B', name: '小杰', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '小杰，你为什么不问我就拿走我的橡皮？', py: 'Xiǎo jié, nǐ wèi shén me bú wèn wǒ jiù ná zǒu wǒ de xiàng pí?', en: 'Xiaojie, why did you take my eraser without asking?' },
+                        { speaker: 'B', zh: '我没有拿，阿里。这块橡皮是我自己的！', py: 'Wǒ méi yǒu ná, Ā lǐ. Zhè kuài xiàng pí shì wǒ zì jǐ de!', en: 'I didn\'t take it, Ali. This eraser is my own!' },
+                        { speaker: 'A', zh: '可是我的橡皮跟你的一模一样，而且不见了。', py: 'Kě shì wǒ de xiàng pí gēn nǐ de yì mú yí yàng, ér qiě bú jiàn le.', en: 'But my eraser is exactly the same as yours, and it is missing.' },
+                        { speaker: 'B', zh: '这是我昨天在书局买的，你可以检查我的书包。', py: 'Zhè shì wǒ zuó tiān zài shū jú mǎi de, nǐ kě yǐ jiǎn chá wǒ de shū bāo.', en: 'I bought this at the bookshop yesterday, you can check my bag.' },
+                        { speaker: 'A', zh: '对不起，我刚才在桌子底下找到我的橡皮了。', py: 'Duì bù qǐ, wǒ gāng cái zài zhuō zi dǐ xià zhǎo dào wǒ de xiàng pí le.', en: 'I am sorry, I found my eraser under the table just now.' },
+                        { speaker: 'B', zh: '没关系，下次请你先查清楚再下定论。', py: 'Méi guān xi, xià cì qǐng nǐ xiān chá qīng chǔ zài xià dìng lùn.', en: 'It\'s okay, next time please check clearly before jumping to conclusions.' },
+                        { speaker: 'A', zh: '你说得对，是我太粗心和急躁了，原谅我好吗？', py: 'Nǐ shuō de duì, shì wǒ tài cū xīn hé jí zào le, yuán liàng wǒ hǎo ma?', en: 'You are right, I was too careless and impatient, please forgive me?' },
+                        { speaker: 'B', zh: '我们还是好朋友，放学后一起去踢足球吧。', py: 'Wǒ men hái shì hǎo péng you, fàng xué hòu yì qǐ qù tī zú qiú ba.', en: 'We are still good friends, let\'s go play football after school.' },
+                        { speaker: 'A', zh: '太棒了！谢谢你愿意原谅我的鲁莽。', py: 'Tài bàng le! Xiè xie nǐ yuàn yì yuán liàng wǒ de lǔ mǎng.', en: 'Awesome! Thank you for being willing to forgive my rashness.' },
+                        { speaker: 'B', zh: '别放在心上，我们赶紧去操场占个好位置！', py: 'Bié fàng zài xīn shàng, wǒ men gǎn jǐn qù cāo chǎng zhàn gè hǎo wèi zhi!', en: 'Don\'t take it to heart, let\'s hurry to the field to reserve a good spot!' }
+                    ]
+                },
+                {
+                    id: 'p3-libraryetiquette',
+                    level: 'P3',
+                    title: '图书馆的礼仪 (Library Etiquette)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '图书管理员', avatar: '👩‍🏫', color: 'bg-purple-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '欣怡', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.3 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '小妹妹，图书馆内禁止奔跑，请放慢脚步。', py: 'Xiǎo mèi mei, tú shū guǎn nèi jìn zhǐ bēn pǎo, qǐng fàng màn jiǎo bù.', en: 'Little girl, running is prohibited in the library, please slow down your steps.' },
+                        { speaker: 'B', zh: '对不起，我只是太着急想找最新一期的漫画。', py: 'Duì bù qǐ, wǒ zhǐ shì tài zháo jí xiǎng zhǎo zuì xīn yì qī de màn huà.', en: 'I am sorry, I was just too anxious to find the latest issue of the comic.' },
+                        { speaker: 'A', zh: '奔跑很容易绊倒受伤，也会撞到其他读者。', py: 'Bēn pǎo hěn róng yì bàn dǎo shòu shāng, yě huì zhuàng dào qí tā dú zhě.', en: 'Running easily causes tripping and injuries, and you might bump into other readers.' },
+                        { speaker: 'B', zh: '我明白了，从现在起我一定会在馆内慢慢走。', py: 'Wǒ míng bái le, cóng xiàn zài qǐ wǒ yí dìng huì zài guǎn nèi màn màn zǒu.', en: 'I understand, from now on I will definitely walk slowly inside.' },
+                        { speaker: 'A', zh: '另外，和朋友讨论时请尽量压低音量。', py: 'Lìng wài, hé péng you tǎo lùn shí qǐng jìn liàng yā dī yīn liàng.', en: 'Also, please try to lower your volume when discussing with friends.' },
+                        { speaker: 'B', zh: '真不好意思，我忘记大家都在专心温习功课。', py: 'Zhēn bù hǎo yì si, wǒ wàng jì dà jiā dōu zài zhuān xīn wēn xí gōng kè.', en: 'I am really sorry, I forgot everyone is concentrating on revising their schoolwork.' },
+                        { speaker: 'A', zh: '在公共场所顾及他人的感受，是非常重要的礼仪。', py: 'Zài gōng gòng chǎng suǒ gù jí tā rén de gǎn shòu, shì fēi cháng zhòng yào de lǐ yí.', en: 'Being considerate of others\' feelings in public places is very important etiquette.' },
+                        { speaker: 'B', zh: '谢谢您的善意提醒，我会做一个负责任的读者。', py: 'Xiè xie nín de shàn yì tí xǐng, wǒ huì zuò yí gè fù zé rèn de dú zhě.', en: 'Thank you for your kind reminder, I will be a responsible reader.' },
+                        { speaker: 'A', zh: '真是个知错能改的好孩子，漫画书在右边的书架上。', py: 'Zhēn shì gè zhī cuò néng gǎi de hǎo hái zi, màn huà shū zài yòu biān de shū jià shàng.', en: 'What a good child who corrects her mistakes, the comic books are on the shelf to the right.' },
+                        { speaker: 'B', zh: '谢谢您，我这就轻轻地走过去拿。', py: 'Xiè xie nín, wǒ zhè jiù qīng qīng de zǒu guò qù ná.', en: 'Thank you, I will walk over gently to get it now.' }
+                    ]
+                },
+                {
+                    id: 'p3-savingmoney',
+                    level: 'P3',
+                    title: '存钱的习惯 (Saving Money)',
+                    bgPattern: 'bg-gradient-to-br from-cyan-100 to-blue-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '家乐', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '家乐，你的扑满里竟然已经存了五十块钱！', py: 'Jiā lè, nǐ de pū mǎn lǐ jìng rán yǐ jīng cún le wǔ shí kuài qián!', en: 'Jiale, you have actually saved fifty dollars in your piggy bank!' },
+                        { speaker: 'B', zh: '对呀爸爸，我忍住没有把零用钱拿去买零食。', py: 'Duì ya bà ba, wǒ rěn zhù méi yǒu bǎ líng yòng qián ná qù mǎi líng shí.', en: 'Yes Dad, I resisted spending my pocket money on snacks.' },
+                        { speaker: 'A', zh: '这是一个非常好的习惯。你打算用这些钱买什么？', py: 'Zhè shì yí gè fēi cháng hǎo de xí guàn. Nǐ dǎ suàn yòng zhè xiē qián mǎi shén me?', en: 'This is a very good habit. What do you plan to buy with this money?' },
+                        { speaker: 'B', zh: '我希望在生日的时候，用自己存的钱买一辆新脚踏车。', py: 'Wǒ xī wàng zài shēng rì de shí hou, yòng zì jǐ cún de qián mǎi yí liàng xīn jiǎo tà chē.', en: 'I hope to use my own saved money to buy a new bicycle on my birthday.' },
+                        { speaker: 'A', zh: '如果你继续坚持储蓄，很快就能达到目标了。', py: 'Rú guǒ nǐ jì xù jiān chí chǔ xù, hěn kuài jiù néng dá dào mù biāo le.', en: 'If you continue to persist in saving, you will reach your goal very soon.' },
+                        { speaker: 'B', zh: '但是脚踏车很贵，爸爸您愿意资助我一点钱吗？', py: 'Dàn shì jiǎo tà chē hěn guì, bà ba nín yuàn yì zī zhù wǒ yì diǎn qián ma?', en: 'But bicycles are expensive, Dad are you willing to subsidize me a little money?' },
+                        { speaker: 'A', zh: '只要你存够八十块钱，剩下的差额爸爸会帮你补上！', py: 'Zhǐ yào nǐ cún gòu bā shí kuài qián, shèng xià de chā é bà ba huì bāng nǐ bǔ shàng!', en: 'As long as you save up to eighty dollars, Dad will help you top up the remaining difference!' },
+                        { speaker: 'B', zh: '谢谢爸爸！有了您的鼓励，我更有动力存钱了。', py: 'Xiè xie bà ba! Yǒu le nín de gǔ lì, wǒ gèng yǒu dòng lì cún qián le.', en: 'Thank you Dad! With your encouragement, I am more motivated to save money.' },
+                        { speaker: 'A', zh: '懂得未雨绸缪和节约用钱，长大后才不会乱花钱。', py: 'Dǒng de wèi yǔ chóu móu hé jié yuē yòng qián, zhǎng dà hòu cái bú huì luàn huā qián.', en: 'Knowing how to save for a rainy day and use money thriftily will stop you from spending recklessly when you grow up.' },
+                        { speaker: 'B', zh: '我记住了，我会每天把剩下的硬币都投进扑满里。', py: 'Wǒ jì zhù le, wǒ huì měi tiān bǎ shèng xià de yìng bì dōu tóu jìn pū mǎn lǐ.', en: 'I will remember, I will drop the remaining coins into the piggy bank every day.' }
                     ]
                 }
             ]
