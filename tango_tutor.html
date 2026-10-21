@@ -85,7 +85,7 @@
                     <h1 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">畅聊小伙伴</h1>
                     <span id="header-rank-badge" class="bg-indigo-100 text-indigo-700 border border-indigo-300 text-[10px] font-black px-2 py-0.5 rounded-full">Lv.1 小幼苗</span>
                 </div>
-                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">SpeakUp Buddy • P1–P3 Edition</p>
+                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">SpeakUp Buddy • P1–P6 Edition</p>
             </div>
         </div>
 
@@ -133,11 +133,11 @@
                         <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-black mb-2">
                             <span>🇸🇬 MOE 欢乐伙伴 Aligned</span>
                             <span>•</span>
-                            <span>Primary 1 – Primary 3</span>
+                            <span>Primary 1 – Primary 6 (60 Stories)</span>
                         </div>
                         <h2 class="text-2xl sm:text-4xl font-black mb-2 drop-shadow-md">闯关练口语 • Level Up!</h2>
                         <p class="font-bold text-indigo-100 text-xs sm:text-sm leading-relaxed">
-                            Pick your school level (小一, 小二, or 小三), roleplay fun Singapore stories, earn up to ⭐⭐⭐ per mission, and unlock special badges!
+                            Pick your school level from Primary 1 to Primary 6 (小一至小六), roleplay 10-line Singapore stories, earn up to ⭐⭐⭐ per mission, and unlock special badges!
                         </p>
                     </div>
 
@@ -151,32 +151,41 @@
                             <div id="hero-xp-bar" class="h-full bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 rounded-full transition-all duration-500" style="width: 5%"></div>
                         </div>
                         <div class="flex items-center justify-between text-[11px] font-bold text-indigo-100">
-                            <span>🎯 Completed: <strong id="hero-completed-count" class="text-white">0/9</strong></span>
-                            <span>🏅 Badges: <strong id="hero-badge-count" class="text-white">0/6</strong></span>
+                            <span>🎯 Completed: <strong id="hero-completed-count" class="text-white">0/60</strong></span>
+                            <span>🏅 Badges: <strong id="hero-badge-count" class="text-white">0/9</strong></span>
                         </div>
                     </div>
                 </div>
                 <div class="absolute -right-6 -bottom-8 text-9xl opacity-20 transform -rotate-12 pointer-events-none">🎡</div>
             </div>
 
-            <!-- Difficulty Level Filter Tabs (Primary 1 to Primary 3) -->
-            <div class="bg-white rounded-3xl p-2.5 shadow-sm border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full sm:w-auto" id="level-tabs">
+            <!-- Difficulty Level Filter Tabs (Primary 1 to Primary 6) -->
+            <div class="bg-white rounded-3xl p-3 shadow-sm border-2 border-slate-200 flex flex-col gap-2.5">
+                <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full" id="level-tabs">
                     <button onclick="setFilterLevel('ALL')" id="tab-ALL" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-900 text-white shadow-sm">
-                        🌟 全部关卡 (All Levels)
+                        🌟 全部关卡 (All 60)
                     </button>
-                    <button onclick="setFilterLevel('P1')" id="tab-P1" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5">
-                        <span>🐣</span> 小一 Primary 1 <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.2 rounded-full">Easy</span>
+                    <button onclick="setFilterLevel('P1')" id="tab-P1" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5">
+                        <span>🐣</span> 小一 P1 <span class="text-[10px] bg-emerald-200/80 text-emerald-900 px-1.5 py-0.5 rounded-full">Easy</span>
                     </button>
-                    <button onclick="setFilterLevel('P2')" id="tab-P2" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5">
-                        <span>🦁</span> 小二 Primary 2 <span class="text-[10px] bg-sky-200/80 text-sky-900 px-1.5 py-0.2 rounded-full">Medium</span>
+                    <button onclick="setFilterLevel('P2')" id="tab-P2" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5">
+                        <span>🦁</span> 小二 P2 <span class="text-[10px] bg-sky-200/80 text-sky-900 px-1.5 py-0.5 rounded-full">Medium</span>
                     </button>
-                    <button onclick="setFilterLevel('P3')" id="tab-P3" class="px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5">
-                        <span>🐉</span> 小三 Primary 3 <span class="text-[10px] bg-purple-200/80 text-purple-900 px-1.5 py-0.2 rounded-full">Challenge</span>
+                    <button onclick="setFilterLevel('P3')" id="tab-P3" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5">
+                        <span>🐉</span> 小三 P3 <span class="text-[10px] bg-purple-200/80 text-purple-900 px-1.5 py-0.5 rounded-full">Core</span>
+                    </button>
+                    <button onclick="setFilterLevel('P4')" id="tab-P4" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1.5">
+                        <span>🦉</span> 小四 P4 <span class="text-[10px] bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded-full">Advanced</span>
+                    </button>
+                    <button onclick="setFilterLevel('P5')" id="tab-P5" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5">
+                        <span>🦅</span> 小五 P5 <span class="text-[10px] bg-rose-200/80 text-rose-900 px-1.5 py-0.5 rounded-full">Expert</span>
+                    </button>
+                    <button onclick="setFilterLevel('P6')" id="tab-P6" class="px-3 py-2 rounded-2xl font-black text-xs transition-all bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5">
+                        <span>🦄</span> 小六 P6 <span class="text-[10px] bg-indigo-200/80 text-indigo-900 px-1.5 py-0.5 rounded-full">PSLE Master</span>
                     </button>
                 </div>
-                <div id="level-desc-pill" class="text-[11px] font-bold text-slate-500 px-3 py-1 bg-slate-50 rounded-xl border border-slate-100">
-                    Choose a level to start your speaking mission!
+                <div id="level-desc-pill" class="text-[11px] font-bold text-slate-500 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-100">
+                    Showing all 60 Singapore stories across Primary 1 to Primary 6!
                 </div>
             </div>
             
@@ -276,7 +285,7 @@
             <div class="bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-2xl mb-5 flex items-center justify-between shadow-md">
                 <div>
                     <div id="trophy-rank-name" class="text-lg font-black">🌱 Lv.1 华语小幼苗</div>
-                    <div class="text-xs font-bold text-amber-100">Keep practicing P1–P3 stories to rank up!</div>
+                    <div class="text-xs font-bold text-amber-100">Keep practicing P1–P6 stories to rank up!</div>
                 </div>
                 <div class="text-right">
                     <div class="text-2xl font-black"><span id="trophy-total-stars">0</span> ⭐</div>
@@ -332,7 +341,7 @@
             
             <label class="block text-xs font-black text-slate-700 mb-1.5">1. Select Difficulty Level (选择年级难度):</label>
             <div class="grid grid-cols-3 gap-2 mb-4" id="gen-level-picker">
-                <button type="button" onclick="selectGenLevel('P1')" id="gen-btn-P1" class="p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-black text-xs text-center">
+                <button type="button" onclick="selectGenLevel('P1')" id="gen-btn-P1" class="p-2.5 rounded-xl border-2 border-indigo-600 bg-indigo-50 text-indigo-900 font-black text-xs text-center shadow-sm scale-105">
                     🐣 小一 P1<br><span class="text-[10px] font-bold">Short & Simple</span>
                 </button>
                 <button type="button" onclick="selectGenLevel('P2')" id="gen-btn-P2" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
@@ -340,6 +349,15 @@
                 </button>
                 <button type="button" onclick="selectGenLevel('P3')" id="gen-btn-P3" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
                     🐉 小三 P3<br><span class="text-[10px] font-bold">Rich & Expressive</span>
+                </button>
+                <button type="button" onclick="selectGenLevel('P4')" id="gen-btn-P4" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
+                    🦉 小四 P4<br><span class="text-[10px] font-bold">Connected Ideas</span>
+                </button>
+                <button type="button" onclick="selectGenLevel('P5')" id="gen-btn-P5" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
+                    🦅 小五 P5<br><span class="text-[10px] font-bold">Deep Discussion</span>
+                </button>
+                <button type="button" onclick="selectGenLevel('P6')" id="gen-btn-P6" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-black text-xs text-center">
+                    🦄 小六 P6<br><span class="text-[10px] font-bold">PSLE Oral Prep</span>
                 </button>
             </div>
 
@@ -363,7 +381,7 @@
             return localStorage.getItem('OPENROUTER_API_KEY') || '';
         }
 
-        // Difficulty Configuration for Primary 1, Primary 2, and Primary 3
+        // Difficulty Configuration for Primary 1 through Primary 6
         const LEVEL_CONFIG = {
             P1: {
                 id: 'P1',
@@ -385,8 +403,8 @@
                 tagText: 'Medium • 进阶生活',
                 badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
                 cardBorder: 'hover:border-sky-400',
-                speechRate: 0.85,
-                passThreshold: 0.50,
+                speechRate: 0.84,
+                passThreshold: 0.45,
                 xpPerLine: 20,
                 missionClearBonus: 40,
                 description: '🦁 Primary 2: Longer sentences with connectors (因为、所以、一起) & natural speaking pace!'
@@ -395,24 +413,66 @@
                 id: 'P3',
                 label: '小三 Primary 3',
                 shortLabel: '🐉 小三 P3',
-                tagText: 'Challenge • 挑战达人',
+                tagText: 'Core • 核心口语',
                 badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
                 cardBorder: 'hover:border-purple-400',
-                speechRate: 0.92,
-                passThreshold: 0.60,
+                speechRate: 0.90,
+                passThreshold: 0.55,
                 xpPerLine: 30,
                 missionClearBonus: 60,
                 description: '🐉 Primary 3: Expressive multi-clause dialogues, idioms, and higher accuracy targets!'
+            },
+            P4: {
+                id: 'P4',
+                label: '小四 Primary 4',
+                shortLabel: '🦉 小四 P4',
+                tagText: 'Advanced • 实用交际',
+                badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+                cardBorder: 'hover:border-amber-400',
+                speechRate: 0.94,
+                passThreshold: 0.62,
+                xpPerLine: 40,
+                missionClearBonus: 80,
+                description: '🦉 Primary 4: Real-world school & community topics (cyber wellness, camping, hawker culture)!'
+            },
+            P5: {
+                id: 'P5',
+                label: '小五 Primary 5',
+                shortLabel: '🦅 小五 P5',
+                tagText: 'Expert • 深度探讨',
+                badgeClass: 'bg-rose-100 text-rose-800 border-rose-300',
+                cardBorder: 'hover:border-rose-400',
+                speechRate: 0.97,
+                passThreshold: 0.68,
+                xpPerLine: 50,
+                missionClearBonus: 100,
+                description: '🦅 Primary 5: Thoughtful discussions on volunteering, budgeting, heritage & technology!'
+            },
+            P6: {
+                id: 'P6',
+                label: '小六 Primary 6',
+                shortLabel: '🦄 小六 P6',
+                tagText: 'Master • 会考冲刺',
+                badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+                cardBorder: 'hover:border-indigo-400',
+                speechRate: 1.0,
+                passThreshold: 0.75,
+                xpPerLine: 60,
+                missionClearBonus: 120,
+                description: '🦄 Primary 6: PSLE Oral & life topics with rich vocabulary, proverbs (成语) & structured opinions!'
             }
         };
 
         const BADGES = [
             { id: 'first_clear', icon: '🌟', title: '初试啼声', desc: 'Complete your 1st story mission', check: (g) => Object.keys(g.completedStories).length >= 1 },
-            { id: 'p1_champ', icon: '🐣', title: '小一新星', desc: 'Complete all Primary 1 stories', check: (g) => ['p1-greeting', 'canteen', 'playground'].every(id => g.completedStories[id] >= 1) },
-            { id: 'p2_champ', icon: '🦁', title: '小二健谈王', desc: 'Complete all Primary 2 stories', check: (g) => ['library', 'p2-mrt', 'p2-clinic'].every(id => g.completedStories[id] >= 1) },
-            { id: 'p3_champ', icon: '🐉', title: '小三小状元', desc: 'Complete all Primary 3 stories', check: (g) => ['p3-hawker', 'p3-zoo', 'p3-lostfound'].every(id => g.completedStories[id] >= 1) },
+            { id: 'p1_champ', icon: '🐣', title: '小一新星', desc: 'Complete at least 3 Primary 1 stories', check: (g) => ['p1-greeting', 'canteen', 'playground', 'p1-colors', 'p1-bus', 'p1-market', 'p1-family', 'p1-zoo', 'p1-birthday', 'p1-rainy'].filter(id => g.completedStories[id] >= 1).length >= 3 },
+            { id: 'p2_champ', icon: '🦁', title: '小二健谈王', desc: 'Complete at least 3 Primary 2 stories', check: (g) => ['library', 'p2-mrt', 'p2-clinic', 'p2-cca', 'p2-lostitem', 'p2-recess', 'p2-grandpa', 'p2-beach', 'p2-stationery', 'p2-chores'].filter(id => g.completedStories[id] >= 1).length >= 3 },
+            { id: 'p3_champ', icon: '🐉', title: '小三小状元', desc: 'Complete at least 3 Primary 3 stories', check: (g) => ['p3-hawker', 'p3-zoo', 'p3-lostfound', 'p3-project', 'p3-nationalday', 'p3-orderfood', 'p3-gardens', 'p3-misunderstanding', 'p3-libraryetiquette', 'p3-savingmoney'].filter(id => g.completedStories[id] >= 1).length >= 3 },
+            { id: 'p4_champ', icon: '🦉', title: '小四智多星', desc: 'Complete at least 3 Primary 4 stories', check: (g) => ['p4-cyber', 'p4-bully', 'p4-camp', 'p4-recycling', 'p4-hawker', 'p4-museum', 'p4-sportsday', 'p4-pet', 'p4-festival', 'p4-cooking'].filter(id => g.completedStories[id] >= 1).length >= 3 },
+            { id: 'p5_champ', icon: '🦅', title: '小五雄辩家', desc: 'Complete at least 3 Primary 5 stories', check: (g) => ['p5-ne', 'p5-budget', 'p5-volunteer', 'p5-debate', 'p5-newater', 'p5-time', 'p5-kampong', 'p5-ai', 'p5-firstaid', 'p5-harmony'].filter(id => g.completedStories[id] >= 1).length >= 3 },
+            { id: 'p6_champ', icon: '🦄', title: '小六会考王', desc: 'Complete at least 3 Primary 6 stories', check: (g) => ['p6-psle', 'p6-oral', 'p6-climate', 'p6-dreams', 'p6-setback', 'p6-sec', 'p6-gratitude', 'p6-fakenews', 'p6-aging', 'p6-farewell'].filter(id => g.completedStories[id] >= 1).length >= 3 },
             { id: 'streak_5', icon: '🔥', title: '连胜小冠军', desc: 'Reach a 5x speaking streak', check: (g) => g.bestStreak >= 5 },
-            { id: 'blind_master', icon: '🦅', title: '盲读挑战王', desc: 'Pass a line with Pinyin hidden', check: (g) => g.blindPinyinPasses >= 1 }
+            { id: 'blind_master', icon: '👑', title: '盲读挑战王', desc: 'Pass a line with Pinyin hidden', check: (g) => g.blindPinyinPasses >= 1 }
         ];
 
         function loadSavedGame() {
@@ -1114,6 +1174,672 @@
                         { speaker: 'A', zh: '懂得未雨绸缪和节约用钱，长大后才不会乱花钱。', py: 'Dǒng de wèi yǔ chóu móu hé jié yuē yòng qián, zhǎng dà hòu cái bú huì luàn huā qián.', en: 'Knowing how to save for a rainy day and use money thriftily will stop you from spending recklessly when you grow up.' },
                         { speaker: 'B', zh: '我记住了，我会每天把剩下的硬币都投进扑满里。', py: 'Wǒ jì zhù le, wǒ huì měi tiān bǎ shèng xià de yìng bì dōu tóu jìn pū mǎn lǐ.', en: 'I will remember, I will drop the remaining coins into the piggy bank every day.' }
                     ]
+                },
+
+                // ================= PRIMARY 4 (小四) - 10 Stories =================
+                {
+                    id: 'p4-cyber',
+                    level: 'P4',
+                    title: '网络安全意识 (Cyber Wellness)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 to-yellow-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '王老师', avatar: '👨‍🏫', color: 'bg-amber-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '凯文', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '凯文，你平时上网玩游戏的时间长吗？', py: 'Kǎi wén, nǐ píng shí shàng wǎng wán yóu xì de shí jiān cháng ma?', en: 'Kevin, do you usually spend a long time playing games online?' },
+                        { speaker: 'B', zh: '王老师，我每天只玩半个小时的电脑游戏。', py: 'Wáng lǎo shī, wǒ měi tiān zhǐ wán bàn gè xiǎo shí de diàn nǎo yóu xì.', en: 'Teacher Wang, I only play computer games for half an hour every day.' },
+                        { speaker: 'A', zh: '很好，如果游戏里有陌生人向你索取密码呢？', py: 'Hěn hǎo, rú guǒ yóu xì lǐ yǒu mò shēng rén xiàng nǐ suǒ qǔ mì mǎ ne?', en: 'Very good, what if a stranger in the game asks you for your password?' },
+                        { speaker: 'B', zh: '我绝对不会把密码和个人资料告诉陌生人。', py: 'Wǒ jué duì bú huì bǎ mì mǎ hé gè rén zī liào gào su mò shēng rén.', en: 'I will definitely not tell strangers my password and personal information.' },
+                        { speaker: 'A', zh: '如果有人说点击链接就能免费领礼物，你会点吗？', py: 'Rú guǒ yǒu rén shuō diǎn jī liàn jiē jiù néng miǎn fèi lǐng lǐ wù, nǐ huì diǎn ma?', en: 'If someone says clicking a link gives you a free gift, would you click it?' },
+                        { speaker: 'B', zh: '我不会点击，因为那很可能是网络诈骗。', py: 'Wǒ bú huì diǎn jī, yīn wèi nà hěn kě néng shì wǎng luò zhà piàn.', en: 'I will not click it, because that is very likely an online scam.' },
+                        { speaker: 'A', zh: '你说得太对了，遇到可疑的情况应该怎么办？', py: 'Nǐ shuō de tài duì le, yù dào kě yí de qíng kuàng yīng gāi zěn me bàn?', en: 'You are so right, what should you do when you encounter something suspicious?' },
+                        { speaker: 'B', zh: '我应该立刻关闭网页，并马上通知父母。', py: 'Wǒ yīng gāi lì kè guān bì wǎng yè, bìng mǎ shàng tōng zhī fù mǔ.', en: 'I should close the webpage immediately and inform my parents right away.' },
+                        { speaker: 'A', zh: '在网络世界里，我们也要注意自己的言行举止。', py: 'Zài wǎng luò shì jiè lǐ, wǒ men yě yào zhù yì zì jǐ de yán xíng jǔ zhǐ.', en: 'In the online world, we must also mind our own words and actions.' },
+                        { speaker: 'B', zh: '我明白，做一个文明又有礼貌的网民非常重要！', py: 'Wǒ míng bái, zuò yí gè wén míng yòu yǒu lǐ mào de wǎng mín fēi cháng zhòng yào!', en: 'I understand, being a civilized and polite netizen is very important!' }
+                    ]
+                },
+                {
+                    id: 'p4-bully',
+                    level: 'P4',
+                    title: '勇敢面对霸凌 (Standing Up to Bullying)',
+                    bgPattern: 'bg-gradient-to-br from-orange-100 to-amber-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '慧敏', avatar: '👧', color: 'bg-rose-500', align: 'left', pitch: 1.25 },
+                        { id: 'B', name: '子轩', avatar: '👦', color: 'bg-indigo-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '子轩，刚才在食堂里，那两个高年级学生为什么推你？', py: 'Zǐ xuān, gāng cái zài shí táng lǐ, nà liǎng gè gāo nián jí xué shēng wèi shén me tuī nǐ?', en: 'Zixuan, why did those two upper primary students push you in the canteen just now?' },
+                        { speaker: 'B', zh: '他们想要插队买食物，我不肯让他们，他们就骂我。', py: 'Tā men xiǎng yào chā duì mǎi shí wù, wǒ bù kěn ràng tā men, tā men jiù mà wǒ.', en: 'They wanted to cut the queue to buy food, and when I refused, they scolded me.' },
+                        { speaker: 'A', zh: '这种欺负同学的行为是不对的，你有没有受伤？', py: 'Zhè zhǒng qī fu tóng xué de xíng wéi shì bú duì de, nǐ yǒu méi yǒu shòu shāng?', en: 'This kind of bullying behavior is wrong, did you get hurt?' },
+                        { speaker: 'B', zh: '我没有受伤，只是觉得心里很委屈也很害怕。', py: 'Wǒ méi yǒu shòu shāng, zhǐ shì jué de xīn lǐ hěn wěi qu yě hěn hài pà.', en: 'I am not hurt, I just feel wronged and scared inside.' },
+                        { speaker: 'A', zh: '别怕，遇到霸凌的时候，我们千万不能保持沉默。', py: 'Bié pà, yù dào bà líng de shí hou, wǒ men qiān wàn bù néng bǎo chí chén mò.', en: 'Don\'t be afraid, when facing bullying, we must never remain silent.' },
+                        { speaker: 'B', zh: '如果我告诉老师，他们以后会不会更加针对我？', py: 'Rú guǒ wǒ gào su lǎo shī, tā men yǐ hòu huì bú huì gèng jiā zhēn duì wǒ?', en: 'If I tell the teacher, will they target me even more in the future?' },
+                        { speaker: 'A', zh: '不会的，老师和训导主任一定会保护我们的安全。', py: 'Bú huì de, lǎo shī hé xùn dǎo zhǔ rèn yí dìng huì bǎo hù wǒ men de ān quán.', en: 'No, the teachers and discipline master will definitely protect our safety.' },
+                        { speaker: 'B', zh: '你说得有道理，你不说的话他们还会欺负别人。', py: 'Nǐ shuō de yǒu dào lǐ, nǐ bù shuō de huà tā men hái huì qī fu bié rén.', en: 'You make sense, if we don\'t speak up they will bully others too.' },
+                        { speaker: 'A', zh: '走吧，我陪你一起去办公室向级任老师报告这件事。', py: 'Zǒu ba, wǒ péi nǐ yì qǐ qù bàn gōng shì xiàng jí rèn lǎo shī bào gào zhè jiàn shì.', en: 'Let\'s go, I will accompany you to the office to report this to our form teacher.' },
+                        { speaker: 'B', zh: '谢谢你支持我，有你这个好朋友真让我感到温暖！', py: 'Xiè xie nǐ zhī chí wǒ, yǒu nǐ zhè gè hǎo péng you zhēn ràng wǒ gǎn dào wēn nuǎn!', en: 'Thank you for supporting me, having a good friend like you makes me feel so warm!' }
+                    ]
+                },
+                {
+                    id: 'p4-camp',
+                    level: 'P4',
+                    title: '四年级露营体验 (Primary 4 Adventure Camp)',
+                    bgPattern: 'bg-gradient-to-br from-emerald-100 to-lime-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '伟杰', avatar: '👦', color: 'bg-emerald-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '嘉欣', avatar: '👧', color: 'bg-amber-500', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '嘉欣，下个星期就是四年级的户外露营了，你期待吗？', py: 'Jiā xīn, xià gè xīng qī jiù shì sì nián jí de hù wài lù yíng le, nǐ qī dài ma?', en: 'Jiaxin, next week is our Primary 4 outdoor camp, are you looking forward to it?' },
+                        { speaker: 'B', zh: '我非常期待，这是我第一次离开父母在外面过夜！', py: 'Wǒ fēi cháng qī dài, zhè shì wǒ dì yī cì lí kāi fù mǔ zài wài miàn guò yè!', en: 'I am looking forward to it very much, this is my first time staying overnight away from my parents!' },
+                        { speaker: 'A', zh: '你的行李收拾好了吗？需要带些什么日常用品？', py: 'Nǐ de xíng li shōu shi hǎo le ma? Xū yào dài xiē shén me rì cháng yòng pǐn?', en: 'Is your luggage packed? What daily necessities do we need to bring?' },
+                        { speaker: 'B', zh: '我已经准备好了睡袋、手电筒、水壶和防蚊液。', py: 'Wǒ yǐ jīng zhǔn bèi hǎo le shuì dài, shǒu diàn tǒng, shuǐ hú hé fáng wén yè.', en: 'I have already prepared my sleeping bag, torchlight, water bottle, and mosquito repellent.' },
+                        { speaker: 'A', zh: '听说营地里有一个很高的人工攀岩墙，你敢挑战吗？', py: 'Tīng shuō yíng dì lǐ yǒu yí gè hěn gāo de rén gōng pān yán qiáng, nǐ gǎn tiǎo zhàn ma?', en: 'I heard there is a tall rock-climbing wall at the campsite, do you dare to challenge it?' },
+                        { speaker: 'B', zh: '虽然我有一点恐高，但我会系好安全绳勇敢尝试。', py: 'Suī rán wǒ yǒu yì diǎn kǒng gāo, dàn wǒ huì jì hǎo ān quán shéng yǒng gǎn cháng shì.', en: 'Although I am a little afraid of heights, I will put on the safety harness and try bravely.' },
+                        { speaker: 'A', zh: '除此之外，我们还要和组员一起搭帐篷和准备晚餐。', py: 'Chú cǐ zhī wài, wǒ men hái yào hé zǔ yuán yì qǐ dā zhàng peng hé zhǔn bèi wǎn cān.', en: 'Besides that, we also have to pitch tents and prepare dinner together with our groupmates.' },
+                        { speaker: 'B', zh: '这不仅能培养团队精神，还能让我们学会独立生活。', py: 'Zhè bù jǐn néng péi yǎng tuán duì jīng shén, hái néng ràng wǒ men xué huì dú lì shēng huó.', en: 'This not only builds team spirit, but also teaches us how to live independently.' },
+                        { speaker: 'A', zh: '希望那几天的天气晴朗，不要下倾盆大雨才好。', py: 'Xī wàng nà jǐ tiān de tiān qì qíng lǎng, bú yào xià qīng pén dà yǔ cái hǎo.', en: 'I hope the weather will be sunny those few days and not pour heavily.' },
+                        { speaker: 'B', zh: '就算下雨也没关系，室内依然有很多精彩的团体游戏！', py: 'Jiù suàn xià yǔ yě méi guān xi, shì nèi yī rán yǒu hěn duō jīng cǎi de tuán tǐ yóu xì!', en: 'Even if it rains it is okay, there are still many exciting group games indoors!' }
+                    ]
+                },
+                {
+                    id: 'p4-recycling',
+                    level: 'P4',
+                    title: '环保小卫士 (Eco-Warriors & Recycling)',
+                    bgPattern: 'bg-gradient-to-br from-teal-100 to-emerald-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-teal-600', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '宇航', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '宇航，别把喝完的酸奶盒直接扔进蓝色的回收箱！', py: 'Yǔ háng, bié bǎ hē wán de suān nǎi hé zhí jiē rēng jìn lán sè de huí shōu xiāng!', en: 'Yuhang, don\'t throw your finished yogurt cup directly into the blue recycling bin!' },
+                        { speaker: 'B', zh: '为什么呢妈妈？塑料盒子不是可以回收再造的吗？', py: 'Wèi shén me ne mā ma? Sù liào hé zi bú shì kě yǐ huí shōu zài zào de ma?', en: 'Why Mom? Aren\'t plastic containers recyclable?' },
+                        { speaker: 'A', zh: '如果盒子里还有食物残渣，就会污染整箱的回收物。', py: 'Rú guǒ hé zi lǐ hái yǒu shí wù cán zhā, jiù huì wū rǎn zhěng xiāng de huí shōu wù.', en: 'If there is still food residue inside, it will contaminate the entire bin of recyclables.' },
+                        { speaker: 'B', zh: '原来是这样，那我应该先用清水把它冲洗干净并晾干。', py: 'Yuán lái shì zhè yàng, nà wǒ yīng gāi xiān yòng qīng shuǐ bǎ tā chōng xǐ gān jìng bìng liàng gān.', en: 'I see, then I should rinse it clean with water and dry it first.' },
+                        { speaker: 'A', zh: '没错，除了分类回收，我们平时还能怎样减少垃圾？', py: 'Méi cuò, chú le fēn lèi huí shōu, wǒ men píng shí hái néng zěn yàng jiǎn shǎo lā jī?', en: 'Correct, besides sorting recyclables, how else can we reduce waste in daily life?' },
+                        { speaker: 'B', zh: '去超市购物的时候，我们可以自备环保袋少用塑料袋。', py: 'Qù chāo shì gòu wù de shí hou, wǒ men kě yǐ zì bèi huán bǎo dài shǎo yòng sù liào dài.', en: 'When shopping at the supermarket, we can bring our own reusable bags and use fewer plastic bags.' },
+                        { speaker: 'A', zh: '去小贩中心打包食物时，也可以带上自己的餐盒。', py: 'Qù xiǎo fàn zhōng xīn dǎ bāo shí wù shí, yě kě yǐ dài shàng zì jǐ de cān hé.', en: 'When taking away food at the hawker centre, we can also bring our own food containers.' },
+                        { speaker: 'B', zh: '学校老师还教我们离开房间时要随手关灯和关风扇。', py: 'Xué xiào lǎo shī hái jiāo wǒ men lí kāi fáng jiān shí yào suí shǒu guān dēng hé guān fēng shàn.', en: 'Our school teacher also taught us to turn off the lights and fans when leaving a room.' },
+                        { speaker: 'A', zh: '节约用电和用水，也是保护地球资源的重要方法。', py: 'Jié yuē yòng diàn hé yòng shuǐ, yě shì bǎo hù dì qiú zī yuán de zhòng yào fāng fǎ.', en: 'Saving electricity and water is also an important way to protect Earth\'s resources.' },
+                        { speaker: 'B', zh: '让我们从身边的小事做起，共同建设绿色新加坡！', py: 'Ràng wǒ men cóng shēn biān de xiǎo shì zuò qǐ, gòng tóng jiàn shè lǜ sè Xīn jiā pō!', en: 'Let\'s start from small actions around us and build a green Singapore together!' }
+                    ]
+                },
+                {
+                    id: 'p4-hawker',
+                    level: 'P4',
+                    title: '新加坡小贩文化 (UNESCO Hawker Culture)',
+                    bgPattern: 'bg-gradient-to-br from-orange-100 to-rose-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '爷爷', avatar: '👴', color: 'bg-amber-700', align: 'left', pitch: 0.85 },
+                        { id: 'B', name: '恩琪', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '爷爷，社会知识课提到新加坡的小贩文化申遗成功了！', py: 'Yé ye, shè huì zhī shi kè tí dào Xīn jiā pō de xiǎo fàn wén huà shēn yí chéng gōng le!', en: 'Grandpa, Social Studies class mentioned that Singapore\'s hawker culture is on the UNESCO list!' },
+                        { speaker: 'A', zh: '是啊，小贩中心不仅是吃饭的地方，更是社区的大饭厅。', py: 'Shì a, xiǎo fàn zhōng xīn bù jǐn shì chī fàn de dì fang, gèng shì shè qū de dà fàn tīng.', en: 'Yes, hawker centres are not just places to eat, they are community dining rooms.' },
+                        { speaker: 'B', zh: '无论是什么种族或背景的人，都喜欢聚在这里品尝美食。', py: 'Wú lùn shì shén me zhǒng zú huò bèi jǐng de rén, dōu xǐ huan jù zài zhè lǐ pǐn cháng měi shí.', en: 'People of all races and backgrounds love gathering here to enjoy delicious food.' },
+                        { speaker: 'A', zh: '以前的小贩推着木头车在街边摆摊，卫生条件非常差。', py: 'Yǐ qián de xiǎo fàn tuī zhe mù tou chē zài jiē biān bǎi tān, wèi shēng tiáo jiàn fēi cháng chà.', en: 'In the past, hawkers pushed wooden carts along the streets, and hygiene conditions were poor.' },
+                        { speaker: 'B', zh: '后来政府建造了有屋顶和干净水源的小贩中心，对吗？', py: 'Hòu lái zhèng fǔ jiàn zào le yǒu wū dǐng hé gān jìng shuǐ yuán de xiǎo fàn zhōng xīn, duì ma?', en: 'Later the government built hawker centres with roofs and clean water, right?' },
+                        { speaker: 'A', zh: '没错，许多摊主每天天还没亮就起床准备新鲜的食材。', py: 'Méi cuò, xǔ duō tān zhǔ měi tiān tiān hái méi liàng jiù qǐ chuáng zhǔn bèi xīn xiān de shí cái.', en: 'That\'s right, many stall owners wake up before dawn every day to prepare fresh ingredients.' },
+                        { speaker: 'B', zh: '他们非常辛劳，用便宜的价格为我们烹煮美味的佳肴。', py: 'Tā men fēi cháng xīn láo, yòng pián yi de jià gé wèi wǒ men pēng zhǔ měi wèi de jiā yáo.', en: 'They work so hard to cook delicious dishes for us at affordable prices.' },
+                        { speaker: 'A', zh: '只可惜现在许多年轻人都觉得当小贩太累，不愿意接手。', py: 'Zhǐ kě xī xiàn zài xǔ duō nián qīng rén dōu jué de dāng xiǎo fàn tài lèi, bú yuàn yì jiē shǒu.', en: 'It is a pity many young people today find being a hawker too tiring and are unwilling to take over.' },
+                        { speaker: 'B', zh: '我们一定要多多支持本地小贩，让传统手艺传承下去。', py: 'Wǒ men yí dìng yào duō duō zhī chí běn dì xiǎo fàn, ràng chuán tǒng shǒu yì chuán chéng xià qù.', en: 'We must strongly support local hawkers so traditional culinary skills can be passed down.' },
+                        { speaker: 'A', zh: '说得好，走，爷爷现在就请你去吃热腾腾的炒粿条！', py: 'Shuō de hǎo, zǒu, yé ye xiàn zài jiù qǐng nǐ qù chī rè téng téng de chǎo guǒ tiáo!', en: 'Well said, come, Grandpa will treat you to piping hot Char Kway Teow right now!' }
+                    ]
+                },
+                {
+                    id: 'p4-museum',
+                    level: 'P4',
+                    title: '参观国家博物馆 (Visiting National Museum)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-sky-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '导览员', avatar: '👩‍💼', color: 'bg-indigo-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '俊杰', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '同学们，欢迎来到新加坡国家博物馆的历史展厅。', py: 'Tóng xué men, huān yíng lái dào Xīn jiā pō guó jiā bó wù guǎn de lì shǐ zhǎn tīng.', en: 'Students, welcome to the History Gallery of the National Museum of Singapore.' },
+                        { speaker: 'B', zh: '阿姨您好，请问这座博物馆有多少年的历史了？', py: 'Ā yí nín hǎo, qǐng wèn zhè zuò bó wù guǎn yǒu duō shao nián de lì shǐ le?', en: 'Hello Auntie, may I ask how many years of history this museum has?' },
+                        { speaker: 'A', zh: '它是新加坡最古老的博物馆，已经有一百多年的历史。', py: 'Tā shì Xīn jiā pō zuì gǔ lǎo de bó wù guǎn, yǐ jīng yǒu yì bǎi duō nián de lì shǐ.', en: 'It is Singapore\'s oldest museum, with more than one hundred years of history.' },
+                        { speaker: 'B', zh: '哇，玻璃柜里展示的这块古老大石头是什么文物？', py: 'Wa, bō li guì lǐ zhǎn shì de zhè kuài gǔ lǎo dà shí tou shì shén me wén wù?', en: 'Wow, what artifact is this ancient large stone displayed in the glass cabinet?' },
+                        { speaker: 'A', zh: '这是著名的新加坡古石，上面刻着古代的神秘文字。', py: 'Zhè shì zhù míng de Xīn jiā pō gǔ shí, shàng miàn kè zhe gǔ dài de shén mì wén zì.', en: 'This is the famous Singapore Stone, engraved with mysterious ancient script.' },
+                        { speaker: 'B', zh: '这些珍贵的文物能帮助我们了解祖先早期的新加坡生活。', py: 'Zhè xiē zhēn guì de wén wù néng bāng zhù wǒ men liǎo jiě zǔ xiān zǎo qī de Xīn jiā pō shēng huó.', en: 'These precious artifacts help us understand how our ancestors lived in early Singapore.' },
+                        { speaker: 'A', zh: '参观博物馆时，大家知道必须遵守哪些规则吗？', py: 'Cān guān bó wù guǎn shí, dà jiā zhī dào bì xū zūn shǒu nǎ xiē guī zé ma?', en: 'When visiting the museum, do you know what rules we must follow?' },
+                        { speaker: 'B', zh: '我们不能随便触摸展品，也不能在展厅里吃东西或喝水。', py: 'Wǒ men bù néng suí biàn chù mō zhǎn pǐn, yě bù néng zài zhǎn tīng lǐ chī dōng xi huò hē shuǐ.', en: 'We must not touch the exhibits casually, nor eat or drink in the gallery.' },
+                        { speaker: 'A', zh: '很好，接下来我们会去观看沉浸式的森林数码艺术展。', py: 'Hěn hǎo, jiē xià lái wǒ men huì qù guān kàn chén jìn shì de sēn lín shù mǎ yì shù zhǎn.', en: 'Very good, next we will go watch the immersive forest digital art exhibition.' },
+                        { speaker: 'B', zh: '太棒了，我要把今天学到的历史知识记录在笔记本里！', py: 'Tài bàng le, wǒ yào bǎ jīn tiān xué dào de lì shǐ zhī shi jì lù zài bǐ jì běn lǐ!', en: 'Awesome, I am going to record the history knowledge I learned today in my notebook!' }
+                    ]
+                },
+                {
+                    id: 'p4-sportsday',
+                    level: 'P4',
+                    title: '运动会接力赛 (Sports Day Relay Race)',
+                    bgPattern: 'bg-gradient-to-br from-sky-100 to-cyan-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '队长阿明', avatar: '🏃', color: 'bg-sky-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '国强', avatar: '👦', color: 'bg-emerald-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '国强，马上就轮到我们四年级的四百米接力赛了！', py: 'Guó qiáng, mǎ shàng jiù lún dào wǒ men sì nián jí de sì bǎi mǐ jiē lì sài le!', en: 'Guoqiang, it is almost our turn for the Primary 4 400-meter relay race!' },
+                        { speaker: 'B', zh: '阿明，我跑最后一棒，心里紧张得像有小鹿在乱撞。', py: 'Ā míng, wǒ pǎo zuì hòu yí bàng, xīn lǐ jǐn zhāng de xiàng yǒu xiǎo lù zài luàn zhuàng.', en: 'Ah Ming, I am running the final leg, and my heart is pounding nervously.' },
+                        { speaker: 'A', zh: '深呼吸放轻松，我们已经一起刻苦训练了整整一个月。', py: 'Shēn hū xī fàng qīng sōng, wǒ men yǐ jīng yì qǐ kè kǔ xùn liàn le zhěng zhěng yí gè yuè.', en: 'Take a deep breath and relax, we have trained hard together for a whole month.' },
+                        { speaker: 'B', zh: '接力赛最重要的就是交接棒的时候千万不能掉棒。', py: 'Jiē lì sài zuì zhòng yào de jiù shì jiāo jiē bàng de shí hou qiān wàn bù néng diào bàng.', en: 'The most important thing in a relay is not dropping the baton during the pass.' },
+                        { speaker: 'A', zh: '对，当我跑近你的时候，我会大声喊口号提醒你伸手。', py: 'Duì, dāng wǒ pǎo jìn nǐ de shí hou, wǒ huì dà shēng hǎn kǒu hào tí xǐng nǐ shēn shǒu.', en: 'Yes, when I run near you, I will shout the signal loudly to remind you to reach out.' },
+                        { speaker: 'B', zh: '好，我一握紧接力棒就会全力以赴冲向终点线！', py: 'Hǎo, wǒ yí wò jǐn jiē lì bàng jiù huì quán lì yǐ fù chōng xiàng zhōng diǎn xiàn!', en: 'Okay, the moment I grip the baton tightly, I will go all out towards the finish line!' },
+                        { speaker: 'A', zh: '你看，看台上的同学们都在挥舞旗子为我们加油打气。', py: 'Nǐ kàn, kàn tái shàng de tóng xué men dōu zài huī wǔ qí zi wèi wǒ men jiā yóu dǎ qì.', en: 'Look, our classmates in the stands are waving flags to cheer us on.' },
+                        { speaker: 'B', zh: '体育老师常说，友谊第一，比赛第二，重在参与。', py: 'Tǐ yù lǎo shī cháng shuō, yǒu yì dì yī, bǐ sài dì èr, zhòng zài cān yù.', en: 'Our PE teacher always says friendship comes first, competition second, participation matters most.' },
+                        { speaker: 'A', zh: '只要我们发挥出平时的最佳水平，无论输赢都值得骄傲。', py: 'Zhǐ yào wǒ men fā huī chū píng shí de zuì jiā shuǐ píng, wú lùn shū yíng dōu zhí de jiāo ào.', en: 'As long as we perform at our usual best, we can be proud regardless of winning or losing.' },
+                        { speaker: 'B', zh: '裁判吹哨子召集运动员了，我们快去起跑线准备吧！', py: 'Cái pàn chuī shào zi zhào jí yùn dòng yuán le, wǒ men kuài qù qǐ pǎo xiàn zhǔn bèi ba!', en: 'The referee blew the whistle to call the athletes, let\'s hurry to the starting line!' }
+                    ]
+                },
+                {
+                    id: 'p4-pet',
+                    level: 'P4',
+                    title: '领养宠物与责任 (Adopting a Pet Responsibly)',
+                    bgPattern: 'bg-gradient-to-br from-rose-100 to-pink-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '思琪', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '爸爸，动物收容所有很多可爱的小狗，我们可以领养一只吗？', py: 'Bà ba, dòng wù shōu róng suǒ yǒu hěn duō kě ài de xiǎo gǒu, wǒ men kě yǐ lǐng yǎng yì zhī ma?', en: 'Dad, there are many cute puppies at the animal shelter, can we adopt one?' },
+                        { speaker: 'A', zh: '思琪，饲养宠物不是一时兴起，而是一辈子的承诺与责任。', py: 'Sī qí, sì yǎng chǒng wù bú shì yì shí xīng qǐ, ér shì yí bèi zi de chéng nuò yǔ zé rèn.', en: 'Siqi, keeping a pet is not a passing whim, but a lifelong commitment and responsibility.' },
+                        { speaker: 'B', zh: '我知道，小狗不是玩具，它需要我们的细心照顾和陪伴。', py: 'Wǒ zhī dào, xiǎo gǒu bú shì wán jù, tā xū yào wǒ men de xì xīn zhào gù hé péi bàn.', en: 'I know, a puppy is not a toy, it needs our careful care and companionship.' },
+                        { speaker: 'A', zh: '如果领养了小狗，你每天放学后愿意带它下楼散步吗？', py: 'Rú guǒ lǐng yǎng le xiǎo gǒu, nǐ měi tiān fàng xué hòu yuàn yì dài tā xià lóu sàn bù ma?', en: 'If we adopt a dog, are you willing to take it downstairs for a walk every day after school?' },
+                        { speaker: 'B', zh: '我愿意，我还会按时给它喂食、梳毛和清理粪便。', py: 'Wǒ yuàn yì, wǒ hái huì àn shí gěi tā wèi shí, shū máo hé qīng lǐ fèn biàn.', en: 'I am willing, and I will also feed it on time, brush its fur, and clean up after it.' },
+                        { speaker: 'A', zh: '住在新加坡的组屋里，养狗还必须注意不能打扰邻居。', py: 'Zhù zài Xīn jiā pō de zǔ wū lǐ, yǎng gǒu hái bì xū zhù yì bù néng dǎ rǎo lín jū.', en: 'Living in an HDB flat in Singapore, we must also make sure our dog does not disturb the neighbors.' },
+                        { speaker: 'B', zh: '我们可以教导小狗不要乱吠，出门时一定会系上狗绳。', py: 'Wǒ men kě yǐ jiāo dǎo xiǎo gǒu bú yào luàn fèi, chū mén shí yí dìng huì jì shàng gǒu shéng.', en: 'We can train the dog not to bark randomly, and always put on a leash when going out.' },
+                        { speaker: 'A', zh: '以领养代替购买非常有意义，能给流浪动物一个温暖的家。', py: 'Yǐ lǐng yǎng dài tì gòu mǎi fēi cháng yǒu yì yì, néng gěi liú làng dòng wù yí gè wēn nuǎn de jiā.', en: 'Adopting instead of buying is very meaningful and gives stray animals a warm home.' },
+                        { speaker: 'B', zh: '这么说，爸爸您答应这个周末带我去防止虐待动物协会了吗？', py: 'Zhè me shuō, bà ba nín dā ying zhè gè zhōu mò dài wǒ qù fáng zhǐ nüè dài dòng wù xié huì le ma?', en: 'Does that mean, Dad, you agree to take me to the SPCA this weekend?' },
+                        { speaker: 'A', zh: '是的，只要你说到做到，我们就一起去迎接新家庭成员！', py: 'Shì de, zhǐ yào nǐ shuō dào zuò dào, wǒ men jiù yì qǐ qù yíng jiē xīn jiā tíng chéng yuán!', en: 'Yes, as long as you keep your word, we will go welcome our new family member together!' }
+                    ]
+                },
+                {
+                    id: 'p4-festival',
+                    level: 'P4',
+                    title: '欢庆中秋佳节 (Celebrating Mid-Autumn Festival)',
+                    bgPattern: 'bg-gradient-to-br from-purple-100 to-indigo-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '外婆', avatar: '👵', color: 'bg-purple-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '乐轩', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.1 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '外婆，今晚的月亮又大又圆，滨海湾花园的灯展真美啊！', py: 'Wài pó, jīn wǎn de yuè liang yòu dà yòu yuán, Bīn hǎi wān huā yuán de dēng zhǎn zhēn měi a!', en: 'Grandma, the moon is big and round tonight, and the lantern display at Gardens by the Bay is so beautiful!' },
+                        { speaker: 'A', zh: '是啊，农历八月十五是中秋节，象征着一家人团团圆圆。', py: 'Shì a, nóng lì bā yuè shí wǔ shì zhōng qiū jié, xiàng zhēng zhe yì jiā rén tuán tuán yuán yuán.', en: 'Yes, the 15th day of the 8th lunar month is Mid-Autumn Festival, symbolizing family reunion.' },
+                        { speaker: 'B', zh: '你看水上漂浮着巨型的嫦娥奔月花灯，简直栩栩如生！', py: 'Nǐ kàn shuǐ shàng piāo fú zhe jù xíng de Cháng é bēn yuè huā dēng, jiǎn zhí xǔ xǔ rú shēng!', en: 'Look at the giant Chang\'e Flying to the Moon lantern floating on the water, it looks so lifelike!' },
+                        { speaker: 'A', zh: '除了赏月和提灯笼，中秋节必不可少的传统食品是什么？', py: 'Chú le shǎng yuè hé tí dēng long, zhōng qiū jié bì bù kě shǎo de chuán tǒng shí pǐn shì shén me?', en: 'Besides admiring the moon and carrying lanterns, what is the essential traditional food for Mid-Autumn Festival?' },
+                        { speaker: 'B', zh: '当然是香甜可口的月饼！我最喜欢吃冰皮榴莲月饼。', py: 'Dāng rán shì xiāng tián kě kǒu de yuè bǐng! Wǒ zuì xǐ huan chī bīng pí liú lián yuè bǐng.', en: 'Of course it is fragrant and tasty mooncakes! I love eating snowskin durian mooncakes the most.' },
+                        { speaker: 'A', zh: '外婆年轻的时候，只吃传统的双黄莲蓉月饼配热中国茶。', py: 'Wài pó nián qīng de shí hou, zhǐ chī chuán tǒng de shuāng huáng lián róng yuè bǐng pèi rè Zhōng guó chá.', en: 'When Grandma was young, we only ate traditional double-yolk lotus paste mooncakes with hot Chinese tea.' },
+                        { speaker: 'B', zh: '喝茶不仅能解腻，还能帮助消化，真是绝妙的搭配。', py: 'Hē chá bù jǐn néng jiě nì, hái néng bāng zhù xiāo huà, zhēn shì jué miào de dā pèi.', en: 'Drinking tea not only cuts the richness, it also helps digestion, what a wonderful pairing.' },
+                        { speaker: 'A', zh: '那边正在举办猜灯谜活动，你想不想去动一动脑筋？', py: 'Nà biān zhèng zài jǔ bàn cāi dēng mí huó dòng, nǐ xiǎng bu xiǎng qù dòng yí dòng nǎo jīn?', en: 'They are holding a lantern riddle guessing activity over there, do you want to go test your wits?' },
+                        { speaker: 'B', zh: '好啊，华文老师今天刚好教了我们几个有趣的字谜！', py: 'Hǎo a, huá wén lǎo shī jīn tiān gāng hǎo jiāo le wǒ men jǐ gè yǒu qù de zì mí!', en: 'Sure, our Chinese teacher just taught us several interesting word riddles today!' },
+                        { speaker: 'A', zh: '要是猜中了谜底，还能赢取精美的小礼物呢，我们快走吧！', py: 'Yào shi cāi zhòng le mí dǐ, hái néng yíng qǔ jīng měi de xiǎo lǐ wù ne, wǒ men kuài zǒu ba!', en: 'If you guess the riddle correctly, you can even win a lovely small prize, let\'s hurry over!' }
+                    ]
+                },
+                {
+                    id: 'p4-cooking',
+                    level: 'P4',
+                    title: '第一次学做菜 (Learning to Cook)',
+                    bgPattern: 'bg-gradient-to-br from-yellow-100 to-orange-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩‍🍳', color: 'bg-rose-500', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '靖雯', avatar: '👧', color: 'bg-amber-600', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '妈妈，今天是学校假期，您可以教我做一道简单的家常菜吗？', py: 'Mā ma, jīn tiān shì xué xiào jià qī, nín kě yǐ jiāo wǒ zuò yí dào jiǎn dān de jiā cháng cài ma?', en: 'Mom, today is a school holiday, can you teach me how to cook a simple home-cooked dish?' },
+                        { speaker: 'A', zh: '好主意，我们就来做既营养又美味的番茄炒鸡蛋吧！', py: 'Hǎo zhǔ yì, wǒ men jiù lái zuò jì yíng yǎng yòu měi wèi de fān qié chǎo jī dàn ba!', en: 'Good idea, let\'s make nutritious and delicious scrambled eggs with tomatoes!' },
+                        { speaker: 'B', zh: '我已经洗干净双手并系上围裙了，第一步应该做什么？', py: 'Wǒ yǐ jīng xǐ gān jìng shuāng shǒu bìng jì shàng wéi qún le, dì yī bù yīng gāi zuò shén me?', en: 'I have already washed my hands clean and put on my apron, what is the first step?' },
+                        { speaker: 'A', zh: '先把三个鸡蛋敲进碗里，加入少许盐，用筷子搅拌均匀。', py: 'Xiān bǎ sān gè jī dàn qiāo jìn wǎn lǐ, jiā rù shǎo xǔ yán, yòng kuài zi jiǎo bàn jūn yún.', en: 'First crack three eggs into a bowl, add a pinch of salt, and beat evenly with chopsticks.' },
+                        { speaker: 'B', zh: '搅拌好了，番茄是不是也要洗干净切成小块？', py: 'Jiǎo bàn hǎo le, fān qié shì bu shì yě yào xǐ gān jìng qiē chéng xiǎo kuài?', en: 'Done beating, should the tomatoes also be washed clean and cut into small pieces?' },
+                        { speaker: 'A', zh: '对，握刀的时候手指要弯曲，千万要小心别切伤手指。', py: 'Duì, wò dāo de shí hou shǒu zhǐ yào wān qū, qiān wàn yào xiǎo xīn bié qiē shāng shǒu zhǐ.', en: 'Yes, curl your fingers when holding the knife, and be very careful not to cut your fingers.' },
+                        { speaker: 'B', zh: '油锅热了，倒进蛋液的时候发出滋滋的响声，真香啊！', py: 'Yóu guō rè le, dào jìn dàn yè de shí hou fā chū zī zī de xiǎng shēng, zhēn xiāng a!', en: 'The oil pan is hot, pouring the egg mixture makes a sizzling sound and smells so good!' },
+                        { speaker: 'A', zh: '把炒熟的鸡蛋盛起来，接着放番茄翻炒出汁，再混合在一起。', py: 'Bǎ chǎo shú de jī dàn chéng qǐ lái, jiē zhe fàng fān qié fān chǎo chū zhī, zài hùn hé zài yì qǐ.', en: 'Scoop up the cooked eggs, then stir-fry the tomatoes until juicy, and mix them together.' },
+                        { speaker: 'B', zh: '红配黄的颜色真好看，原来下厨做饭一点也不容易。', py: 'Hóng pèi huáng de yán sè zhēn hǎo kàn, yuán lái xià chú zuò fàn yì diǎn yě bù róng yì.', en: 'The red and yellow colors look so nice, cooking in the kitchen is really not easy at all.' },
+                        { speaker: 'A', zh: '你做得非常成功，今晚爸爸回家一定能吃得津津有味！', py: 'Nǐ zuò de fēi cháng chéng gōng, jīn wǎn bà ba huí jiā yí dìng néng chī de jīn jīn yǒu wèi!', en: 'You did a very successful job, when Dad comes home tonight he will definitely eat with great relish!' }
+                    ]
+                },
+
+                // ================= PRIMARY 5 (小五) - 10 Stories =================
+                {
+                    id: 'p5-ne',
+                    level: 'P5',
+                    title: '国民教育演出 (NE Show Preview)',
+                    bgPattern: 'bg-gradient-to-br from-rose-100 to-red-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '陈老师', avatar: '👩‍🏫', color: 'bg-rose-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '振轩', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '同学们，今天我们全级五年级一起到政府大厦大草场观看国庆预演！', py: 'Tóng xué men, jīn tiān wǒ men quán jí wǔ nián jí yì qǐ dào zhèng fǔ dà shà dà cǎo chǎng guān kàn guó qìng yù yǎn!', en: 'Class, today our entire Primary 5 cohort is at the Padang to watch the National Day Parade NE Show!' },
+                        { speaker: 'B', zh: '陈老师，现场到处是一片红白相间的旗海，气氛真是令人热血沸腾！', py: 'Chén lǎo shī, xiàn chǎng dào chù shì yí piàn hóng bái xiāng jiàn de qí hǎi, qì fēn zhēn shì lìng rén rè xuè fèi téng!', en: 'Teacher Tan, the venue is a sea of red and white flags everywhere, the atmosphere is truly thrilling!' },
+                        { speaker: 'A', zh: '大家快抬头看天空，红狮跳伞队的队员们正从高空降落下来。', py: 'Dà jiā kuài tái tóu kàn tiān kōng, hóng shī tiào sǎn duì de duì yuán men zhèng cóng gāo kōng jiàng luò xià lái.', en: 'Everyone look up at the sky, the Red Lions parachutists are descending from high above.' },
+                        { speaker: 'B', zh: '他们不畏狂风，精准地降落在草场中央，真让我佩服得五体投地。', py: 'Tā men bú wèi kuáng fēng, jīng zhǔn de jiàng luò zài cǎo chǎng zhōng yāng, zhēn ràng wǒ pèi fú de wǔ tǐ tóu dì.', en: 'They brave the strong winds and land precisely in the middle of the field, I admire them tremendously.' },
+                        { speaker: 'A', zh: '紧接着还有悬挂着巨大国旗的契努克直升机和战斗机编队飞越上空。', py: 'Jǐn jiē zhe hái yǒu xuán guà zhe jù dà guó qí de qì nǔ kè zhí shēng jī hé zhàn dòu jī biān duì fēi yuè shàng kōng.', en: 'Right after that, the Chinook helicopter carrying the giant state flag and fighter jets will fly past.' },
+                        { speaker: 'B', zh: '当全场观众齐声高唱国歌时，我深刻感受到保家卫国的重要性。', py: 'Dāng quán chǎng guān zhòng qí shēng gāo chàng guó gē shí, wǒ shēn kè gǎn shòu dào bǎo jiā wèi guó de zhòng yào xìng.', en: 'When the entire audience sings the National Anthem in unison, I deeply feel the importance of defending our nation.' },
+                        { speaker: 'A', zh: '你知道为什么教育部每年都安排小五学生来观看国民教育演出吗？', py: 'Nǐ zhī dào wèi shén me jiào yù bù měi nián dōu ān pái xiǎo wǔ xué shēng lái guān kàn guó mín jiào yù yǎn chū ma?', en: 'Do you know why MOE arranges for Primary 5 students to watch the NE Show every year?' },
+                        { speaker: 'B', zh: '因为这能增强我们的国家认同感，明白新加坡的繁荣稳定来之不易。', py: 'Yīn wèi zhè néng zēng qiáng wǒ men de guó jiā rèn tóng gǎn, míng bái Xīn jiā pō de fán róng wěn dìng lái zhī bú yì.', en: 'Because it strengthens our sense of national identity and helps us understand Singapore\'s prosperity was hard-won.' },
+                        { speaker: 'A', zh: '散场离开之前，我们应该如何展现小五学生应有的公民素质？', py: 'Sàn chǎng lí kāi zhī qián, wǒ men yīng gāi rú hé zhǎn xiàn xiǎo wǔ xué shēng yīng yǒu de gōng mín sù zhì?', en: 'Before leaving the venue, how should we demonstrate good civic-mindedness as Primary 5 students?' },
+                        { speaker: 'B', zh: '我们会把座位周围的垃圾全部捡起来放进礼包袋，保持场地一尘不染！', py: 'Wǒ men huì bǎ zuò wèi zhōu wéi de lā jī quán bù jiǎn qǐ lái fàng jìn lǐ bāo dài, bǎo chí chǎng dì yì chén bù rǎn!', en: 'We will pick up all litter around our seats into our funpacks and keep the venue spotless!' }
+                    ]
+                },
+                {
+                    id: 'p5-budget',
+                    level: 'P5',
+                    title: '零用钱与理财 (Budgeting & Financial Literacy)',
+                    bgPattern: 'bg-gradient-to-br from-emerald-100 to-teal-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-emerald-700', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '雅婷', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '爸爸，升上五年级后下午有补习和课外活动，零用钱有点不够用。', py: 'Bà ba, shēng shàng wǔ nián jí hòu xià wǔ yǒu bǔ xí hé kè wài huó dòng, líng yòng qián yǒu diǎn bú gòu yòng.', en: 'Dad, since moving up to Primary 5 I have afternoon supplementary lessons and CCA, so my pocket money is a bit tight.' },
+                        { speaker: 'A', zh: '雅婷，爸爸可以把每周的零用钱按月发给你，让你学习自主规划预算。', py: 'Yǎ tíng, bà ba kě yǐ bǎ měi zhōu de líng yòng qián àn yuè fā gěi nǐ, ràng nǐ xué xí zì zhǔ guī huà yù suàn.', en: 'Yating, Dad can give you your pocket money on a monthly basis so you can learn to plan your own budget.' },
+                        { speaker: 'B', zh: '一次拿到整月的生活费，我应该怎样分配才不会在月中就花光呢？', py: 'Yí cì ná dào zhěng yuè de shēng huó fèi, wǒ yīng gāi zěn yàng fēn pèi cái bú huì zài yuè zhōng jiù huā guāng ne?', en: 'Getting a whole month\'s allowance at once, how should I allocate it so I don\'t spend it all by mid-month?' },
+                        { speaker: 'A', zh: '理财的第一步，是学会清楚区分什么是需要，什么是想要。', py: 'Lǐ cái de dì yī bù, shì xué huì qīng chǔ qū fēn shén me shì xū yào, shén me shì xiǎng yào.', en: 'The first step in financial literacy is learning to clearly distinguish between needs and wants.' },
+                        { speaker: 'B', zh: '学校食堂的营养午餐和文具是需要，而昂贵的贴纸和潮流玩具是想要。', py: 'Xué xiào shí táng de yíng yǎng wǔ cān hé wén jù shì xū yào, ér áng guì de tiē zhǐ hé cháo liú wán jù shì xiǎng yào.', en: 'Nutritious canteen lunches and stationery are needs, while expensive stickers and trendy toys are wants.' },
+                        { speaker: 'A', zh: '完全正确，收到零用钱时，先拨出百分之二十存起来是个好方法。', py: 'Wán quán zhèng què, shōu dào líng yòng qián shí, xiān bō chū bǎi fēn zhī èr shí cún qǐ lái shì gè hǎo fāng fǎ.', en: 'Completely correct, setting aside twenty percent as savings as soon as you receive your allowance is a great method.' },
+                        { speaker: 'B', zh: '我还可以准备一本记账簿，把每天的每一笔开销都详细记录下来。', py: 'Wǒ hái kě yǐ zhǔn bèi yì běn jì zhàng bù, bǎ měi tiān de měi yì bǐ kāi xiāo dōu xiáng xì jì lù xià lái.', en: 'I can also prepare an expense notebook to record every single daily expenditure in detail.' },
+                        { speaker: 'A', zh: '到了月底复盘账目，你就能一目了然地看出哪些钱花得不必要。', py: 'Dào le yuè dǐ fù pán zhàng mù, nǐ jiù néng yí mù liǎo rán de kàn chū nǎ xiē qián huā de bú bì yào.', en: 'When you review your accounts at the end of the month, you can see at a glance which expenses were unnecessary.' },
+                        { speaker: 'B', zh: '除此之外，我也能拨出一小部分零用钱捐给慈善机构帮助弱势群体。', py: 'Chú cǐ zhī wài, wǒ yě néng bō chū yì xiǎo bù fen líng yòng qián juān gěi cí shàn jī gòu bāng zhù ruò shì qún tǐ.', en: 'Besides that, I can also set aside a small portion to donate to charity to help vulnerable groups.' },
+                        { speaker: 'A', zh: '懂得量入为出又能回馈社会，爸爸相信你一定能成为理财小达人！', py: 'Dǒng de liàng rù wéi chū yòu néng huí kuì shè huì, bà ba xiāng xìn nǐ yí dìng néng chéng wéi lǐ cái xiǎo dá rén!', en: 'Knowing how to live within your means and give back to society, Dad believes you will become a financial whiz!' }
+                    ]
+                },
+                {
+                    id: 'p5-volunteer',
+                    level: 'P5',
+                    title: '社区义工服务 (Volunteering at Senior Centre)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 to-orange-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '林伯伯', avatar: '👴', color: 'bg-amber-600', align: 'left', pitch: 0.85 },
+                        { id: 'B', name: '语嫣', avatar: '👧', color: 'bg-purple-600', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '林伯伯您好，我们是附近小学的五年级学生，今天来乐龄中心做义工！', py: 'Lín bó bo nín hǎo, wǒ men shì fù jìn xiǎo xué de wǔ nián jí xué shēng, jīn tiān lái lè líng zhōng xīn zuò yì gōng!', en: 'Hello Uncle Lim, we are Primary 5 students from the nearby primary school, volunteering at the Senior Centre today!' },
+                        { speaker: 'A', zh: '欢迎你们呀，看到你们这群充满朝气的小朋友，我心里特别高兴。', py: 'Huān yíng nǐ men ya, kàn dào nǐ men zhè qún chōng mǎn zhāo qì de xiǎo péng you, wǒ xīn lǐ tè bié gāo xìng.', en: 'Welcome, seeing such a lively group of children makes me feel especially happy.' },
+                        { speaker: 'B', zh: '林伯伯，我们今天准备了毛笔和宣纸，想请您教我们写书法。', py: 'Lín bó bo, wǒ men jīn tiān zhǔn bèi le máo bǐ hé xuān zhǐ, xiǎng qǐng nín jiāo wǒ men xiě shū fǎ.', en: 'Uncle Lim, we prepared calligraphy brushes and rice paper today, and would love for you to teach us calligraphy.' },
+                        { speaker: 'A', zh: '没问题，写毛笔字最讲究心平气和，握笔的姿势一定要端正。', py: 'Méi wèn tí, xiě máo bǐ zì zuì jiǎng jiu xīn píng qì hé, wò bǐ de zī shì yí dìng yào duān zhèng.', en: 'No problem, brush calligraphy requires a calm mind, and your brush-holding posture must be upright.' },
+                        { speaker: 'B', zh: '您写的字刚劲有力，真是太漂亮了，我也要向您多多学习！', py: 'Nín xiě de zì gāng jìn yǒu lì, zhēn shì tài piào liang le, wǒ yě yào xiàng nín duō duō xué xí!', en: 'Your handwriting is vigorous and powerful, it is so beautiful, I want to learn a lot from you!' },
+                        { speaker: 'A', zh: '写完书法，你能教教伯伯怎么用智能手机在咖啡店扫码付款吗？', py: 'Xiě wán shū fǎ, nǐ néng jiāo jiao bó bo zěn me yòng zhì néng shǒu jī zài kā fēi diàn sǎo mǎ fù kuǎn ma?', en: 'After writing calligraphy, can you teach Uncle how to use a smartphone to scan and pay at the coffeeshop?' },
+                        { speaker: 'B', zh: '当然可以，您只要打开银行应用程序，对准摊位的二维码就能付款。', py: 'Dāng rán kě yǐ, nín zhǐ yào dǎ kāi yín háng yìng yòng chéng xù, duì zhǔn tān wèi de èr wéi mǎ jiù néng fù kuǎn.', en: 'Of course, you just open the banking app, point it at the stall\'s QR code, and you can pay.' },
+                        { speaker: 'A', zh: '我年纪大了记性不太好，字太小也看不清楚，多亏你耐心解释。', py: 'Wǒ nián jì dà le jì xìng bú tài hǎo, zì tài xiǎo yě kàn bù qīng chǔ, duō kuī nǐ nài xīn jiě shì.', en: 'I am old and my memory isn\'t great, and the small font is hard to see, thanks to your patient explanation.' },
+                        { speaker: 'B', zh: '我已经帮您把手机字体调大了，还把步骤画在卡片上方便您查看。', py: 'Wǒ yǐ jīng bāng nín bǎ shǒu jī zì tǐ tiáo dà le, hái bǎ bù zhòu huà zài kǎ piàn shàng fāng biàn nín chá kàn.', en: 'I have enlarged your phone\'s font size and drew the steps on a card for your easy reference.' },
+                        { speaker: 'A', zh: '助人为乐是传统美德，你们真是一群懂得敬老尊贤的好孩子！', py: 'Zhù rén wéi lè shì chuán tǒng měi dé, nǐ men zhēn shì yì qún dǒng de jìng lǎo zūn xián de hǎo hái zi!', en: 'Helping others is a traditional virtue, you are truly good children who respect the elderly!' }
+                    ]
+                },
+                {
+                    id: 'p5-debate',
+                    level: 'P5',
+                    title: '华语辩论比赛 (Chinese Debate Competition)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '正方一辩', avatar: '👦', color: 'bg-indigo-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '反方一辩', avatar: '👧', color: 'bg-rose-600', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '各位评委和同学大家好，今天我们的辩题是小学生是否应该带手机上学。', py: 'Gè wèi píng wěi hé tóng xué dà jiā hǎo, jīn tiān wǒ men de biàn tí shì xiǎo xué shēng shì fǒu yīng gāi dài shǒu jī shàng xué.', en: 'Hello judges and classmates, today our debate topic is whether primary students should bring mobile phones to school.' },
+                        { speaker: 'B', zh: '我方认为小学生心智尚未成熟，带手机上学弊大于利，容易分散注意力。', py: 'Wǒ fāng rèn wéi xiǎo xué shēng xīn zhì shàng wèi chéng shú, dài shǒu jī shàng xué bì dà yú lì, róng yì fēn sàn zhù yì lì.', en: 'Our side believes primary students are not mature enough, and bringing phones does more harm than good by distracting them.' },
+                        { speaker: 'A', zh: '但是放学后如果遇到突发状况或下雨，有手机就能随时联系父母报平安。', py: 'Dàn shì fàng xué hòu rú guǒ yù dào tū fā zhuàng kuàng huò xià yǔ, yǒu shǒu jī jiù néng suí shí lián xì fù mǔ bào píng ān.', en: 'However, if an emergency or rain occurs after school, having a phone allows students to contact parents anytime.' },
+                        { speaker: 'B', zh: '学校办公室和保安处都设有电话，遇到紧急情况完全可以向校方求助。', py: 'Xué xiào bàn gōng shì hé bǎo ān chù dōu shè yǒu diàn huà, yù dào jǐn jí qíng kuàng wán quán kě yǐ xiàng xiào fāng qiú zhù.', en: 'The school general office and security post have phones, so students can easily seek help from staff in emergencies.' },
+                        { speaker: 'A', zh: '只要严格规定上课时间把手机关机锁在储物柜里，就不会影响听课。', py: 'Zhǐ yào yán gé guī dìng shàng kè shí jiān bǎ shǒu jī guān jī suǒ zài chǔ wù guì lǐ, jiù bú huì yǐng xiǎng tīng kè.', en: 'As long as rules strictly require phones to be turned off and locked in lockers during lessons, classes won\'t be affected.' },
+                        { speaker: 'B', zh: '话虽如此，下课休息时如果大家都低头看屏幕，就会减少面对面的交流。', py: 'Huà suī rú cǐ, xià kè xiū xi shí rú guǒ dà jiā dōu dī tóu kàn píng mù, jiù huì jiǎn shǎo miàn duì miàn de jiāo liú.', en: 'Even so, if everyone looks down at screens during recess, face-to-face interaction with peers will decrease.' },
+                        { speaker: 'A', zh: '手机其实也是实用的学习工具，可以用来查阅电子词典和搜寻课外资料。', py: 'Shǒu jī qí shí yě shì shí yòng de xué xí gōng jù, kě yǐ yòng lái chá yuè diàn zǐ cí diǎn hé sōu xún kè wài zī liào.', en: 'Phones are actually useful learning tools too, for checking e-dictionaries and researching supplementary materials.' },
+                        { speaker: 'B', zh: '学校已经配备了完善的电脑室和平板电脑，在老师的指导下使用更加安全。', py: 'Xué xiào yǐ jīng pèi bèi le wán shàn de diàn nǎo shì hé píng bǎn diàn nǎo, zài lǎo shī de zhǐ dǎo xià shǐ yòng gèng jiā ān quán.', en: 'Schools are already equipped with computer labs and tablets, which are safer to use under teachers\' guidance.' },
+                        { speaker: 'A', zh: '看来工具本身没有好坏之分，关键在于我们如何培养学生的自律能力。', py: 'Kàn lái gōng jù běn shēn méi yǒu hǎo huài zhī fēn, guān jiàn zài yú wǒ men rú hé péi yǎng xué shēng de zì lǜ néng lì.', en: 'It seems the tool itself is neither good nor bad; the key lies in how we cultivate students\' self-discipline.' },
+                        { speaker: 'B', zh: '感谢对方辩友的精彩论述，这场辩论让我们学会了从多角度思考问题！', py: 'Gǎn xiè duì fāng biàn yǒu de jīng cǎi lùn shù, zhè chǎng biàn lùn ràng wǒ men xué huì le cóng duō jiǎo dù sī kǎo wèn tí!', en: 'Thank you to our worthy opponent for the wonderful arguments; this debate taught us to think from multiple perspectives!' }
+                    ]
+                },
+                {
+                    id: 'p5-newater',
+                    level: 'P5',
+                    title: '新生水与水资源 (NEWater Visitor Centre)',
+                    bgPattern: 'bg-gradient-to-br from-cyan-100 to-blue-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '讲解员', avatar: '🧑‍🔬', color: 'bg-cyan-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '志远', avatar: '👦', color: 'bg-indigo-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '欢迎来到新加坡新生水访客中心，今天我们将揭开水资源循环的奥秘。', py: 'Huān yíng lái dào Xīn jiā pō xīn shēng shuǐ fǎng kè zhōng xīn, jīn tiān wǒ men jiāng jiē kāi shuǐ zī yuán xún huán de ào mì.', en: 'Welcome to the NEWater Visitor Centre, today we will uncover the secrets of water recycling.' },
+                        { speaker: 'B', zh: '叔叔您好，新加坡四面环海，为什么还会面临缺乏淡水资源的挑战呢？', py: 'Shū shu nín hǎo, Xīn jiā pō sì miàn huán hǎi, wèi shén me hái huì miàn lín quē fá dàn shuǐ zī yuán de tiǎo zhàn ne?', en: 'Hello Uncle, Singapore is surrounded by sea, why do we still face the challenge of lacking freshwater resources?' },
+                        { speaker: 'A', zh: '因为海水是咸的不能直接饮用，而且我国国土面积小，没有天然湖泊集水。', py: 'Yīn wèi hǎi shuǐ shì xián de bù néng zhí jiē yǐn yòng, ér qiě wǒ guó guó tǔ miàn jī xiǎo, méi yǒu tiān rán hú pō jí shuǐ.', en: 'Because seawater is salty and undrinkable, and our land area is small without natural lakes to collect water.' },
+                        { speaker: 'B', zh: '我听说新加坡有四大国家水喉来保障全国的供水充足，请问是哪四个？', py: 'Wǒ tīng shuō Xīn jiā pō yǒu sì dà guó jiā shuǐ hóu lái bǎo zhàng quán guó de gōng shuǐ chōng zú, qǐng wèn shì nǎ sì gè?', en: 'I heard Singapore has Four National Taps to ensure sufficient water supply nationwide, what are the four?' },
+                        { speaker: 'A', zh: '它们分别是本地集水区雨水、进口水、淡化海水，以及高科技的新生水。', py: 'Tā men fēn bié shì běn dì jí shuǐ qū yǔ shuǐ, jìn kǒu shuǐ, dàn huà hǎi shuǐ, yǐ jí gāo kē jì de xīn shēng shuǐ.', en: 'They are local catchment water, imported water, desalinated water, and high-tech NEWater.' },
+                        { speaker: 'B', zh: '新生水是怎么把用过的污水净化成比普通自来水还要纯净的饮用水呢？', py: 'Xīn shēng shuǐ shì zěn me bǎ yòng guò de wū shuǐ jìng huà chéng bǐ pǔ tōng zì lái shuǐ hái yào chún jìng de yǐn yòng shuǐ ne?', en: 'How does NEWater purify used water into drinking water that is even cleaner than regular tap water?' },
+                        { speaker: 'A', zh: '它经过了微过滤、反渗透和紫外线消毒三大严谨步骤，彻底杀灭细菌。', py: 'Tā jīng guò le wēi guò lǜ, fǎn shèn tòu hé zǐ wài xiàn xiāo dú sān dà yán jǐn bù zhòu, chè dǐ shā miè xì jūn.', en: 'It undergoes three rigorous steps: microfiltration, reverse osmosis, and UV disinfection to thoroughly eliminate bacteria.' },
+                        { speaker: 'B', zh: '我国的科学家真了不起，利用先进的科技把危机化为转机！', py: 'Wǒ guó de kē xué jiā zhēn liǎo bù qǐ, lì yòng xiān jìn de kē jì bǎ wēi jī huà wéi zhuǎn jī!', en: 'Our nation\'s scientists are truly amazing, using advanced technology to turn a crisis into an opportunity!' },
+                        { speaker: 'A', zh: '即便有了先进技术，每一滴水依然无比珍贵，大家平时要怎样节约用水？', py: 'Jí biàn yǒu le xiān jìn jì shù, měi yì dī shuǐ yī rán wú bǐ zhēn guì, dà jiā píng shí yào zěn yàng jié yuē yòng shuǐ?', en: 'Even with advanced technology, every drop of water remains precious; how should everyone save water daily?' },
+                        { speaker: 'B', zh: '刷牙时要关紧水龙头，缩短淋浴时间，还要用洗米水来浇花！', py: 'Shuā yá shí yào guān jǐn shuǐ lóng tóu, suō duǎn lín yù shí jiān, hái yào yòng xǐ mǐ shuǐ lái jiāo huā!', en: 'Turn off the tap while brushing teeth, shorten shower times, and use rice-washing water to water plants!' }
+                    ]
+                },
+                {
+                    id: 'p5-time',
+                    level: 'P5',
+                    title: '时间管理与减压 (Time Management & Stress)',
+                    bgPattern: 'bg-gradient-to-br from-purple-100 to-pink-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '姐姐', avatar: '👩', color: 'bg-purple-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '家豪', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '家豪，看你愁眉苦脸地对着书桌叹气，是不是遇到什么难题了？', py: 'Jiā háo, kàn nǐ chóu méi kǔ liǎn de duì zhe shū zhuō tàn qì, shì bu shì yù dào shén me nán tí le?', en: 'Jiahao, seeing you frown and sigh at your desk, have you run into some difficulty?' },
+                        { speaker: 'B', zh: '姐姐，五年级功课变多了，下周又有测验，我觉得时间根本不够用。', py: 'Jiě jie, wǔ nián jí gōng kè biàn duō le, xià zhōu yòu yǒu cè yàn, wǒ jué de shí jiān gēn běn bú gòu yòng.', en: 'Sister, Primary 5 homework has increased and there is a test next week, I feel I don\'t have enough time at all.' },
+                        { speaker: 'A', zh: '别慌张，制定一份合理的时间表能帮你把繁重的学习任务变得井井有条。', py: 'Bié huāng zhāng, zhì dìng yí fèn hé lǐ de shí jiān biǎo néng bāng nǐ bǎ fán zhòng de xué xí rèn wù biàn de jǐng jǐng yǒu tiáo.', en: 'Don\'t panic, making a reasonable timetable can help organize your heavy study tasks neatly.' },
+                        { speaker: 'B', zh: '我常常一边做功课一边想着玩手机，结果一道数学题算了半天也没算出来。', py: 'Wǒ cháng cháng yì biān zuò gōng kè yì biān xiǎng zhe wán shǒu jī, jié guǒ yí dào shù xué tí suàn le bàn tiān yě méi suàn chū lái.', en: 'I often think about playing on my phone while doing homework, and end up taking ages on one math problem.' },
+                        { speaker: 'A', zh: '这就是三心二意的后果，温习时应该把电子产品放在客厅，全神贯注。', py: 'Zhè jiù shì sān xīn èr yì de hòu guǒ, wēn xí shí yīng gāi bǎ diàn zǐ chǎn pǐn fàng zài kè tīng, quán shén guàn zhù.', en: 'That is the result of being half-hearted; when revising, leave electronics in the living room and concentrate fully.' },
+                        { speaker: 'B', zh: '我可以尝试番茄工作法吗？专心学习二十五分钟，然后休息五分钟。', py: 'Wǒ kě yǐ cháng shì fān qié gōng zuò fǎ ma? Zhuān xīn xué xí èr shí wǔ fēn zhōng, rán hòu xiū xi wǔ fēn zhōng.', en: 'Can I try the Pomodoro technique? Focus on studying for 25 minutes, then rest for 5 minutes.' },
+                        { speaker: 'A', zh: '这个方法非常有效，短暂的休息能让大脑恢复活力，还能眺望远方保护视力。', py: 'Zhè gè fāng fǎ fēi cháng yǒu xiào, duǎn zàn de xiū xi néng ràng dà nǎo huī fù huó lì, hái néng tiào wàng yuǎn fāng bǎo hù shì lì.', en: 'That method is very effective; short breaks refresh your brain and let you look far away to protect your eyesight.' },
+                        { speaker: 'B', zh: '有时候压力太大，晚上躺在床上翻来覆去睡不着觉，应该怎么办？', py: 'Yǒu shí hou yā lì tài dà, wǎn shang tǎng zài chuáng shàng fān lái fù qù shuì bù zháo jiào, yīng gāi zěn me bàn?', en: 'Sometimes when stressed, I toss and turn in bed at night unable to sleep, what should I do?' },
+                        { speaker: 'A', zh: '傍晚去公园慢跑流汗，或者睡前听一听轻柔的音乐，都能有效舒缓压力。', py: 'Bàng wǎn qù gōng yuán màn pǎo liú hàn, huò zhě shuì qián tīng yì tīng qīng róu de yīn yuè, dōu néng yǒu xiào shū huǎn yā lì.', en: 'Jogging in the park in the evening or listening to gentle music before bed can effectively relieve stress.' },
+                        { speaker: 'B', zh: '谢谢姐姐指点，我现在就动手列出今天的待办事项，逐一完成它们！', py: 'Xiè xie jiě jie zhǐ diǎn, wǒ xiàn zài jiù dòng shǒu liè chū jīn tiān de dài bàn shì xiàng, zhú yī wán chéng tā men!', en: 'Thank you for the advice Sister, I will list my to-do items right now and complete them one by one!' }
+                    ]
+                },
+                {
+                    id: 'p5-kampong',
+                    level: 'P5',
+                    title: '甘榜格南文化之旅 (Kampong Gelam Heritage)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 to-lime-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '法蒂玛', avatar: '🧕', color: 'bg-emerald-600', align: 'left', pitch: 1.2 },
+                        { id: 'B', name: '伟铭', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '伟铭，欢迎你和华文文化学会的同学们来到甘榜格南参观！', py: 'Wěi míng, huān yíng nǐ hé huá wén wén huà xué huì de tóng xué men lái dào Gān bǎng gé nán cān guān!', en: 'Weiming, welcome to you and the Chinese Cultural Club students visiting Kampong Gelam!' },
+                        { speaker: 'B', zh: '法蒂玛，你看苏丹回教堂那金光闪闪的圆顶，在阳光下真庄严宏伟！', py: 'Fǎ dì mǎ, nǐ kàn Sū dān huí jiào táng nà jīn guāng shǎn shǎn de yuán dǐng, zài yáng guāng xià zhēn zhuāng yán hóng wěi!', en: 'Fatimah, look at the glittering golden dome of the Sultan Mosque, it looks so solemn and grand in the sunlight!' },
+                        { speaker: 'A', zh: '你知道吗？金色圆顶底座其实是由成千上万个玻璃酱油瓶堆砌而成的。', py: 'Nǐ zhī dào ma? Jīn sè yuán dǐng dǐ zuò qí shí shì yóu chéng qiān shàng wàn gè bō li jiàng yóu píng duī qì ér chéng de.', en: 'Did you know? The base of the golden dome is actually built from thousands of glass soy sauce bottles.' },
+                        { speaker: 'B', zh: '为什么当时建造回教堂的时候会使用玻璃瓶呢？背后有什么特别的故事？', py: 'Wèi shén me dāng shí jiàn zào huí jiào táng de shí hou huì shǐ yòng bō li píng ne? Bèi hòu yǒu shén me tè bié de gù shi?', en: 'Why were glass bottles used when building the mosque back then? Is there a special story behind it?' },
+                        { speaker: 'A', zh: '这是为了让贫困的信徒也能通过收集瓶子，为建造回教堂出一份力。', py: 'Zhè shì wèi le ràng pín kùn de xìn tú yě néng tōng guò shōu jí píng zi, wèi jiàn zào huí jiào táng chū yí fèn lì.', en: 'It was so that poorer devotees could also contribute to building the mosque by collecting bottles.' },
+                        { speaker: 'B', zh: '这个故事太感人了，充分体现了同甘共苦、众志成城的互助精神。', py: 'Zhè gè gù shi tài gǎn rén le, chōng fèn tǐ xiàn le tóng gān gòng kǔ, zhòng zhì chéng chéng de hù zhù jīng shén.', en: 'That story is so touching, fully reflecting the spirit of unity and mutual help.' },
+                        { speaker: 'A', zh: '走过马路就是马来传统文化馆，那是以前马来皇室居住的皇宫。', py: 'Zǒu guò mǎ lù jiù shì Mǎ lái chuán tǒng wén huà guǎn, nà shì yǐ qián Mǎ lái huáng shì jū zhù de huáng gōng.', en: 'Across the street is the Malay Heritage Centre, which was formerly the palace of Malay royalty.' },
+                        { speaker: 'B', zh: '旁边的哈芝巷里还有许多色彩斑斓的壁画和传统地毯店，真是热闹非凡。', py: 'Páng biān de Hā zhī xiàng lǐ hái yǒu xǔ duō sè cǎi bān lán de bì huà hé chuán tǒng dì tǎn diàn, zhēn shì rè nao fēi fán.', en: 'Nearby Haji Lane also has many colorful murals and traditional carpet shops, it is bustling with life.' },
+                        { speaker: 'A', zh: '逛累了的话，我带你们去品尝香浓的拉茶和美味的马来椰浆饭吧！', py: 'Guàng lèi le de huà, wǒ dài nǐ men qù pǐn cháng xiāng nóng de lā chá hé měi wèi de Mǎ lái yē jiāng fàn ba!', en: 'If you are tired from walking, let me take you to taste fragrant Teh Tarik and delicious Nasi Lemak!' },
+                        { speaker: 'B', zh: '太好了，这次文化之旅让我对马来同胞的历史与习俗有了更深的认识！', py: 'Tài hǎo le, zhè cì wén huà zhī lǚ ràng wǒ duì Mǎ lái tóng bāo de lì shǐ yǔ xí sú yǒu le gèng shēn de rèn shi!', en: 'Wonderful, this cultural trail gave me a much deeper understanding of Malay history and customs!' }
+                    ]
+                },
+                {
+                    id: 'p5-ai',
+                    level: 'P5',
+                    title: '科技与人工智能 (Technology & AI)',
+                    bgPattern: 'bg-gradient-to-br from-sky-100 to-indigo-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '李老师', avatar: '👨‍🏫', color: 'bg-indigo-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '梓萱', avatar: '👧', color: 'bg-sky-600', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '梓萱，今天科学馆的智慧国展览展示了许多人工智能技术，你有什么感想？', py: 'Zǐ xuān, jīn tiān kē xué guǎn de zhì huì guó zhǎn lǎn zhǎn shì le xǔ duō rén gōng zhì néng jì shù, nǐ yǒu shén me gǎn xiǎng?', en: 'Zixuan, today\'s Smart Nation exhibition at the Science Centre showed many AI technologies, what are your thoughts?' },
+                        { speaker: 'B', zh: '李老师，我发现人工智能已经深入我们的日常生活，给我们带来极大便利。', py: 'Lǐ lǎo shī, wǒ fā xiàn rén gōng zhì néng yǐ jīng shēn rù wǒ men de rì cháng shēng huó, gěi wǒ men dài lái jí dà biàn lì.', en: 'Teacher Li, I realized AI has already entered our daily lives and brought us tremendous convenience.' },
+                        { speaker: 'A', zh: '你能举出几个在新加坡公共场所常见的人工智能应用例子吗？', py: 'Nǐ néng jǔ chū jǐ gè zài Xīn jiā pō gōng gòng chǎng suǒ cháng jiàn de rén gōng zhì néng yìng yòng lì zi ma?', en: 'Can you give a few examples of common AI applications in Singapore\'s public spaces?' },
+                        { speaker: 'B', zh: '例如樟宜机场的自动通关系统，还有小贩中心里帮忙收盘子的清洁机器人。', py: 'Lì rú Zhāng yí jī chǎng de zì dòng tōng guān xì tǒng, hái yǒu xiǎo fàn zhōng xīn lǐ bāng máng shōu pán zi de qīng jié jī qì rén.', en: 'For example, automated immigration clearance at Changi Airport, and tray-returning cleaning robots at hawker centres.' },
+                        { speaker: 'A', zh: '那么在学习方面，我们应该如何正确使用人工智能软件呢？', py: 'Nà me zài xué xí fāng miàn, wǒ men yīng gāi rú hé zhèng què shǐ yòng rén gōng zhì néng ruǎn jiàn ne?', en: 'Then in terms of learning, how should we use AI software properly?' },
+                        { speaker: 'B', zh: '我们可以像使用畅聊小伙伴一样，利用人工智能来练习华语发音和口语对话。', py: 'Wǒ men kě yǐ xiàng shǐ yòng Chàng liáo xiǎo huǒ bàn yí yàng, lì yòng rén gōng zhì néng lái liàn xí huá wén fā yīn hé kǒu yǔ duì huà.', en: 'We can use AI like SpeakUp Buddy to practice our Chinese pronunciation and spoken conversation.' },
+                        { speaker: 'A', zh: '如果有的同学直接让人工智能代写华文作文，你赞成这种做法吗？', py: 'Rú guǒ yǒu de tóng xué zhí jiē ràng rén gōng zhì néng dài xiě huá wén zuò wén, nǐ zàn chéng zhè zhǒng zuò fǎ ma?', en: 'If some students ask AI to write their Chinese compositions directly for them, do you agree with that?' },
+                        { speaker: 'B', zh: '我完全不赞成，那样做等于自欺欺人，会让我们失去独立思考和写作的能力。', py: 'Wǒ wán quán bú zàn chéng, nà yàng zuò děng yú zì qī qī rén, huì ràng wǒ men shī qù dú lì sī kǎo hé xiě zuò de néng lì.', en: 'I completely disagree; doing so is deceiving oneself and makes us lose our ability to think and write independently.' },
+                        { speaker: 'A', zh: '说得非常透彻，科技是协助人类的助手，但永远不能取代我们的创造力。', py: 'Shuō de fēi cháng tòu chè, kē jì shì xié zhù rén lèi de zhù shǒu, dàn yǒng yuǎn bù néng qǔ dài wǒ men de chuàng zào lì.', en: 'Very insightfully put; technology is an assistant to humans, but can never replace our creativity.' },
+                        { speaker: 'B', zh: '我会努力学好科学和编程知识，将来研发出更造福社会的智能科技！', py: 'Wǒ huì nǔ lì xué hǎo kē xué hé biān chéng zhī shi, jiāng lái yán fā chū gèng zào fú shè huì de zhì néng kē jì!', en: 'I will work hard to learn science and coding well, so I can develop smart technology that benefits society in the future!' }
+                    ]
+                },
+                {
+                    id: 'p5-firstaid',
+                    level: 'P5',
+                    title: '学习急救知识 (Learning Basic First Aid)',
+                    bgPattern: 'bg-gradient-to-br from-red-100 to-amber-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '红十字教官', avatar: '🧑‍⚕️', color: 'bg-red-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '俊豪', avatar: '👦', color: 'bg-emerald-600', align: 'right', pitch: 1.05 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '俊豪，作为少年红十字会的会员，遇到有人在厨房被热汤烫伤该怎么处理？', py: 'Jùn háo, zuò wéi shào nián hóng shí zì huì de huì yuán, yù dào yǒu rén zài chú fáng bèi rè tāng tàng shāng gāi zěn me chǔ lǐ?', en: 'Junhao, as a Red Cross Youth member, how should you handle someone scalded by hot soup in the kitchen?' },
+                        { speaker: 'B', zh: '教官，我们应该立刻用流动的冷水冲洗伤口至少十分钟来降低温度。', py: 'Jiào guān, wǒ men yīng gāi lì kè yòng liú dòng de lěng shuǐ chōng xǐ shāng kǒu zhì shǎo shí fēn zhōng lái jiàng dī wēn dù.', en: 'Instructor, we should immediately rinse the wound under running cool water for at least ten minutes to lower the temperature.' },
+                        { speaker: 'A', zh: '千万记住，可不可以在烫伤的皮肤上涂抹牙膏、酱油或者冰块呢？', py: 'Qiān wàn jì zhù, kě bù kě yǐ zài tàng shāng de pí fū shàng tú mǒ yá gāo, jiàng yóu huò zhě bīng kuài ne?', en: 'Always remember, can you apply toothpaste, soy sauce, or ice cubes on scalded skin?' },
+                        { speaker: 'B', zh: '绝对不可以，涂抹牙膏和酱油容易造成伤口细菌感染，冰块则会冻伤皮肤。', py: 'Jué duì bù kě yǐ, tú mǒ yá gāo hé jiàng yóu róng yì zào chéng shāng kǒu xì jūn gǎn rǎn, bīng kuài zé huì dòng shāng pí fū.', en: 'Definitely not, applying toothpaste and soy sauce easily causes bacterial infection, while ice can cause frostbite.' },
+                        { speaker: 'A', zh: '回答正确！如果在操场上看到同学摔倒，膝盖流血不止又该如何包扎？', py: 'Huí dá zhèng què! Rú guǒ zài cāo chǎng shàng kàn dào tóng xué shuāi dǎo, xī gài liú xuè bù zhǐ yòu gāi rú hé bāo zā?', en: 'Correct answer! If you see a classmate fall on the field with a bleeding knee, how should you dress the wound?' },
+                        { speaker: 'B', zh: '先用生理盐水清洁伤口周围的沙粒，再用消毒纱布按压止血并贴上胶布。', py: 'Xiān yòng shēng lǐ yán shuǐ qīng jié shāng kǒu zhōu wéi de shā lì, zài yòng xiāo dú shā bù àn yā zhǐ xuè bìng tiē shàng jiāo bù.', en: 'First clean sand around the wound with saline, then press with sterile gauze to stop bleeding and tape it.' },
+                        { speaker: 'A', zh: '万一在公共场所看到有人突然晕倒且失去呼吸，小学生能做些什么？', py: 'Wàn yī zài gōng gòng chǎng suǒ kàn dào yǒu rén tū rán yūn dǎo qiě shī qù hū xī, xiǎo xué shēng néng zuò xiē shén me?', en: 'In case someone suddenly faints and stops breathing in public, what can a primary student do?' },
+                        { speaker: 'B', zh: '我们必须保持冷静，第一时间拨打九九五呼叫救护车，并向周围大人求助。', py: 'Wǒ men bì xū bǎo chí lěng jìng, dì yī shí jiān bō dǎ jiǔ jiǔ wǔ hū jiào jiù hù chē, bìng xiàng zhōu wéi dà rén qiú zhù.', en: 'We must stay calm, call 995 immediately for an ambulance, and shout for nearby adults to help.' },
+                        { speaker: 'A', zh: '我们还可以协助大人去附近的组屋电梯口寻找自动体外除颤器。', py: 'Wǒ men hái kě yǐ xié zhù dà rén qù fù jìn de zǔ wū diàn tī kǒu xún zhǎo zì dòng tǐ wài chú chàn qì.', en: 'We can also help adults find an Automated External Defibrillator (AED) at nearby HDB lift lobbies.' },
+                        { speaker: 'B', zh: '掌握基本的急救常识真重要，关键时刻不仅能保护自己还能挽救生命！', py: 'Zhǎng wò jī běn de jí jiù cháng shí zhēn zhòng yào, guān jiàn shí kè bù jǐn néng bǎo hù zì jǐ hái néng wǎn jiù shēng mìng!', en: 'Mastering basic first aid knowledge is so important; at critical moments it protects us and saves lives!' }
+                    ]
+                },
+                {
+                    id: 'p5-harmony',
+                    level: 'P5',
+                    title: '种族和谐日庆典 (Racial Harmony Day)',
+                    bgPattern: 'bg-gradient-to-br from-fuchsia-100 to-amber-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '拉维', avatar: '👦🏾', color: 'bg-purple-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '诗涵', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '诗涵，你今天穿的红色旗袍绣着精美的梅花图案，看起来真是端庄大方！', py: 'Shī hán, nǐ jīn tiān chuān de hóng sè qí páo xiù zhe jīng měi de méi huā tú àn, kàn qǐ lái zhēn shì duān zhuāng dà fāng!', en: 'Shihan, the red cheongsam you are wearing today is embroidered with lovely plum blossoms, looking so graceful!' },
+                        { speaker: 'B', zh: '谢谢你拉维，你身上的印度传统古尔达长衫也既帅气又充满民族特色。', py: 'Xiè xie nǐ Lā wéi, nǐ shēn shàng de Yìn dù chuán tǒng gǔ ěr dá cháng shān yě jì shuài qi yòu chōng mǎn mín zú tè sè.', en: 'Thank you Ravi, the traditional Indian Kurta you are wearing is also handsome and full of ethnic charm.' },
+                        { speaker: 'A', zh: '今天是七月二十一日种族和谐日，礼堂里摆满了四大种族的传统游戏摊位。', py: 'Jīn tiān shì qī yuè èr shí yī rì zhǒng zú hé xié rì, lǐ táng lǐ bǎi mǎn le sì dà zhǒng zú de chuán tǒng yóu xì tān wèi.', en: 'Today is July 21st Racial Harmony Day, and the hall is filled with traditional game booths of the four main races.' },
+                        { speaker: 'B', zh: '我刚才试玩了马来播棋和印度羽球板，还在手背上画了美丽的指甲花彩绘。', py: 'Wǒ gāng cái shì wán le Mǎ lái bō qí hé Yìn dù yǔ qiú bǎn, hái zài shǒu bèi shàng huà le měi lì de zhǐ jia huā cǎi huì.', en: 'I just tried playing Congkak and chapteh, and even had beautiful henna painted on the back of my hand.' },
+                        { speaker: 'A', zh: '我也学会了用华族的毛笔写和睦两个大字，并且品尝了美味的娘惹糕点。', py: 'Wǒ yě xué huì le yòng Huá zú de máo bǐ xiě hé mù liǎng gè dà zì, bìng qiě pǐn cháng le měi wèi de Niáng rě gāo diǎn.', en: 'I also learned to write the Chinese characters for Harmony with a brush, and tasted delicious Nyonya kueh.' },
+                        { speaker: 'B', zh: '虽然我们的肤色、宗教信仰和生活习惯各不相同，但我们都彼此尊重。', py: 'Suī rán wǒ men de fū sè, zōng jiào xìn yǎng hé shēng huó xí guàn gè bù xiāng tóng, dàn wǒ men dōu bǐ cǐ zūn zhòng.', en: 'Although our skin colors, religious beliefs, and customs differ, we all respect one another.' },
+                        { speaker: 'A', zh: '在聚会或办生日会时，你也会特地为我们准备清真食品和素食，真贴心。', py: 'Zài jù huì huò bàn shēng rì huì shí, nǐ yě huì tè dì wèi wǒ men zhǔn bèi qīng zhēn shí pǐn hé sù shí, zhēn tiē xīn.', en: 'During gatherings or birthday parties, you always thoughtfully prepare Halal and vegetarian food for us.' },
+                        { speaker: 'B', zh: '因为设身处地为朋友着想，才能让不同文化背景的同学毫无隔阂地融洽相处。', py: 'Yīn wèi shè shēn chǔ dì wèi péng you zháo xiǎng, cái néng ràng bù tóng wén huà bèi jǐng de tóng xué háo wú gé hé de róng qià xiāng chǔ.', en: 'Because putting ourselves in our friends\' shoes allows classmates from different cultures to get along harmoniously.' },
+                        { speaker: 'A', zh: '社会知识课讲过，种族和谐是新加坡立足的基石，绝对不能视为理所当然。', py: 'Shè huì zhī shi kè jiǎng guò, zhǒng zú hé xié shì Xīn jiā pō lì zú de jī shí, jué duì bù néng shì wéi lǐ suǒ dāng rán.', en: 'Social Studies taught us that racial harmony is the cornerstone of Singapore and must never be taken for granted.' },
+                        { speaker: 'B', zh: '让我们携手用心守护这份珍贵的情谊，拍张合照留作美好的纪念吧！', py: 'Ràng wǒ men xié shǒu yòng xīn shǒu hù zhè fèn zhēn guì de qíng yì, pāi zhāng hé zhào liú zuò měi hǎo de jì niàn ba!', en: 'Let\'s join hands to guard this precious friendship, and take a photo together as a wonderful memory!' }
+                    ]
+                },
+
+                // ================= PRIMARY 6 (小六) - 10 Stories =================
+                {
+                    id: 'p6-psle',
+                    level: 'P6',
+                    title: '备战小六会考 (Preparing for PSLE Together)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 to-purple-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '陈明轩', avatar: '👦', color: 'bg-indigo-600', align: 'left', pitch: 0.95 },
+                        { id: 'B', name: '林语桐', avatar: '👧', color: 'bg-purple-600', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '语桐，距离小六会考只剩下不到两个月的时间了，你最近复习得怎么样？', py: 'Yǔ tóng, jù lí xiǎo liù huì kǎo zhǐ shèng xià bú dào liǎng gè yuè de shí jiān le, nǐ zuì jìn fù xí de zěn me yàng?', en: 'Yutong, there are less than two months left until the PSLE, how is your revision going recently?' },
+                        { speaker: 'B', zh: '明轩，我的数学和科学还算有把握，但是华文阅读理解和作文还需要加强。', py: 'Míng xuān, wǒ de shù xué hé kē xué hái suàn yǒu bǎ wò, dàn shì huá wén yuè dú lǐ jiě hé zuò wén hái xū yào jiā qiáng.', en: 'Mingxuan, I am fairly confident in Math and Science, but my Chinese comprehension and composition still need strengthening.' },
+                        { speaker: 'A', zh: '正好我的华文成绩比较理想，而科学实验题总是丢分，不如我们成立学习小组吧！', py: 'Zhèng hǎo wǒ de huá wén chéng jì bǐ jiào lǐ xiǎng, ér kē xué shí yàn tí zǒng shì diū fēn, bù rú wǒ men chéng lì xué xí xiǎo zǔ ba!', en: 'My Chinese grades happen to be quite strong, while I always lose marks on Science experiment questions; let\'s form a study group!' },
+                        { speaker: 'B', zh: '这真是个互惠互利的好主意，正所谓三人行必有我师，我们可以取长补短。', py: 'Zhè zhēn shì gè hù huì hù lì de hǎo zhǔ yì, zhèng suǒ wèi sān rén xíng bì yǒu wǒ shī, wǒ men kě yǐ qǔ cháng bǔ duǎn.', en: 'That is a mutually beneficial idea; as the saying goes, we can learn from each other\'s strengths to offset our weaknesses.' },
+                        { speaker: 'A', zh: '写华文看图作文时，我们可以先列出开头、经过、高潮和结尾的思维导图。', py: 'Xiě huá wén kàn tú zuò wén shí, wǒ men kě yǐ xiān liè chū kāi tóu, jīng guò, gāo cháo hé jié wěi de sī wéi dǎo tú.', en: 'When writing Chinese picture compositions, we can first map out the introduction, development, climax, and conclusion.' },
+                        { speaker: 'B', zh: '还可以在文章里恰当地运用好词好句与心理描写，让故事情节更加生动感人。', py: 'Hái kě yǐ zài wén zhāng lǐ qià dàng de yùn yòng hǎo cí hǎo jù yǔ xīn lǐ miáo xiě, ràng gù shi qíng jié gèng jiā shēng dòng gǎn rén.', en: 'We can also use good phrases and psychological descriptions appropriately to make the plot more vivid and touching.' },
+                        { speaker: 'A', zh: '至于科学开放式问题，你有什么独到的答题技巧可以传授给我吗？', py: 'Zhì yú kē xué kāi fàng shì wèn tí, nǐ yǒu shén me dú dào de dá tí jì qiǎo kě yǐ chuán shòu gěi wǒ ma?', en: 'As for open-ended Science questions, do you have any special answering techniques you can share with me?' },
+                        { speaker: 'B', zh: '审题时一定要圈出实验的变量，并运用准确的科学关键词来解释因果关系。', py: 'Shěn tí shí yí dìng yào quān chū shí yàn de biàn liàng, bìng yùn yòng zhǔn què de kē xué guān jiàn cí lái jiě shì yīn guǒ guān xì.', en: 'When reading the question, always circle the experimental variables and use accurate scientific keywords to explain cause and effect.' },
+                        { speaker: 'A', zh: '只要我们脚踏实地、持之以恒地温习，就一定能在考场上发挥出最佳水准。', py: 'Zhǐ yào wǒ men jiǎo tà shí dì, chí zhī yǐ héng de wēn xí, jiù yí dìng néng zài kǎo chǎng shàng fā huī chū zuì jiā shuǐ zhǔn.', en: 'As long as we revise steadily and perseveringly, we will definitely perform at our very best in the exam hall.' },
+                        { speaker: 'B', zh: '一分耕耘，一分收获，让我们互相监督鼓励，一起冲刺小六会考吧！', py: 'Yì fēn gēng yún, yì fēn shōu huò, ràng wǒ men hù xiāng jiān dū gǔ lì, yì qǐ chōng cì xiǎo liù huì kǎo ba!', en: 'No pain, no gain; let\'s motivate each other and sprint towards the PSLE together!' }
+                    ]
+                },
+                {
+                    id: 'p6-oral',
+                    level: 'P6',
+                    title: '口试录像会话练习 (PSLE Oral Video Discussion)',
+                    bgPattern: 'bg-gradient-to-br from-blue-100 to-indigo-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '考官林老师', avatar: '👩‍🏫', color: 'bg-indigo-700', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '张政阳', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '政阳，你刚才朗读短文的语音语调非常自然流利，现在我们进入会话部分。', py: 'Zhèng yáng, nǐ gāng cái lǎng dú duǎn wén de yǔ yīn yǔ diào fēi cháng zì rán liú lì, xiàn zài wǒ men jìn rù huì huà bù fen.', en: 'Zhengyang, your pronunciation and intonation in the reading aloud passage were very natural and fluent; now let\'s begin the conversation.' },
+                        { speaker: 'B', zh: '谢谢林老师，我已经准备好针对这段录像的内容发表我的看法了。', py: 'Xiè xie Lín lǎo shī, wǒ yǐ jīng zhǔn bèi hǎo zhēn duì zhè duàn lù xiàng de nèi róng fā biǎo wǒ de kàn fǎ le.', en: 'Thank you Teacher Lim, I am ready to share my views on the content of this video clip.' },
+                        { speaker: 'A', zh: '录像中展示了同学们在社区参与邻里植树活动，你对他们的表现有什么看法？', py: 'Lù xiàng zhōng zhǎn shì le tóng xué men zài shè qū cān yù lín lǐ zhí shù huó dòng, nǐ duì tā men de biǎo xiàn yǒu shén me kàn fǎ?', en: 'The video shows students participating in a neighborhood tree-planting activity; what do you think of their behavior?' },
+                        { speaker: 'B', zh: '我认为录像中的同学们表现得非常积极主动，分工合作的精神值得我们学习。', py: 'Wǒ rèn wéi lù xiàng zhōng de tóng xué men biǎo xiàn de fēi cháng jī jí zhǔ dòng, fēn gōng hé zuò de jīng shén zhí de wǒ men xué xí.', en: 'I think the students in the video acted very proactively, and their spirit of teamwork is worthy of our emulation.' },
+                        { speaker: 'A', zh: '除了录像中的情景，你在日常生活中曾经参加过类似的社区环保活动吗？', py: 'Chú le lù xiàng zhōng de qíng jǐng, nǐ zài rì cháng shēng huó zhōng céng jīng cān jiā guò lèi sì de shè qū huán bǎo huó dòng ma?', en: 'Besides the scene in the video, have you ever participated in a similar community environmental activity in your daily life?' },
+                        { speaker: 'B', zh: '上个月我曾跟随学校童子军到东海岸公园捡拾沙滩上的塑料垃圾和空瓶子。', py: 'Shàng gè yuè wǒ céng gēn suí xué xiào tóng zǐ jūn dào Dōng hǎi àn gōng yuán jiǎn shí shā tān shàng de sù liào lā jī hé kōng píng zi.', en: 'Last month I went with my school Scouts to East Coast Park to pick up plastic litter and empty bottles on the beach.' },
+                        { speaker: 'A', zh: '在参与那次净滩活动的过程中，你遇到了什么困难或收获了什么深刻体会？', py: 'Zài cān yù nà cì jìng tān huó dòng de guò chéng zhōng, nǐ yù dào le shén me kùn nan huò shōu huò le shén me shēn kè tǐ huì?', en: 'During that beach clean-up activity, what challenges did you face or what deep insights did you gain?' },
+                        { speaker: 'B', zh: '虽然当时烈日当空，大家汗流浃背，但看到沙滩恢复整洁，心里充满了成就感。', py: 'Suī rán dāng shí liè rì dāng kōng, dà jiā hàn liú jiā bèi, dàn kàn dào shā tān huī fù zhěng jié, xīn lǐ chōng mǎn le chéng jiù gǎn.', en: 'Although the sun was scorching and we were drenched in sweat, seeing the beach clean again filled us with a sense of achievement.' },
+                        { speaker: 'A', zh: '你认为学校和社区应该如何鼓励更多公众主动爱护我们的居住环境？', py: 'Nǐ rèn wéi xué xiào hé shè qū yīng gāi rú hé gǔ lì gèng duō gōng zhòng zhǔ dòng ài hù wǒ men de jū zhù huán jìng?', en: 'How do you think schools and the community should encourage more members of the public to care for our living environment?' },
+                        { speaker: 'B', zh: '除了张贴宣传海报，还可以举办亲子环保比赛，让男女老少都能身体力行！', py: 'Chú le zhāng tiē xuān chuán hǎi bào, hái kě yǐ jǔ bàn qīn zǐ huán bǎo bǐ sài, ràng nán nǚ lǎo shào dōu néng shēn tǐ lì xíng!', en: 'Besides putting up posters, we can organize family eco-competitions so people of all ages can practice it firsthand!' }
+                    ]
+                },
+                {
+                    id: 'p6-climate',
+                    level: 'P6',
+                    title: '绿色发展蓝图 (SG Green Plan 2030 & Climate)',
+                    bgPattern: 'bg-gradient-to-br from-emerald-100 to-cyan-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '环保大使', avatar: '🌱', color: 'bg-emerald-600', align: 'left', pitch: 1.05 },
+                        { id: 'B', name: '颖萱', avatar: '👧', color: 'bg-teal-600', align: 'right', pitch: 1.2 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '颖萱，近年来全球气候变暖导致极端天气频发，新加坡也受到了明显影响。', py: 'Yǐng xuān, jìn nián lái quán qiú qì hòu biàn nuǎn dǎo zhì jí duān tiān qì pín fā, Xīn jiā pō yě shòu dào le míng xiǎn yǐng xiǎng.', en: 'Yingxuan, in recent years global warming has caused frequent extreme weather, and Singapore has been noticeably affected too.' },
+                        { speaker: 'B', zh: '是的，因为新加坡是一个低洼岛国，海平面上升对我国的海岸线构成了威胁。', py: 'Shì de, yīn wèi Xīn jiā pō shì yí gè dī wā dǎo guó, hǎi píng miàn shàng shēng duì wǒ guó de hǎi àn xiàn gòu chéng le wēi xié.', en: 'Yes, because Singapore is a low-lying island nation, rising sea levels pose a threat to our coastline.' },
+                        { speaker: 'A', zh: '为了应对气候变化，我国政府推出了新加坡绿色发展蓝图，你知道有哪些目标吗？', py: 'Wèi le yìng duì qì hòu biàn huà, wǒ guó zhèng fǔ tuī chū le Xīn jiā pō lǜ sè fā zhǎn lán tú, nǐ zhī dào yǒu nǎ xiē mù biāo ma?', en: 'To tackle climate change, our government launched the Singapore Green Plan 2030; do you know its goals?' },
+                        { speaker: 'B', zh: '其中一个重要目标是在全国种植一百万棵树，把新加坡打造成大自然中的城市。', py: 'Qí zhōng yí gè zhòng yào mù biāo shì zài quán guó zhòng zhí yì bǎi wàn kē shù, bǎ Xīn jiā pō dǎ zào chéng dà zì rán zhōng de chéng shì.', en: 'One key goal is planting one million more trees nationwide, transforming Singapore into a City in Nature.' },
+                        { speaker: 'A', zh: '树木不仅能吸收二氧化碳，还能为城市降温，缓解水泥建筑带来的热岛效应。', py: 'Shù mù bù jǐn néng xī shōu èr yǎng huà tàn, hái néng wèi chéng shì jiàng wēn, huǎn jiě shuǐ ní jiàn zhù dài lái de rè dǎo xiào yìng.', en: 'Trees not only absorb carbon dioxide, they also cool the city and relieve the urban heat island effect.' },
+                        { speaker: 'B', zh: '我也看到许多组屋屋顶和蓄水池水面都安装了太阳能板，用来生产洁净能源。', py: 'Wǒ yě kàn dào xǔ duō zǔ wū wū dǐng hé xù shuǐ chí shuǐ miàn dōu ān zhuāng le tài yáng néng bǎn, yòng lái shēng chǎn jié jìng néng yuán.', en: 'I also see solar panels installed on many HDB rooftops and reservoirs to generate clean energy.' },
+                        { speaker: 'A', zh: '在交通出行方面，政府也正在大力推广电动汽车和扩建全岛的脚踏车道德网络。', py: 'Zài jiāo tōng chū xíng fāng miàn, zhèng fǔ yě zhèng zài dà lì tuī guǎng diàn dòng qì chē hé kuò jiàn quán dǎo de jiǎo tà chē dào wǎng luò.', en: 'In transport, the government is actively promoting electric vehicles and expanding the islandwide cycling path network.' },
+                        { speaker: 'B', zh: '作为六年级学生，我们平时多搭公共交通工具或步行上学，也能减少碳足迹。', py: 'Zuò wéi liù nián jí xué shēng, wǒ men píng shí duō dā gōng gòng jiāo tōng gōng jù huò bù xíng shàng xué, yě néng jiǎn shǎo tàn zú jì.', en: 'As Primary 6 students, taking public transport or walking to school more often also reduces our carbon footprint.' },
+                        { speaker: 'A', zh: '在家吹冷气时把温度调到二十五度，或者改用风扇，同样能节省大量电力。', py: 'Zài jiā chuī lěng qì shí bǎ wēn dù tiáo dào èr shí wǔ dù, huò zhě gǎi yòng fēng shàn, tóng yàng néng jié shěng dà liàng diàn lì.', en: 'Setting the air-conditioner to 25 degrees at home or switching to a fan saves a lot of electricity too.' },
+                        { speaker: 'B', zh: '保护地球刻不容缓，让我们齐心协力，为下一代守护可持续发展的美好家园！', py: 'Bǎo hù dì qiú kè bù róng huǎn, ràng wǒ men qí xīn xié lì, wèi xià yí dài shǒu hù kě chí xù fā zhǎn de měi hǎo jiā yuán!', en: 'Protecting the Earth brooks no delay; let\'s work together to safeguard a sustainable home for future generations!' }
+                    ]
+                },
+                {
+                    id: 'p6-dreams',
+                    level: 'P6',
+                    title: '未来的梦想与抱负 (Future Aspirations)',
+                    bgPattern: 'bg-gradient-to-br from-purple-100 to-fuchsia-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '卓航', avatar: '👦', color: 'bg-purple-600', align: 'left', pitch: 1.0 },
+                        { id: 'B', name: '佳怡', avatar: '👧', color: 'bg-rose-500', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '佳怡，刚才周会上的职业分享讲座真精彩，你将来长大后想从事什么行业？', py: 'Jiā yí, gāng cái zhōu huì shàng de zhí yè fēn xiǎng jiǎng zuò zhēn jīng cǎi, nǐ jiāng lái zhǎng dà hòu xiǎng cóng shì shén me háng yè?', en: 'Jiayi, the career sharing talk during assembly just now was great; what profession do you want to pursue when you grow up?' },
+                        { speaker: 'B', zh: '卓航，我的理想是成为一名兽医，因为我从小就对各种小动物充满爱心。', py: 'Zhuó háng, wǒ de lǐ xiǎng shì chéng wéi yì míng shòu yī, yīn wèi wǒ cóng xiǎo jiù duì gè zhǒng xiǎo dòng wù chōng mǎn ài xīn.', en: 'Zhuohang, my dream is to become a veterinarian because I have loved all kinds of animals since young.' },
+                        { speaker: 'A', zh: '当兽医不仅需要爱心，还要具备丰富的医学知识和冷静处理突发状况的能力。', py: 'Dāng shòu yī bù jǐn xū yào ài xīn, hái yào jù bèi fēng fù de yī xué zhī shi hé lěng jìng chǔ lǐ tū fā zhuàng kuàng de néng lì.', en: 'Being a vet requires not only love, but also rich medical knowledge and calmness in handling emergencies.' },
+                        { speaker: 'B', zh: '是的，因为动物不会说话，生病时全靠兽医细心观察症状才能对症下药。', py: 'Shì de, yīn wèi dòng wù bú huì shuō huà, shēng bìng shí quán kào shòu yī xì xīn guān chá zhèng zhuàng cái néng duì zhèng xià yào.', en: 'Yes, since animals cannot speak, when sick they rely entirely on the vet\'s careful observation to prescribe the right treatment.' },
+                        { speaker: 'A', zh: '那你呢？你平时那么喜欢拼装模型和绘画，是不是想当一名建筑设计师？', py: 'Nà nǐ ne? Nǐ píng shí nà me xǐ huan pīn zhuāng mó xíng hé huì huà, shì bu shì xiǎng dāng yì míng jiàn zhù shè jì shī?', en: 'What about you? You love building models and drawing so much, do you want to be an architectural designer?' },
+                        { speaker: 'B', zh: '你真了解我！我希望能设计出既环保节能又充满绿意的新加坡未来组屋。', py: 'Nǐ zhēn liǎo jiě wǒ! Wǒ xī wàng néng shè jì chū jì huán bǎo jié néng yòu chōng mǎn lǜ yì de Xīn jiā pō wèi lái zǔ wū.', en: 'You know me so well! I hope to design future Singapore HDB flats that are both eco-friendly and filled with greenery.' },
+                        { speaker: 'A', zh: '如果能在高楼之间建造空中花园和雨水收集系统，居民的生活品质一定会更高。', py: 'Rú guǒ néng zài gāo lóu zhī jiān jiàn zào kōng zhōng huā yuán hé yǔ shuǐ shōu jí xì tǒng, jū mín de shēng huó pǐn zhì yí dìng huì gèng gāo.', en: 'If sky gardens and rainwater collection systems are built between tall blocks, residents\' quality of life will be even higher.' },
+                        { speaker: 'B', zh: '所谓千里之行，始于足下，伟大的梦想需要我们从现在开始一步一脚印去实现。', py: 'Suǒ wèi qiān lǐ zhī xíng, shǐ yú zú xià, wěi dà de mèng xiǎng xū yào wǒ men cóng xiàn zài kāi shǐ yí bù yì jiǎo yìn qù shí xiàn.', en: 'A journey of a thousand miles begins with a single step; great dreams require us to work step by step starting now.' },
+                        { speaker: 'A', zh: '没错，我们目前最重要的任务就是打好各科基础，培养终身学习的良好习惯。', py: 'Méi cuò, wǒ men mù qián zuì zhòng yào de rèn wù jiù shì dǎ hǎo gè kē jī chǔ, péi yǎng zhōng shēn xué xí de liáng hǎo xí guàn.', en: 'That\'s right, our most important task now is building a strong foundation in all subjects and developing lifelong learning habits.' },
+                        { speaker: 'B', zh: '让我们怀揣着各自的远大抱负，在即将到来的中学阶段继续奋发图强吧！', py: 'Ràng wǒ men huái chuāi zhe gè zì de yuǎn dà bào fù, zài jí jiāng dào lái de zhōng xué jiē duàn jì xù fèn fā tú qiáng ba!', en: 'Let\'s hold onto our lofty aspirations and continue striving hard in our upcoming secondary school journey!' }
+                    ]
+                },
+                {
+                    id: 'p6-setback',
+                    level: 'P6',
+                    title: '克服挫折与坚毅 (Overcoming Setbacks)',
+                    bgPattern: 'bg-gradient-to-br from-amber-100 to-rose-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '爸爸', avatar: '👨', color: 'bg-indigo-600', align: 'left', pitch: 0.9 },
+                        { id: 'B', name: '冠宇', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '爸爸，这次全国校际羽毛球半决赛我竟然以两分之差落败了，真不甘心！', py: 'Bà ba, zhè cì quán guó xiào jì yǔ máo qiú bàn jué sài wǒ jìng rán yǐ liǎng fēn zhī chā luò bài le, zhēn bù gān xīn!', en: 'Dad, I actually lost the National School Games badminton semi-final by just two points, I feel so unwilling to accept it!' },
+                        { speaker: 'A', zh: '冠宇，爸爸在观众席上看到你为了救球摔倒好几次，你已经拼尽全力了。', py: 'Guàn yǔ, bà ba zài guān zhòng xí shàng kàn dào nǐ wèi le jiù qiú shuāi dǎo hǎo jǐ cì, nǐ yǐ jīng pīn jìn quán lì le.', en: 'Guanyu, Dad saw you dive to save the shuttlecock several times from the stands; you already gave it your all.' },
+                        { speaker: 'B', zh: '可是我每天放学后都挥汗如雨地苦练球技，为什么还是没能闯进决赛呢？', py: 'Kě shì wǒ měi tiān fàng xué hòu dōu huī hàn rú yǔ de kǔ liàn qiú jì, wèi shén me hái shì méi néng chuǎng jìn jué sài ne?', en: 'But I practiced my skills tirelessly sweating buckets after school every day, why couldn\'t I make it to the finals?' },
+                        { speaker: 'A', zh: '古人说胜败乃兵家常事，比赛场上的失利并不代表你平时的汗水白流了。', py: 'Gǔ rén shuō shèng bài nǎi bīng jiā cháng shì, bǐ sài chǎng shàng de shī lì bìng bú dài biǎo nǐ píng shí de hàn shuǐ bái liú le.', en: 'Victory and defeat are common in competition; losing on the court does not mean your daily sweat was in vain.' },
+                        { speaker: 'B', zh: '回想最后一局关键时刻，我因为太急于求成，结果连续两次杀球出界。', py: 'Huí xiǎng zuì hòu yì jú guān jiàn shí kè, wǒ yīn wèi tài jí yú qiú chéng, jié guǒ lián xù liǎng cì shā qiú chū jiè.', en: 'Looking back at the crucial moment in the final set, I was too eager to win and smashed out of bounds twice in a row.' },
+                        { speaker: 'A', zh: '你能冷静分析自己失败的原因，说明这场比赛已经让你获得了宝贵的经验。', py: 'Nǐ néng lěng jìng fēn xī zì jǐ shī bài de yuán yīn, shuō míng zhè chǎng bǐ sài yǐ jīng ràng nǐ huò dé le bǎo guì de jīng yàn.', en: 'Being able to calmly analyze the reason for your loss shows this match has already given you valuable experience.' },
+                        { speaker: 'B', zh: '对手在落后的时候依然沉着应战，那种处变不惊的心理素质确实值得我学习。', py: 'Duì shǒu zài luò hòu de shí hou yī rán chén zhuó yìng zhàn, nà zhǒng chǔ biàn bù jīng de xīn lǐ sù zhì què shí zhí de wǒ xué xí.', en: 'My opponent stayed calm even when trailing behind; that composed mental strength is truly worth learning from.' },
+                        { speaker: 'A', zh: '人生就像一场马拉松，遇到挫折时如果一蹶不振，那才是真正的失败。', py: 'Rén shēng jiù xiàng yì chǎng mǎ lā sōng, yù dào cuò zhé shí rú guǒ yì jué bú zhèn, nà cái shì zhēn zhèng de shī bài.', en: 'Life is like a marathon; giving up completely when facing setbacks is the only true failure.' },
+                        { speaker: 'B', zh: '我明白了，失败乃成功之母，我会针对自己的弱点在接下来的训练中加以改进。', py: 'Wǒ míng bái le, shī bài nǎi chéng gōng zhī mǔ, wǒ huì zhēn duì zì jǐ de ruò diǎn zài jiē xià lái de xùn liàn zhōng jiā yǐ gǎi jìn.', en: 'I understand, failure is the mother of success; I will work on my weaknesses in upcoming training sessions.' },
+                        { speaker: 'A', zh: '这就对了，能以百折不挠的精神面对困难，你将来无论做什么都会成功的！', py: 'Zhè jiù duì le, néng yǐ bǎi zhé bù náo de jīng shén miàn duì kùn nan, nǐ jiāng lái wú lùn zuò shén me dōu huì chéng gōng de!', en: 'That\'s the spirit! Facing difficulties with unyielding perseverance means you will succeed in whatever you do in the future!' }
+                    ]
+                },
+                {
+                    id: 'p6-sec',
+                    level: 'P6',
+                    title: '参观中学开放日 (Secondary School Open House)',
+                    bgPattern: 'bg-gradient-to-br from-sky-100 to-teal-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-teal-600', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '奕辰', avatar: '👦', color: 'bg-indigo-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '奕辰，今天我们参观了两所中学的开放日，你对哪一所学校的印象比较深刻？', py: 'Yì chén, jīn tiān wǒ men cān guān le liǎng suǒ zhōng xué de kāi fàng rì, nǐ duì nǎ yì suǒ xué xiào de yìn xiàng bǐ jiào shēn kè?', en: 'Yichen, we visited two Secondary School Open Houses today, which school left a deeper impression on you?' },
+                        { speaker: 'B', zh: '妈妈，我非常喜欢立化中学的校园环境，而且那里的学长学姐都十分热情有礼。', py: 'Mā ma, wǒ fēi cháng xǐ huan Lì huà zhōng xué de xiào yuán huán jìng, ér qiě nà lǐ de xué zhǎng xué jiě dōu shí fēn rè qíng yǒu lǐ.', en: 'Mom, I really liked the campus environment there, and the senior students were all very warm and polite.' },
+                        { speaker: 'A', zh: '选择中学不能只看名气或朋友去哪里，最重要的是适合你的学习风格和兴趣。', py: 'Xuǎn zé zhōng xué bù néng zhǐ kàn míng qì huò péng you qù nǎ lǐ, zuì zhòng yào de shì shì hé nǐ de xué xí fēng gé hé xìng qù.', en: 'Choosing a secondary school shouldn\'t just depend on fame or where friends go; what matters most is fitting your learning style and interests.' },
+                        { speaker: 'B', zh: '是的，那所学校设有我最感兴趣的机器人编程应用学习项目和华乐团。', py: 'Shì de, nà suǒ xué xiào shè yǒu wǒ zuì gǎn xìng qù de jī qì rén biān chéng yìng yòng xué xí xiàng mù hé huá yuè tuán.', en: 'Yes, that school offers the robotics coding Applied Learning Programme and Chinese Orchestra that I am most interested in.' },
+                        { speaker: 'A', zh: '另外，我们也得考虑学校与住家的距离，每天花太多时间搭车会让人筋疲力尽。', py: 'Lìng wài, wǒ men yě děi kǎo lǜ xué xiào yǔ zhù jiā de jù lí, měi tiān huā tài duō shí jiān dā chē huì ràng rén jīn pí lì jìn.', en: 'In addition, we must consider the distance between home and school; spending too much time commuting daily is exhausting.' },
+                        { speaker: 'B', zh: '我查过了路线，从我们家搭地铁过去只需要二十分钟，交通非常便利。', py: 'Wǒ chá guò le lù xiàn, cóng wǒ men jiā dā dì tiě guò qù zhǐ xū yào èr shí fēn zhōng, jiāo tōng fēi cháng biàn lì.', en: 'I checked the route; taking the MRT from our home only takes twenty minutes, so transport is very convenient.' },
+                        { speaker: 'A', zh: '现在新加坡中学实行科目编班制，学生可以根据自己的强项修读不同水准的科目。', py: 'Xiàn zài Xīn jiā pō zhōng xué shí xíng kē mù biān bān zhì, xué shēng kě yǐ gēn jù zì jǐ de qiáng xiàng xiū dú bù tóng shuǐ zhǔn de kē mù.', en: 'Now Singapore secondary schools practice Full Subject-Based Banding, so students can take subjects at different levels based on their strengths.' },
+                        { speaker: 'B', zh: '这项制度很有弹性，能让我充分发挥华文和数学的特长，同时稳步提升英文。', py: 'Zhè xiàng zhì dù hěn yǒu tán xìng, néng ràng wǒ chōng fèn fā huī huá wén hé shù xué de tè cháng, tóng shí wěn bù tí shēng yīng wén.', en: 'This system is very flexible, allowing me to maximize my strengths in Chinese and Math while steadily improving my English.' },
+                        { speaker: 'A', zh: '升上中学意味着迈入新的人生阶段，你需要学会独立管理更多的科目和活动。', py: 'Shēng shàng zhōng xué yì wèi zhe mài rù xīn de rén shēng jiē duàn, nǐ xū yào xué huì dú lì guǎn lǐ gèng duō de kē mù hé huó dòng.', en: 'Moving up to secondary school means entering a new life stage where you must independently manage more subjects and activities.' },
+                        { speaker: 'B', zh: '我已经做好心理准备了，不管最终被哪所学校录取，我都会全力以赴做到最好！', py: 'Wǒ yǐ jīng zuò hǎo xīn lǐ zhǔn bèi le, bù guǎn zuì zhōng bèi nǎ suǒ xué xiào lù qǔ, wǒ dōu huì quán lì yǐ fù zuò dào zuì hǎo!', en: 'I am mentally prepared; whichever school I am posted to eventually, I will do my utmost best!' }
+                    ]
+                },
+                {
+                    id: 'p6-gratitude',
+                    level: 'P6',
+                    title: '师恩难忘谢师宴 (Gratitude to Teachers)',
+                    bgPattern: 'bg-gradient-to-br from-rose-100 to-amber-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '黄老师', avatar: '👩‍🏫', color: 'bg-rose-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '班长若曦', avatar: '👧', color: 'bg-amber-600', align: 'right', pitch: 1.25 }
+                    ],
+                    lines: [
+                        { speaker: 'B', zh: '黄老师，这是我们全班同学亲手制作的感恩纪念册，送给您留作纪念！', py: 'Huáng lǎo shī, zhè shì wǒ men quán bān tóng xué qīn shǒu zhì zuò de gǎn ēn jì niàn cè, sòng gěi nín liú zuò jì niàn!', en: 'Teacher Wong, this is a gratitude scrapbook handmade by our entire class, presented to you as a keepsake!' },
+                        { speaker: 'A', zh: '若曦，看到纪念册里贴满了这两年来的班级合照和大家的祝福，老师太感动了。', py: 'Ruò xī, kàn dào jì niàn cè lǐ tiē mǎn le zhè liǎng nián lái de bān jí hé zhào hé dà jiā de zhù fú, lǎo shī tài gǎn dòng le.', en: 'Ruoxi, seeing the scrapbook filled with our class photos from the past two years and everyone\'s wishes touches me deeply.' },
+                        { speaker: 'B', zh: '还记得五年级刚开学的时候，我们班纪律散漫，华文成绩也总是差强人意。', py: 'Hái jì de wǔ nián jí gāng kāi xué de shí hou, wǒ men bān jì lǜ sǎn màn, huá wén chéng jì yě zǒng shì chā qiáng rén yì.', en: 'I still remember when Primary 5 first started, our class discipline was loose and our Chinese grades were barely satisfactory.' },
+                        { speaker: 'A', zh: '但是大家本质都很善良聪明，只是缺乏正确的学习方法和自信心而已。', py: 'Dàn shì dà jiā běn zhì dōu hěn shàn liáng cōng ming, zhǐ shì quē fá zhèng què de xué xí fāng fǎ hé zì xìn xīn ér yǐ.', en: 'However, everyone was kind and smart at heart, just lacking the right study methods and self-confidence.' },
+                        { speaker: 'B', zh: '您非但没有放弃我们，反而牺牲休息时间留校为我们补习，因材施教。', py: 'Nín fēi dàn méi yǒu fàng qì wǒ men, fǎn ér xī shēng xiū xi shí jiān liú xiào wèi wǒ men bǔ xí, yīn cái shī jiào.', en: 'Not only did you not give up on us, you sacrificed your rest time to stay back for remedial lessons tailored to our needs.' },
+                        { speaker: 'A', zh: '看到你们从害怕写作文到如今能够出口成章、落笔生花，一切辛苦都值得了。', py: 'Kàn dào nǐ men cóng hài pà xiě zuò wén dào rú jīn néng gòu chū kǒu chéng zhāng, luò bǐ shēng huā, yí qiè xīn kǔ dōu zhí dé le.', en: 'Seeing you grow from fearing compositions to speaking and writing eloquently makes all the hard work worthwhile.' },
+                        { speaker: 'B', zh: '除了传授书本上的知识，您更以身作则，教导我们做人要诚实守信、饮水思源。', py: 'Chú le chuán shòu shū běn shàng de zhī shi, nín gèng yǐ shēn zuò zé, jiāo dǎo wǒ men zuò rén yào chéng shí shǒu xìn, yǐn shuǐ sī yuán.', en: 'Besides teaching textbook knowledge, you led by example and taught us to be honest, trustworthy, and grateful.' },
+                        { speaker: 'A', zh: '十年树木，百年树人，能够陪伴你们走过小学最后的时光是老师的荣幸。', py: 'Shí nián shù mù, bǎi nián shù rén, néng gòu péi bàn nǐ men zǒu guò xiǎo xué zuì hòu de shí guāng shì lǎo shī de róng xìng.', en: 'It takes ten years to grow trees, but a hundred to nurture people; accompanying you through your final primary years is my honor.' },
+                        { speaker: 'B', zh: '毕业之后我们一定会常回母校探望您，向您汇报我们在中学的学习进展。', py: 'Bì yè zhī hòu wǒ men yí dìng huì cháng huí mǔ xiào tàn wàng nín, xiàng nín huì bào wǒ men zài zhōng xué de xué xí jìn zhǎn.', en: 'After graduation, we will definitely visit our alma mater often to see you and update you on our secondary school progress.' },
+                        { speaker: 'A', zh: '祝愿你们前程似锦、展翅高飞，母校的大门永远为你们敞开！', py: 'Zhù yuàn nǐ men qián chéng sì jǐn, zhǎn chì gāo fēi, mǔ xiào de dà mén yǒng yuǎn wèi nǐ men chǎng kāi!', en: 'Wishing you a bright future and soaring wings; the doors of your alma mater will always be open for you!' }
+                    ]
+                },
+                {
+                    id: 'p6-fakenews',
+                    level: 'P6',
+                    title: '辨别网络假新闻 (Spotting Fake News)',
+                    bgPattern: 'bg-gradient-to-br from-slate-100 to-indigo-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '妈妈', avatar: '👩', color: 'bg-indigo-600', align: 'left', pitch: 1.1 },
+                        { id: 'B', name: '浩然', avatar: '👦', color: 'bg-sky-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '浩然，群组里刚刚有人转发消息，说下周全岛超市都会缺货，我们要去抢购吗？', py: 'Hào rán, qún zǔ lǐ gāng gāng yǒu rén zhuǎn fā xiāo xi, shuō xià zhōu quán dǎo chāo shì dōu huì quē huò, wǒ men yào qù qiǎng gòu ma?', en: 'Haoran, someone in the group chat just forwarded a message saying supermarkets islandwide will run out of stock next week, should we rush to buy?' },
+                        { speaker: 'B', zh: '妈妈请先冷静，这条信息既没有注明官方来源，标题又十分耸人听闻，很可疑！', py: 'Mā ma qǐng xiān lěng jìng, zhè tiáo xìn xī jì méi yǒu zhù míng guān fāng lái yuán, biāo tí yòu shí fēn sǒng rén tīng wén, hěn kě yí!', en: 'Mom please stay calm first; this message cites no official source and has a sensational headline, which is very suspicious!' },
+                        { speaker: 'A', zh: '可是上面还附带了一张货架空空如也的照片，难道照片也会造假吗？', py: 'Kě shì shàng miàn hái fù dài le yì zhāng huò jià kōng kōng rú yě de zhào piàn, nán dào zhào piàn yě huì zào jiǎ ma?', en: 'But it even includes a photo of empty shelves; could a photo be faked too?' },
+                        { speaker: 'B', zh: '学校媒体素养课教过我们，很多假新闻会移花接木，用几年前的旧照片误导大众。', py: 'Xué xiào méi tǐ sù yǎng kè jiāo guò wǒ men, hěn duō jiǎ xīn wén huì yí huā jiē mù, yòng jǐ nián qián de jiù zhào piàn wù dǎo dà zhòng.', en: 'Our school media literacy lesson taught us that fake news often uses old photos out of context to mislead the public.' },
+                        { speaker: 'A', zh: '原来如此，那么我们应该通过什么渠道去查证这条消息的真伪呢？', py: 'Yuán lái rú cǐ, nà me wǒ men yīng gāi tōng guò shén me qú dào qù chá zhèng zhè tiáo xiāo xi de zhēn wěi ne?', en: 'I see, then through what channels should we verify whether this news is true or false?' },
+                        { speaker: 'B', zh: '我们可以浏览联合早报等主流媒体网站，或者到政府官方网站查询最新公告。', py: 'Wǒ men kě yǐ liú lǎn Lián hé zǎo bào děng zhǔ liú méi tǐ wǎng zhàn, huò zhě dào zhèng fǔ guān fāng wǎng zhàn chá xún zuì xīn gōng gào.', en: 'We can browse mainstream media websites like Lianhe Zaobao, or check official government websites for the latest announcements.' },
+                        { speaker: 'A', zh: '我刚刚上网查了一下，贸易及工业部已经发文辟谣，证明这果然是一则谣言！', py: 'Wǒ gāng gāng shàng wǎng chá le yí xià, mào yì jí gōng yè bù yǐ jīng fā wén pì yáo, zhèng míng zhè guǒ rán shì yì zé yáo yán!', en: 'I just checked online, and the Ministry of Trade and Industry has already debunked it, proving it is indeed a rumor!' },
+                        { speaker: 'B', zh: '如果大家不经查证就盲目转发谣言，不仅会引起社会恐慌，还可能触犯法律。', py: 'Rú guǒ dà jiā bù jīng chá zhèng jiù máng mù zhuǎn fā yáo yán, bù jǐn huì yǐn qǐ shè huì kǒng huāng, hái kě néng chù fàn fǎ lǜ.', en: 'If people blindly forward rumors without verifying, it not only causes public panic, but may also break the law.' },
+                        { speaker: 'A', zh: '幸好有你提醒妈妈，我现在就把官方的澄清链接发到群组里提醒亲戚朋友们。', py: 'Xìng hǎo yǒu nǐ tí xǐng mā ma, wǒ xiàn zài jiù bǎ guān fāng de chéng qīng liàn jiē fā dào qún zǔ lǐ tí xǐng qīn qi péng you men.', en: 'Thankfully you reminded Mom; I will send the official clarification link to the group chat right now to alert our relatives and friends.' },
+                        { speaker: 'B', zh: '谣言止于智者，在资讯爆炸的时代，保持独立思考和求真精神至关重要！', py: 'Yáo yán zhǐ yú zhì zhě, zài zī xùn bào zhà de shí dài, bǎo chí dú lì sī kǎo hé qiú zhēn jīng shén zhì guān zhòng yào!', en: 'Rumors stop with the wise; in the information age, maintaining independent thinking and a truth-seeking spirit is vital!' }
+                    ]
+                },
+                {
+                    id: 'p6-aging',
+                    level: 'P6',
+                    title: '关怀乐龄化社会 (Caring for an Ageing Society)',
+                    bgPattern: 'bg-gradient-to-br from-teal-100 to-amber-100 bg-pattern-dots',
+                    roles: [
+                        { id: 'A', name: '王阿姨', avatar: '👩', color: 'bg-teal-600', align: 'left', pitch: 1.15 },
+                        { id: 'B', name: '楷泽', avatar: '👦', color: 'bg-amber-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '楷泽，你看我们组屋区最近增设了许多无障碍斜坡和扶手，你知道原因吗？', py: 'Kǎi zé, nǐ kàn wǒ men zǔ wū qū zuì jìn zēng shè le xǔ duō wú zhàng ài xié pō hé fú shǒu, nǐ zhī dào yuán yīn ma?', en: 'Kaize, look at how our HDB estate recently added many barrier-free ramps and handrails; do you know why?' },
+                        { speaker: 'B', zh: '王阿姨，这是因为新加坡正步入老龄化社会，需要打造亲乐龄的居住环境。', py: 'Wáng ā yí, zhè shì yīn wèi Xīn jiā pō zhèng bù rù lǎo líng huà shè huì, xū yào dǎ zào qīn lè líng de jū zhù huán jìng.', en: 'Auntie Wang, it is because Singapore is becoming an ageing society and needs to build a senior-friendly living environment.' },
+                        { speaker: 'A', zh: '观察得很仔细，马路的行人交通灯旁也安装了乐龄安全区刷卡器。', py: 'Guān chá de hěn zǐ xì, mǎ lù de xíng rén jiāo tōng dēng páng yě ān zhuāng le lè líng ān quán qū shuā kǎ qì.', en: 'Very observant! Senior Silver Zone card readers have also been installed beside pedestrian traffic lights.' },
+                        { speaker: 'B', zh: '行动不便的年长者只要用优惠车资卡轻触感应器，绿灯闪动的时间就会延长。', py: 'Xíng dòng bú biàn de nián zhǎng zhě zhǐ yào yòng yōu huì chē zī kǎ qīng chù gǎn yìng qì, lǜ dēng shǎn dòng de shí jiān jiù huì yán cháng.', en: 'Seniors with mobility challenges just tap their concession card on the sensor, and the green man flashing time is extended.' },
+                        { speaker: 'A', zh: '除了硬件设施的改善，你认为年长者在日常生活中最需要的是什么？', py: 'Chú le yìng jiàn shè shī de gǎi shàn, nǐ rèn wéi nián zhǎng zhě zài rì cháng shēng huó zhōng zuì xū yào de shì shén me?', en: 'Besides improvements in hardware facilities, what do you think seniors need most in their daily lives?' },
+                        { speaker: 'B', zh: '我认为他们最需要晚辈的关怀、耐心倾听以及心灵上的温暖陪伴。', py: 'Wǒ rèn wéi tā men zuì xū yào wǎn bèi de guān huái, nài xīn qīng tīng yǐ jí xīn líng shàng de wēn nuǎn péi bàn.', en: 'I believe what they need most is care from the younger generation, patient listening, and warm companionship.' },
+                        { speaker: 'A', zh: '有些独居老人平时家里冷冷清清，如果生病或跌倒了也很难及时被人发现。', py: 'Yǒu xiē dú jū lǎo rén píng shí jiā lǐ lěng lěng qīng qīng, rú guǒ shēng bìng huò diē dǎo le yě hěn nán jí shí bèi rén fā xiàn.', en: 'Some seniors living alone have quiet homes, and if they fall ill or trip, it is hard for others to notice in time.' },
+                        { speaker: 'B', zh: '因此我们应该发扬远亲不如近邻的甘榜精神，主动问候和照应隔壁的独居长者。', py: 'Yīn cǐ wǒ men yīng gāi fā yáng yuǎn qīn bù rú jìn lín de gān bǎng jīng shén, zhǔ dòng wèn hòu hé zhào yìng gé bì de dú jū zhǎng zhě.', en: 'Therefore we should promote the Kampong spirit where close neighbors are dearer than distant relatives, checking on elderly neighbors.' },
+                        { speaker: 'A', zh: '社区俱乐部每个周末也有举办健康晨运和园艺活动，鼓励乐龄人士保持活跃。', py: 'Shè qū jù lè bù měi gè zhōu mò yě yǒu jǔ bàn jiàn kāng chén yùn hé yuán yì huó dòng, gǔ lì lè líng rén shì bǎo chí huó yuè.', en: 'The Community Club also holds morning exercises and gardening every weekend to encourage seniors to stay active.' },
+                        { speaker: 'B', zh: '家有一老，如有一宝，让我们共同营造一个老有所依、充满温情的社会！', py: 'Jiā yǒu yì lǎo, rú yǒu yì bǎo, ràng wǒ men gòng tóng yíng zào yí gè lǎo yǒu suǒ yī, chōng mǎn wēn qíng de shè huì!', en: 'An elderly person at home is a treasure; let\'s build a warm society where seniors are well cared for!' }
+                    ]
+                },
+                {
+                    id: 'p6-farewell',
+                    level: 'P6',
+                    title: '小学毕业典礼 (Primary School Graduation Day)',
+                    bgPattern: 'bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 bg-pattern-waves',
+                    roles: [
+                        { id: 'A', name: '子涵', avatar: '👧', color: 'bg-purple-600', align: 'left', pitch: 1.25 },
+                        { id: 'B', name: '宇轩', avatar: '👦', color: 'bg-indigo-600', align: 'right', pitch: 1.0 }
+                    ],
+                    lines: [
+                        { speaker: 'A', zh: '宇轩，今天是我们六年小学生涯的最后一天，站在礼堂舞台上真让人百感交集。', py: 'Yǔ xuān, jīn tiān shì wǒ men liù nián xiǎo xué shēng yá de zuì hòu yì tiān, zhàn zài lǐ táng wǔ tái shàng zhēn ràng rén bǎi gǎn jiāo jí.', en: 'Yuxuan, today is the very last day of our six-year primary school journey; standing on the hall stage brings mixed emotions.' },
+                        { speaker: 'B', zh: '是啊子涵，光阴似箭，仿佛昨天我们才刚背着大书包怯生生地踏入一年级课室。', py: 'Shì a Zǐ hán, guāng yīn sì jiàn, fǎng fú zuó tiān wǒ men cái gāng bēi zhe dà shū bāo qiè shēng shēng de tà rù yī nián jí kè shì.', en: 'Yes Zihan, time flies like an arrow; it feels like just yesterday we timidly stepped into our Primary 1 classroom with big schoolbags.' },
+                        { speaker: 'A', zh: '转眼间六年过去了，校园里的每一个角落都留下了我们一起欢笑和奋斗的足迹。', py: 'Zhuǎn yǎn jiān liù nián guò qù le, xiào yuán lǐ de měi yí gè jiǎo luò dōu liú xià le wǒ men yì qǐ huān xiào hé fèn dòu de zú jì.', en: 'In the blink of an eye six years have passed, and every corner of the campus holds footprints of our laughter and hard work.' },
+                        { speaker: 'B', zh: '我还记得四年级露营时大家一起淋雨搭帐篷，以及五年级观赏国民教育演出的情景。', py: 'Wǒ hái jì de sì nián jí lù yíng shí dà jiā yì qǐ lín yǔ dā zhàng peng, yǐ jí wǔ nián jí guān shǎng guó mín jiào yù yǎn chū de qíng jǐng.', en: 'I still remember pitching tents in the rain during our P4 camp, and watching the NE Show together in P5.' },
+                        { speaker: 'A', zh: '更难忘的是今年备战小六会考，我们互相鼓励、并肩作战，度过了最充实的岁月。', py: 'Gèng nán wàng de shì jīn nián bèi zhàn xiǎo liù huì kǎo, wǒ men hù xiāng gǔ lì, bìng jiān zuò zhàn, dù guò le zuì chōng shí de suì yuè.', en: 'Even more unforgettable was preparing for the PSLE this year, encouraging each other and fighting side by side.' },
+                        { speaker: 'B', zh: '刚才从校长手中接过毕业证书的那一刻，我既感到自豪，又舍不得离开大家。', py: 'Gāng cái cóng xiào zhǎng shǒu zhōng jiē guò bì yè zhèng shū de nà yí kè, wǒ jì gǎn dào zì háo, yòu shě bu de lí kāi dà jiā.', en: 'The moment I received my graduation certificate from the Principal just now, I felt both proud and reluctant to part.' },
+                        { speaker: 'A', zh: '天下无不散之筵席，虽然明年我们会升上不同的中学，但我们的友谊永远不会改变。', py: 'Tiān xià wú bú sàn zhī yán xí, suī rán míng nián wǒ men huì shēng shàng bù tóng de zhōng xué, dàn wǒ men de yǒu yì yǒng yuǎn bú huì gǎi biàn.', en: 'All good things must come to an end; although we will go to different secondary schools next year, our friendship will never change.' },
+                        { speaker: 'B', zh: '请你在我的毕业纪念册上写下赠言和联系方式，假期时我们还要出来聚会打球！', py: 'Qǐng nǐ zài wǒ de bì yè jì niàn cè shàng xiě xià zèng yán hé lián xì fāng shì, jià qī shí wǒ men hái yào chū lái jù huì dǎ qiú!', en: 'Please write your message and contact info in my autograph book; we must still meet up to play ball during the holidays!' },
+                        { speaker: 'A', zh: '一定会的，海内存知己，天涯若比邻，无论身在何处我们都是最要好的挚友。', py: 'Yí dìng huì de, hǎi nèi cún zhī jǐ, tiān yá ruò bǐ lín, wú lùn shēn zài hé chù wǒ men dōu shì zuì yào hǎo de zhì yǒu.', en: 'Definitely! True friends feel close even when far apart; wherever we are, we will remain best friends.' },
+                        { speaker: 'B', zh: '毕业歌的音乐响起来了，让我们满怀信心地大声合唱，迎接崭新的中学旅程吧！', py: 'Bì yè gē de yīn yuè xiǎng qǐ lái le, ràng wǒ men mǎn huái xìn xīn de dà shēng hé chàng, yíng jiē zhǎn xīn de zhōng xué lǚ chéng ba!', en: 'The graduation song is playing; let\'s sing aloud with full confidence and welcome our brand-new secondary school journey!' }
+                    ]
                 }
             ]
         };
@@ -1175,9 +1901,11 @@
             const ranks = [
                 { min: 0, max: 100, level: 1, title: '🌱 Lv.1 华语小幼苗', short: 'Lv.1 小幼苗' },
                 { min: 100, max: 250, level: 2, title: '🐣 Lv.2 朗读小能手', short: 'Lv.2 小能手' },
-                { min: 250, max: 450, level: 3, title: '🦁 Lv.3 畅聊小达人', short: 'Lv.3 小达人' },
-                { min: 450, max: 700, level: 4, title: '🐉 Lv.4 华语小博士', short: 'Lv.4 小博士' },
-                { min: 700, max: 1200, level: 5, title: '👑 Lv.5 狮城小状元', short: 'Lv.5 小状元' }
+                { min: 250, max: 500, level: 3, title: '🦁 Lv.3 畅聊小达人', short: 'Lv.3 小达人' },
+                { min: 500, max: 900, level: 4, title: '🐉 Lv.4 华语小博士', short: 'Lv.4 小博士' },
+                { min: 900, max: 1500, level: 5, title: '🦉 Lv.5 辩论智多星', short: 'Lv.5 智多星' },
+                { min: 1500, max: 2500, level: 6, title: '🦅 Lv.6 雄辩演说家', short: 'Lv.6 演说家' },
+                { min: 2500, max: 5000, level: 7, title: '👑 Lv.7 狮城大状元', short: 'Lv.7 大状元' }
             ];
             const r = ranks.find(item => xp < item.max) || ranks[ranks.length - 1];
             const progress = Math.min(100, Math.max(6, Math.round(((xp - r.min) / (r.max - r.min)) * 100)));
@@ -1285,26 +2013,30 @@
 
         function setFilterLevel(lvl) {
             state.filterLevel = lvl;
-            ['ALL', 'P1', 'P2', 'P3'].forEach(id => {
+            const inactiveStyles = {
+                ALL: 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-100 text-slate-700 hover:bg-slate-200',
+                P1: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5',
+                P2: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5',
+                P3: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5',
+                P4: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1.5',
+                P5: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center gap-1.5',
+                P6: 'px-3 py-2 rounded-2xl font-black text-xs transition-all bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5'
+            };
+
+            ['ALL', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6'].forEach(id => {
                 const btn = document.getElementById(`tab-${id}`);
                 if (!btn) return;
                 if (id === lvl) {
                     btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-900 text-white shadow-md scale-105 flex items-center gap-1.5';
-                } else if (id === 'P1') {
-                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1.5';
-                } else if (id === 'P2') {
-                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center gap-1.5';
-                } else if (id === 'P3') {
-                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 flex items-center gap-1.5';
                 } else {
-                    btn.className = 'px-3.5 py-2 rounded-2xl font-black text-xs transition-all bg-slate-100 text-slate-700 hover:bg-slate-200';
+                    btn.className = inactiveStyles[id];
                 }
             });
 
             const descPill = document.getElementById('level-desc-pill');
             if (descPill) {
                 descPill.textContent = lvl === 'ALL'
-                    ? 'Showing all 9 Singapore stories across Primary 1, 2 & 3!'
+                    ? `Showing all ${state.scripts.length} Singapore stories across Primary 1 to Primary 6!`
                     : LEVEL_CONFIG[lvl].description;
             }
             renderScenarioList();
@@ -1329,14 +2061,14 @@
         // HTML Generators
         function generateRubyHTML(zh, py, lineIndex) {
             const zhChars = Array.from(zh);
-            const pyWords = py.trim().replace(/([，。！？、：；,.!?])/g, ' ').trim().split(/\s+/);
+            const pyWords = py.trim().replace(/([，。！？、：；,.!?—…“”‘’（）()])/g, ' ').trim().split(/\s+/);
             
             let pyIndex = 0;
             let html = '';
             
             for (let i = 0; i < zhChars.length; i++) {
                 const char = zhChars[i];
-                const isPunctuation = /[，。！？、：；,.!?]/.test(char);
+                const isPunctuation = /[，。！？、：；,.!?—…“”‘’（）()]/.test(char);
                 
                 if (isPunctuation) {
                     html += `<span class="text-2xl sm:text-3xl font-black text-slate-800 mx-0.5">${char}</span>`;
@@ -2172,7 +2904,7 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
 
         function selectGenLevel(lvl) {
             state.genSelectedLevel = lvl;
-            ['P1', 'P2', 'P3'].forEach(id => {
+            ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'].forEach(id => {
                 const btn = document.getElementById(`gen-btn-${id}`);
                 if (!btn) return;
                 if (id === lvl) {
@@ -2196,15 +2928,18 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
             const cfg = LEVEL_CONFIG[lvl] || LEVEL_CONFIG.P1;
 
             document.getElementById('modal-generate').classList.add('hidden');
-            showLoader(`Writing a ${cfg.label} story for you...`);
+            showLoader(`Writing a ${cfg.label} 10-line story for you...`);
 
             const levelGuidelines = {
                 P1: 'Primary 1 (ages 7): Use very short, basic sentences (5-8 Chinese characters per line) and simple everyday words.',
                 P2: 'Primary 2 (ages 8): Use medium sentences (8-13 Chinese characters per line) with connectors like 因为、所以、一起、请问.',
-                P3: 'Primary 3 (ages 9): Use expressive sentences (12-18 Chinese characters per line) with descriptive adjectives or simple idioms.'
+                P3: 'Primary 3 (ages 9): Use expressive sentences (12-18 Chinese characters per line) with descriptive adjectives or simple idioms.',
+                P4: 'Primary 4 (ages 10): Use practical multi-clause sentences (15-22 Chinese characters per line) about school, community, and good values.',
+                P5: 'Primary 5 (ages 11): Use thoughtful, analytical sentences (18-26 Chinese characters per line) incorporating four-character idioms (成语).',
+                P6: 'Primary 6 (ages 12, PSLE level): Use rich, well-structured sentences (20-30 Chinese characters per line) discussing civic responsibility, reflection, and idioms.'
             };
 
-            const prompt = `Create a fun, natural 4-line Chinese conversation script for students in Singapore based on this topic: "${topic}".
+            const prompt = `Create a fun, natural 10-line Chinese conversation script for students in Singapore based on this topic: "${topic}".
 Target Difficulty: ${levelGuidelines[lvl]}
 Characters should be A (adult/staff/friend) and B (the student).
 Provide space-separated Hanyu Pinyin syllables (1 syllable per Chinese character).
