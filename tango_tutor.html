@@ -324,15 +324,60 @@
         </div>
     </div>
 
-    <!-- Feedback Modal -->
-    <div id="modal-feedback" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 shadow-2xl border-4 border-amber-300 text-center transform transition-all scale-100 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-b from-amber-50 to-white -z-10"></div>
-            <div id="feedback-emoji" class="text-6xl mb-3 drop-shadow-md">⭐</div>
-            <div id="feedback-xp-pill" class="inline-block bg-amber-100 text-amber-800 border border-amber-300 text-xs font-black px-3 py-1 rounded-full mb-2">+15 XP</div>
-            <h3 id="feedback-title" class="text-2xl font-black text-slate-900 mb-2">Great Job!</h3>
-            <p id="feedback-message" class="text-sm font-bold text-slate-700 mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">You nailed the pronunciation!</p>
-            <button onclick="document.getElementById('modal-feedback').classList.add('hidden')" class="w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white text-lg rounded-xl font-black shadow-md transition-transform hover:scale-105">Continue ➤</button>
+    <!-- Feedback Modal with Character Breakdown & Actionable Pronunciation Tips -->
+    <div id="modal-feedback" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-[2rem] max-w-lg w-full p-5 sm:p-6 shadow-2xl border-4 border-amber-300 text-center transform transition-all scale-100 relative overflow-hidden max-h-[92vh] overflow-y-auto">
+            <div class="absolute inset-0 bg-gradient-to-b from-amber-50/80 to-white -z-10"></div>
+            
+            <div class="flex items-center justify-between gap-2 mb-2">
+                <div id="feedback-accuracy-pill" class="bg-slate-900 text-white text-xs font-black px-3 py-1 rounded-full">
+                    🎯 准确度: 100%
+                </div>
+                <div id="feedback-xp-pill" class="inline-block bg-amber-100 text-amber-800 border border-amber-300 text-xs font-black px-3 py-1 rounded-full">+15 XP</div>
+            </div>
+
+            <div id="feedback-emoji" class="text-5xl mb-1.5 drop-shadow-md">⭐</div>
+            <h3 id="feedback-title" class="text-xl sm:text-2xl font-black text-slate-900 mb-1">Great Job!</h3>
+            <p id="feedback-heard" class="text-xs font-bold text-slate-500 mb-3">🎤 识别到的读音: "..."</p>
+
+            <!-- Character-by-Character Diagnostic Breakdown (Tap any character to hear it) -->
+            <div class="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200 mb-3 text-left">
+                <div class="flex items-center justify-between mb-2 flex-wrap gap-1">
+                    <span class="text-[11px] font-black text-slate-600 uppercase tracking-wider">🔍 逐字发音诊断 (点字听标准发音):</span>
+                    <div class="flex items-center gap-2 text-[10px] font-black">
+                        <span class="text-emerald-600">🟢 准确</span>
+                        <span class="text-amber-600">🟡 近音/声调</span>
+                        <span class="text-rose-600">🔴 需重读</span>
+                    </div>
+                </div>
+                <div id="feedback-char-breakdown" class="flex flex-wrap items-center justify-center gap-1.5 py-1">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+
+            <!-- Actionable Coaching Tips -->
+            <div class="bg-indigo-50/90 p-3.5 rounded-2xl border-2 border-indigo-200 mb-4 text-left">
+                <div class="text-xs font-black text-indigo-900 mb-1.5 flex items-center gap-1.5">
+                    <span>💡</span> <span>发音改进建议 (Pronunciation Coach):</span>
+                </div>
+                <p id="feedback-message" class="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed mb-2">You nailed the pronunciation!</p>
+                <ul id="feedback-tips-list" class="space-y-1.5 text-xs font-bold text-indigo-950">
+                    <!-- Specific tone/initial/fluency tips populated by JS -->
+                </ul>
+            </div>
+
+            <!-- Action Buttons: Slow Demo, Retry, or Continue -->
+            <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="speakSlowDemoCurrentLine()" class="flex-1 py-3 px-3 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors">
+                    🐢 慢速示范 (Slow Demo)
+                </button>
+                <button type="button" id="feedback-retry-btn" class="flex-1 py-3 px-3 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors">
+                    🎙️ 再读一次 (Retry)
+                </button>
+                <button type="button" id="feedback-primary-btn" class="w-full py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white text-base sm:text-lg rounded-xl font-black shadow-md transition-transform hover:scale-[1.02]">
+                    Continue ➤
+                </button>
+            </div>
         </div>
     </div>
 
@@ -974,10 +1019,13 @@
             apiKey: getInitialApiKey(),
             isRecording: false,
             lastTranscript: '',
+            transcriptAlternatives: [],
             recognition: null,
+            silenceTimeout: null,
             activeTimer: null,
             fallbackSpeechTimeout: null,
             zhVoice: null,
+            charPinyinMap: {},
             game: loadSavedGame(),
             scripts: [
                 // ================= PRIMARY 1 (小一) - 10 Stories =================
@@ -2454,20 +2502,149 @@
             window.speechSynthesis.onvoiceschanged = loadVoices;
         }
 
-        function initSpeechRecognition() {
+        // Build a comprehensive Character -> Pinyin lookup map from all 60 stories + common homophones
+        const EXTRA_HOMOPHONE_PINYIN = {
+            '弟': 'dì', '蒂': 'dì', '第': 'dì', '地': 'dì', '的': 'de', '得': 'de',
+            '路': 'lù', '录': 'lù', '鹿': 'lù', '露': 'lù', '陆': 'lù',
+            '园': 'yuán', '员': 'yuán', '元': 'yuán', '原': 'yuán', '圆': 'yuán',
+            '面': 'miàn', '棉': 'mián', '免': 'miǎn',
+            '果': 'guǒ', '国': 'guó', '过': 'guò', '锅': 'guō',
+            '棵': 'kē', '颗': 'kē', '科': 'kē', '课': 'kè', '客': 'kè', '可': 'kě',
+            '坐': 'zuò', '座': 'zuò', '做': 'zuò', '作': 'zuò',
+            '在': 'zài', '再': 'zài', '载': 'zài',
+            '他': 'tā', '她': 'tā', '它': 'tā',
+            '那': 'nà', '哪': 'nǎ', '拿': 'ná',
+            '买': 'mǎi', '卖': 'mài', '迈': 'mài',
+            '十': 'shí', '时': 'shí', '食': 'shí', '石': 'shí', '实': 'shí', '识': 'shí', '是': 'shì', '事': 'shì', '室': 'shì', '市': 'shì', '试': 'shì',
+            '鸡': 'jī', '机': 'jī', '级': 'jí', '急': 'jí', '己': 'jǐ', '几': 'jǐ', '记': 'jì', '计': 'jì', '系': 'jì',
+            '饭': 'fàn', '贩': 'fàn', '范': 'fàn', '反': 'fǎn',
+            '晴': 'qíng', '情': 'qíng', '请': 'qǐng', '清': 'qīng', '轻': 'qīng',
+            '篮': 'lán', '蓝': 'lán', '兰': 'lán', '拦': 'lán',
+            '公': 'gōng', '功': 'gōng', '工': 'gōng', '共': 'gòng',
+            'לי': 'lǐ', '理': 'lǐ', '里': 'lǐ', '礼': 'lǐ', '李': 'lǐ', '力': 'lì', '丽': 'lì', '立': 'lì',
+            '화': 'huà', '话': 'huà', '画': 'huà', '化': 'huà', '花': 'huā', '华': 'huá', '滑': 'huá',
+            '香': 'xiāng', '箱': 'xiāng', '相': 'xiāng', '想': 'xiǎng', '响': 'xiǎng', '向': 'xiàng', '象': 'xiàng', '像': 'xiàng',
+            '交': 'jiāo', '教': 'jiāo', '蕉': 'jiāo', '椒': 'jiāo', '脚': 'jiǎo', '角': 'jiǎo', '饺': 'jiǎo', '叫': 'jiào', '觉': 'jiào'
+        };
+
+        // Common Traditional -> Simplified map in case iPad Siri/Safari returns Traditional Chinese
+        const TRAD_TO_SIMP_MAP = {
+            '們': '们', '這': '这', '個': '个', '嗎': '吗', '謝': '谢', '師': '师', '陳': '陈',
+            '麗': '丽', '吃': '吃', '飯': '饭', '麵': '面', '魚': '鱼', '圓': '圆', '塊': '块',
+            '錢': '钱', '給': '给', '還': '还', '買': '买', '祿': '禄', '見': '见', '遊': '游',
+            '樂': '乐', '場': '场', '鞦': '秋', '韆': '千', '滑': '滑', '開': '开', '顏': '颜',
+            '氣': '气', '紅': '红', '藍': '蓝', '綠': '绿', '媽': '妈', '車': '车', '書': '书',
+            '繫': '系', '帶': '带', '學': '学', '歡': '欢', '蘋': '苹', '爺': '爷', '親': '亲',
+            '愛': '爱', '動': '动', '園': '园', '隻': '只', '頭': '头', '長': '长', '獅': '狮',
+            '睡': '睡', '覺': '觉', '靜': '静', '馬': '马', '誕': '诞', '願': '愿', '蠟': '蜡',
+            '燭': '烛', '點': '点', '畫': '画', '圖': '图', '館': '馆', '請': '请', '證': '证',
+            '兩': '两', '記': '记', '週': '周', '頁': '页', '護': '护', '讀': '读', '鐵': '铁',
+            '讓': '让', '醫': '医', '發': '发', '燒': '烧', '檢': '检', '嚨': '咙', '藥': '药',
+            '針': '针', '課': '课', '羽': '羽', '體': '体', '練': '练', '時': '时', '準': '准',
+            '壺': '壶', '桌': '桌', '貼': '贴', '紙': '纸', '幫': '帮', '抓': '抓', '跑': '跑',
+            '階': '阶', '傷': '伤', '帶': '带', '視': '视', '電': '电', '東': '东', '騎': '骑',
+            '腳': '脚', '沙': '沙', '鏟': '铲', '鮮': '鲜', '鉛': '铅', '筆': '笔', '務': '务',
+            '掃': '扫', '廳': '厅', '盤': '盘', '歸': '归', '潔': '洁', '髒': '脏', '導': '导',
+            '覽': '览', '閃': '闪', '燈': '灯', '擾': '扰', '撿': '捡', '辦': '办', '報': '报'
+        };
+
+        function buildPinyinDictionary() {
+            const map = { ...EXTRA_HOMOPHONE_PINYIN };
+            state.scripts.forEach(sc => {
+                sc.lines.forEach(line => {
+                    const chars = Array.from(line.zh);
+                    const pyWords = line.py.trim().replace(/([，。！？、：；,.!?—…“”‘’（）()])/g, ' ').trim().split(/\s+/);
+                    let pyIdx = 0;
+                    for (let i = 0; i < chars.length; i++) {
+                        const c = chars[i];
+                        if (/[，。！？、：；,.!?—…“”‘’（）()\s]/.test(c)) continue;
+                        if (pyWords[pyIdx]) {
+                            map[c] = pyWords[pyIdx].toLowerCase();
+                            pyIdx++;
+                        }
+                    }
+                });
+            });
+            state.charPinyinMap = map;
+        }
+
+        function stripTone(py = '') {
+            return py.toLowerCase()
+                .replace(/[āáǎà]/g, 'a')
+                .replace(/[ēéěè]/g, 'e')
+                .replace(/[īíǐì]/g, 'i')
+                .replace(/[ōóǒò]/g, 'o')
+                .replace(/[ūúǔù]/g, 'u')
+                .replace(/[ǖǘǚǜ]/g, 'v')
+                .replace(/[^a-zv]/g, '');
+        }
+
+        function detectToneNumber(py = '') {
+            if (/[āēīōūǖ]/.test(py)) return 1;
+            if (/[áéíóúǘ]/.test(py)) return 2;
+            if (/[ǎěǐǒǔǚ]/.test(py)) return 3;
+            if (/[àèìòùǜ]/.test(py)) return 4;
+            return 5; // neutral tone
+        }
+
+        const TONE_TIPS = {
+            1: '第一声（阴平 ˉ）：声音要高而平，像火车在平地上开 (High & flat tone longrightarrow)',
+            2: '第二声（阳平 ˊ）：声音从低往高扬起，像问别人“啊？” (Rising tone ↗️)',
+            3: '第三声（上声 ˇ）：声音先降后升，拐个弯 (Dipping tone ↘️↗️)',
+            4: '第四声（去声 ˋ）：声音从高往低重重降下 (Falling tone ↘️)'
+        };
+
+        // Normalize iPad Safari speech transcripts (converts Arabic digits to Chinese numerals & Traditional to Simplified)
+        function normalizeChineseTranscript(rawText = '', targetZh = '') {
+            if (!rawText) return '';
+            let s = rawText;
+
+            // Convert multi-digit numbers common in stories
+            const numberReplacements = [
+                ['995', '九九五'],
+                ['100', '一百'],
+                ['400', '四百'],
+                ['2030', '二零三零'],
+                ['20', '二十'],
+                ['25', '二十五'],
+                ['50', '五十'],
+                ['80', '八十'],
+                ['15', '十五'],
+                ['21', '二十一'],
+                ['10', '十']
+            ];
+            numberReplacements.forEach(([num, zhNum]) => {
+                s = s.split(num).join(zhNum);
+            });
+
+            // Single digit replacements (respecting 两 vs 二 based on target sentence)
+            const prefersLiang = targetZh.includes('两');
+            const digitMap = {
+                '0': '零', '1': '一', '2': prefersLiang ? '两' : '二',
+                '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九'
+            };
+            s = Array.from(s).map(ch => digitMap[ch] || TRAD_TO_SIMP_MAP[ch] || ch).join('');
+            return s.replace(/[，。！？、：；,.!?—…“”‘’（）()\s]/g, '');
+        }
+
+        function createSpeechRecognitionInstance() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                state.recognition = new SpeechRecognition();
-                state.recognition.lang = 'zh-CN';
-                state.recognition.continuous = false;
-                state.recognition.interimResults = true;
-                state.recognition.maxAlternatives = 1;
-            } else {
-                console.warn("Speech recognition is not supported in this browser.");
-            }
+            if (!SpeechRecognition) return null;
+            const rec = new SpeechRecognition();
+            rec.lang = 'zh-CN';
+            // continuous = true prevents iPad Safari from cutting off children when they pause briefly mid-sentence
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.maxAlternatives = 3;
+            return rec;
+        }
+
+        function initSpeechRecognition() {
+            state.recognition = createSpeechRecognitionInstance();
         }
 
         window.onload = () => {
+            buildPinyinDictionary();
             initSpeechRecognition();
             loadVoices();
             updateGameHeaderUI();
@@ -3143,12 +3320,15 @@
                         <div class="text-xs font-bold text-indigo-300">${state.hidePinyin ? '🙈 (Pinyin Hidden • +5 Bonus XP!)' : line.py}</div>
                     </div>
                 </div>
-                <div class="flex items-center justify-center gap-4">
+                <div class="flex items-center justify-center flex-wrap gap-3">
                     <button onclick="playHintForUserTurn()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Listen to how this line sounds">
-                        🔊 Hear Hint
+                        🔊 听示范 Hint
                     </button>
                     <button id="mic-btn" onclick="toggleRecording()" class="relative w-16 h-16 sm:w-18 sm:h-18 bg-rose-500 rounded-full flex items-center justify-center text-3xl shadow-xl hover:scale-105 transition-transform z-10 border-4 border-rose-400">
                         🎙️
+                    </button>
+                    <button id="done-speaking-btn" onclick="finishRecordingAndEvaluate()" class="hidden px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-black text-xs shadow-lg items-center gap-1.5 animate-pulse">
+                        ✅ 说完了 Done
                     </button>
                     <button onclick="skipCurrentPracticeLine()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 transition-colors" title="Skip to next line">
                         Next ⏭️
@@ -3158,116 +3338,391 @@
             `;
         }
 
-        function toggleRecording() {
-            if (!state.recognition) {
-                initSpeechRecognition();
+        function clearSilenceTimer() {
+            if (state.silenceTimeout) {
+                clearTimeout(state.silenceTimeout);
+                state.silenceTimeout = null;
             }
+        }
 
-            if (!state.recognition) {
+        async function finishRecordingAndEvaluate() {
+            clearSilenceTimer();
+            if (state.recognition && state.isRecording) {
+                state.isRecording = false;
+                try { state.recognition.stop(); } catch (e) {}
+            }
+            if (state.lastTranscript && state.lastTranscript.trim()) {
+                const captured = state.lastTranscript.trim();
+                state.lastTranscript = '';
+                await processTranscriptEvaluation(captured, state.transcriptAlternatives);
+            } else {
+                setupRecordingUI();
                 const micStatus = document.getElementById('mic-status');
                 if (micStatus) {
-                    micStatus.textContent = "Voice recognition is not supported on this browser. Tap 'Hear Hint' to practice aloud, then tap 'Next ⏭️'!";
+                    micStatus.textContent = "We didn't catch your voice yet. Tap 🎙️ and speak clearly near the iPad microphone!";
+                    micStatus.className = "mt-2.5 text-xs font-bold text-amber-400";
+                }
+            }
+        }
+
+        // Highlights characters on the chat bubble in real-time as the child reads them aloud
+        function highlightSpokenCharsLive(heardText) {
+            if (!state.activeScenario) return;
+            const line = state.activeScenario.lines[state.currentLineIndex];
+            if (!line) return;
+            const normHeard = normalizeChineseTranscript(heardText, line.zh);
+            const chars = Array.from(line.zh);
+            for (let i = 0; i < chars.length; i++) {
+                const el = document.getElementById(`ruby-${state.currentLineIndex}-${i}`);
+                if (!el) continue;
+                const ch = chars[i];
+                if (normHeard.includes(ch)) {
+                    el.classList.add('highlighted-char');
+                }
+            }
+        }
+
+        function toggleRecording() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                const micStatus = document.getElementById('mic-status');
+                if (micStatus) {
+                    micStatus.textContent = "Voice recognition is not supported on this browser. Tap '🔊 听示范 Hint' to practice aloud, then tap 'Next ⏭️'!";
                     micStatus.className = "mt-2.5 text-xs font-bold text-amber-400";
                 }
                 return;
             }
 
-            cancelBrowserSpeech();
-
+            // If already recording, tapping the mic button finishes and evaluates immediately
             if (state.isRecording) {
-                try {
-                    state.recognition.stop();
-                } catch (e) {}
+                finishRecordingAndEvaluate();
                 return;
             }
 
+            // Stop any active TTS first so iPad Safari releases the audio output channel for microphone capture
+            cancelBrowserSpeech();
+            clearSilenceTimer();
+
+            if (state.recognition) {
+                try { state.recognition.abort(); } catch (e) {}
+            }
+
+            // Always create a fresh SpeechRecognition instance on iPad to prevent stale WebKit audio sessions
+            state.recognition = createSpeechRecognitionInstance();
             state.lastTranscript = '';
+            state.transcriptAlternatives = [];
             let evaluatedThisTurn = false;
+
+            const currentLine = state.activeScenario ? state.activeScenario.lines[state.currentLineIndex] : null;
+            const targetCleanLen = currentLine ? currentLine.zh.replace(/[，。！？、：；,.!?\s]/g, '').length : 6;
 
             state.recognition.onstart = () => {
                 state.isRecording = true;
                 const micBtn = document.getElementById('mic-btn');
+                const doneBtn = document.getElementById('done-speaking-btn');
                 const micStatus = document.getElementById('mic-status');
                 if (micBtn) {
                     micBtn.classList.add('mic-active-ring');
                     micBtn.classList.replace('bg-rose-500', 'bg-rose-600');
                 }
+                if (doneBtn) {
+                    doneBtn.classList.remove('hidden');
+                    doneBtn.classList.add('flex');
+                }
                 if (micStatus) {
-                    micStatus.textContent = "Listening... Speak Mandarin now! (Tap 🎙️ again when done)";
+                    micStatus.textContent = "🎙️ 正在聆听... 请大声朗读！(读完可点「✅ 说完了」或暂停2秒自动评分)";
                     micStatus.className = "mt-2.5 text-xs font-bold text-rose-400";
                 }
             };
 
-            state.recognition.onresult = async (event) => {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
+            state.recognition.onresult = (event) => {
+                if (evaluatedThisTurn) return;
+
+                let fullTranscript = '';
+                const altSet = new Set();
+
+                for (let i = 0; i < event.results.length; i++) {
+                    const res = event.results[i];
+                    if (res[0] && res[0].transcript) {
+                        fullTranscript += res[0].transcript;
+                    }
+                    for (let a = 0; a < res.length; a++) {
+                        if (res[a] && res[a].transcript) {
+                            altSet.add(res[a].transcript);
+                        }
+                    }
                 }
-                state.lastTranscript = transcript.trim();
+
+                state.lastTranscript = fullTranscript.trim();
+                state.transcriptAlternatives = Array.from(altSet);
 
                 const micStatus = document.getElementById('mic-status');
                 if (micStatus && state.lastTranscript) {
-                    micStatus.textContent = `Heard: "${state.lastTranscript}"`;
+                    micStatus.textContent = `🎤 已听到: "${state.lastTranscript}"`;
+                    micStatus.className = "mt-2.5 text-xs font-bold text-emerald-300";
                 }
 
-                const lastResult = event.results[event.results.length - 1];
-                if (lastResult && lastResult.isFinal && state.lastTranscript && !evaluatedThisTurn) {
-                    evaluatedThisTurn = true;
-                    state.isRecording = false;
-                    try { state.recognition.stop(); } catch (e) {}
-                    await processTranscriptEvaluation(state.lastTranscript);
-                }
+                highlightSpokenCharsLive(state.lastTranscript);
+
+                // Reset adaptive silence timer so iPad doesn't cut off slow readers mid-sentence
+                clearSilenceTimer();
+                const normLen = normalizeChineseTranscript(state.lastTranscript, currentLine ? currentLine.zh : '').length;
+                const waitMs = normLen >= Math.max(2, Math.floor(targetCleanLen * 0.85)) ? 950 : 2300;
+
+                state.silenceTimeout = setTimeout(async () => {
+                    if (!evaluatedThisTurn && state.lastTranscript) {
+                        evaluatedThisTurn = true;
+                        state.isRecording = false;
+                        try { state.recognition.stop(); } catch (e) {}
+                        const captured = state.lastTranscript;
+                        state.lastTranscript = '';
+                        await processTranscriptEvaluation(captured, state.transcriptAlternatives);
+                    }
+                }, waitMs);
             };
 
             state.recognition.onerror = (event) => {
+                clearSilenceTimer();
                 state.isRecording = false;
+
+                // If we already captured partial speech before iPad threw a 'no-speech' or 'aborted' event, grade what we heard!
+                if (!evaluatedThisTurn && state.lastTranscript && state.lastTranscript.trim().length > 0) {
+                    evaluatedThisTurn = true;
+                    const captured = state.lastTranscript.trim();
+                    state.lastTranscript = '';
+                    processTranscriptEvaluation(captured, state.transcriptAlternatives);
+                    return;
+                }
+
                 setupRecordingUI();
                 const micStatus = document.getElementById('mic-status');
                 if (!micStatus) return;
 
                 if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                    micStatus.textContent = "Microphone blocked! Please allow microphone access in Safari/Chrome settings, or tap 'Next ⏭️'.";
+                    micStatus.textContent = "⚠️ 麦克风权限被关闭！请在 iPad「设置 > Safari > 麦克风」中允许访问，或点 Next ⏭️。";
                 } else if (event.error === 'no-speech') {
-                    micStatus.textContent = "No speech detected. Tap 🎙️ and speak clearly!";
+                    micStatus.textContent = "🤖 没听到声音哦！请靠近 iPad 麦克风，点击 🎙️ 再大声读一次！";
                 } else {
-                    micStatus.textContent = "Mic notice (" + event.error + "). Tap 🎙️ to try again or tap 'Next ⏭️'.";
+                    micStatus.textContent = "🎙️ 请点击麦克风重新朗读 (" + event.error + ")，或点击「🔊 听示范」。";
                 }
                 micStatus.className = "mt-2.5 text-xs font-bold text-amber-400";
             };
 
             state.recognition.onend = async () => {
+                clearSilenceTimer();
                 state.isRecording = false;
-                if (!evaluatedThisTurn && state.lastTranscript) {
+                if (!evaluatedThisTurn && state.lastTranscript && state.lastTranscript.trim().length > 0) {
                     evaluatedThisTurn = true;
-                    await processTranscriptEvaluation(state.lastTranscript);
+                    const captured = state.lastTranscript.trim();
+                    state.lastTranscript = '';
+                    await processTranscriptEvaluation(captured, state.transcriptAlternatives);
                 } else if (!evaluatedThisTurn && state.isPracticing) {
                     const micBtn = document.getElementById('mic-btn');
+                    const doneBtn = document.getElementById('done-speaking-btn');
                     if (micBtn) {
                         micBtn.classList.remove('mic-active-ring');
                         micBtn.classList.replace('bg-rose-600', 'bg-rose-500');
                     }
+                    if (doneBtn) {
+                        doneBtn.classList.add('hidden');
+                        doneBtn.classList.remove('flex');
+                    }
                 }
             };
 
-            try {
-                state.recognition.start();
-            } catch (err) {
+            // Give iPad Safari 120ms after speechSynthesis.cancel() before opening the mic hardware channel
+            setTimeout(() => {
                 try {
-                    state.recognition.abort();
-                    setTimeout(() => state.recognition.start(), 150);
-                } catch (e) {}
-            }
+                    state.recognition.start();
+                } catch (err) {
+                    try {
+                        state.recognition = createSpeechRecognitionInstance();
+                        state.recognition.start();
+                    } catch (e) {}
+                }
+            }, 120);
         }
 
-        async function processTranscriptEvaluation(transcript) {
+        async function processTranscriptEvaluation(transcript, alternatives = []) {
             document.getElementById('hud-status').innerHTML = `
                 <div class="animate-spin text-4xl mb-3 text-indigo-400">⚙️</div>
-                <div class="text-sm font-bold text-slate-300">Analyzing your pronunciation...</div>
-                <div class="text-xs text-slate-400 mt-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700">You said: "${transcript}"</div>
+                <div class="text-sm font-bold text-slate-300">正在诊断你的华语发音与声调 (Analyzing pronunciation & tones)...</div>
+                <div class="text-xs text-slate-400 mt-2 bg-slate-900/50 p-2 rounded-lg border border-slate-700">🎤 听到: "${transcript}"</div>
             `;
 
             const line = state.activeScenario.lines[state.currentLineIndex];
-            await evaluateSpeech(line.zh, line.py, transcript);
+            await evaluateSpeech(line.zh, line.py, transcript, alternatives);
+        }
+
+        // Check if two Pinyin syllables are close (e.g. zh/z, ch/c, sh/s, in/ing, en/eng, an/ang)
+        function classifyPhoneticSimilarity(targetPyRaw, heardChar) {
+            const targetPy = (targetPyRaw || '').toLowerCase();
+            const heardPy = (state.charPinyinMap[heardChar] || '').toLowerCase();
+            if (!targetPy || !heardPy) return null;
+
+            const targetBase = stripTone(targetPy);
+            const heardBase = stripTone(heardPy);
+            const targetTone = detectToneNumber(targetPy);
+            const heardTone = detectToneNumber(heardPy);
+
+            // 1. Exact same Pinyin syllable & tone (True homophone in Chinese ASR, e.g. 娣 vs 弟)
+            if (targetPy === heardPy || (targetBase === heardBase && targetTone === heardTone)) {
+                return { type: 'homophone_exact', heardPy, targetTone };
+            }
+
+            // 2. Same syllable base, different tone (Tone error)
+            if (targetBase === heardBase) {
+                return {
+                    type: 'tone_mismatch',
+                    heardPy,
+                    targetTone,
+                    heardTone,
+                    tip: `「${targetPy}」需要注意声调：它是${TONE_TIPS[targetTone] || '轻声'}，刚才听起来像「${heardPy}」。`
+                };
+            }
+
+            // 3. Singapore common flat vs retroflex initials (z/zh, c/ch, s/sh)
+            const normRetroflex = (s) => s.replace(/^zh/, 'z').replace(/^ch/, 'c').replace(/^sh/, 's');
+            if (normRetroflex(targetBase) === normRetroflex(heardBase)) {
+                const needsCurl = /^(zh|ch|sh)/.test(targetBase);
+                return {
+                    type: 'retroflex_mismatch',
+                    heardPy,
+                    tip: needsCurl
+                        ? `翘舌音提示：「${targetPy}」是翘舌音（zh/ch/sh），发音时舌尖要轻轻往上翘起哦！`
+                        : `平舌音提示：「${targetPy}」是平舌音（z/c/s），舌尖放平不要翘起来哦！`
+                };
+            }
+
+            // 4. Front vs back nasal finals (in/ing, en/eng, an/ang)
+            const normNasal = (s) => s.replace(/ing$/, 'in').replace(/eng$/, 'en').replace(/ang$/, 'an');
+            if (normNasal(targetBase) === normNasal(heardBase)) {
+                const isBackNasal = /(ing|eng|ang)$/.test(targetBase);
+                return {
+                    type: 'nasal_mismatch',
+                    heardPy,
+                    tip: isBackNasal
+                        ? `后鼻音提示：「${targetPy}」带有后鼻音（-ng），嘴巴微张，声音从鼻子后方共鸣出来！`
+                        : `前鼻音提示：「${targetPy}」是前鼻音（-n），发音结束时舌尖轻轻抵住上牙龈！`
+                };
+            }
+
+            return null;
+        }
+
+        // Comprehensive character-by-character diagnostic analyzer
+        function analyzePronunciationDetailed(targetZh, targetPy, heardZh, alternatives = [], levelId = 'P1') {
+            const cfg = LEVEL_CONFIG[levelId] || LEVEL_CONFIG.P1;
+            const allCandidates = [heardZh, ...(alternatives || [])].filter(Boolean);
+            const normalizedPool = allCandidates.map(t => normalizeChineseTranscript(t, targetZh)).join(' ');
+            const primaryNormalized = normalizeChineseTranscript(heardZh, targetZh);
+
+            const zhChars = Array.from(targetZh);
+            const pyWords = targetPy.trim().replace(/([，。！？、：；,.!?—…“”‘’（）()])/g, ' ').trim().split(/\s+/);
+
+            const charDiagnostics = [];
+            const specificTips = [];
+            const missedCharsList = [];
+
+            let pyIdx = 0;
+            let earnedPoints = 0;
+            let totalGradableChars = 0;
+            const usedHeardChars = Array.from(primaryNormalized);
+
+            for (let i = 0; i < zhChars.length; i++) {
+                const ch = zhChars[i];
+                if (/[，。！？、：；,.!?—…“”‘’（）()\s]/.test(ch)) continue;
+
+                const py = pyWords[pyIdx] || state.charPinyinMap[ch] || '';
+                pyIdx++;
+                totalGradableChars++;
+
+                // Check 1: Direct character match in primary transcript or ASR alternatives
+                if (normalizedPool.includes(ch)) {
+                    charDiagnostics.push({ char: ch, py, status: 'exact' });
+                    earnedPoints += 1.0;
+                    const pos = usedHeardChars.indexOf(ch);
+                    if (pos !== -1) usedHeardChars.splice(pos, 1);
+                    continue;
+                }
+
+                // Check 2: Phonetic / Homophone / Tone / Retroflex match against remaining heard characters
+                let bestPhoneticMatch = null;
+                let matchedIdx = -1;
+                for (let hIdx = 0; hIdx < usedHeardChars.length; hIdx++) {
+                    const hChar = usedHeardChars[hIdx];
+                    const sim = classifyPhoneticSimilarity(py, hChar);
+                    if (sim) {
+                        bestPhoneticMatch = sim;
+                        matchedIdx = hIdx;
+                        if (sim.type === 'homophone_exact') break;
+                    }
+                }
+
+                if (bestPhoneticMatch) {
+                    usedHeardChars.splice(matchedIdx, 1);
+                    if (bestPhoneticMatch.type === 'homophone_exact') {
+                        // True homophone (e.g. 娣 vs 弟) -> 100% credit!
+                        charDiagnostics.push({ char: ch, py, status: 'exact' });
+                        earnedPoints += 1.0;
+                    } else {
+                        // Tone or z/zh or in/ing close match -> 0.75 credit + specific coaching tip
+                        charDiagnostics.push({ char: ch, py, status: 'close', tip: bestPhoneticMatch.tip });
+                        earnedPoints += 0.75;
+                        if (bestPhoneticMatch.tip && specificTips.length < 3 && !specificTips.includes(bestPhoneticMatch.tip)) {
+                            specificTips.push(bestPhoneticMatch.tip);
+                        }
+                    }
+                } else {
+                    charDiagnostics.push({ char: ch, py, status: 'missed' });
+                    missedCharsList.push(`${ch} (${py})`);
+                }
+            }
+
+            const accuracy = totalGradableChars > 0 ? (earnedPoints / totalGradableChars) : 1;
+            const accuracyPct = Math.min(100, Math.round(accuracy * 100));
+            const pass = accuracy >= cfg.passThreshold;
+
+            // Generate tailored, constructive recommendations if any characters were missed or close
+            if (missedCharsList.length > 0) {
+                const sampleMissed = missedCharsList.slice(0, 4).join('、');
+                specificTips.unshift(`🎯 重点练习字词：请特别注意「${sampleMissed}」的发音（点击上方红字即可听标准读音）。`);
+
+                // Add a tone tip for the first missed character
+                const firstMissedObj = charDiagnostics.find(c => c.status === 'missed');
+                if (firstMissedObj && firstMissedObj.py) {
+                    const tNum = detectToneNumber(firstMissedObj.py);
+                    if (TONE_TIPS[tNum]) {
+                        specificTips.push(`🎵 声调小贴士：「${firstMissedObj.char} (${firstMissedObj.py})」是${TONE_TIPS[tNum]}。`);
+                    }
+                }
+            }
+
+            if (primaryNormalized.length < Math.floor(totalGradableChars * 0.5)) {
+                specificTips.push(`🗣️ 语速与音量建议：有一部分字没被麦克风捕捉到，朗读时请保持节奏均匀，把每个字读饱满！`);
+            }
+
+            if (specificTips.length === 0) {
+                specificTips.push(`🌟 发音非常标准！每个字的声调与吐字都很清晰，继续保持！`);
+            }
+
+            let summaryFeedback = '';
+            if (accuracyPct >= 90) {
+                summaryFeedback = `太棒了！你的发音准确度高达 ${accuracyPct}%，字正腔圆，像新加坡华语小主播一样流利！`;
+            } else if (pass) {
+                summaryFeedback = `闯关成功（准确度 ${accuracyPct}%）！整体读得很棒，如果能把标记黄/红色的字再读准一点就更完美了！`;
+            } else {
+                summaryFeedback = `差一点点就过关啦（当前准确度 ${accuracyPct}%，过关需要 ${Math.round(cfg.passThreshold * 100)}%）。先点上方的红字或「🐢 慢速示范」听一听，再试一次吧！`;
+            }
+
+            return {
+                pass,
+                accuracyPct,
+                heardDisplay: heardZh || '（未检测到清晰语音）',
+                feedback: summaryFeedback,
+                tips: specificTips.slice(0, 3),
+                charDiagnostics
+            };
         }
 
         // OpenRouter API Calls
@@ -3299,59 +3754,50 @@
             return data.choices[0].message.content;
         }
 
-        // Level-calibrated local character-overlap evaluator if offline or no API key is configured
-        function localEvaluateSpeech(targetZh, heardZh, levelId = 'P1') {
-            const cfg = LEVEL_CONFIG[levelId] || LEVEL_CONFIG.P1;
-            const cleanTarget = targetZh.replace(/[，。！？、：；,.!?\s]/g, '');
-            const cleanHeard = (heardZh || '').replace(/[，。！？、：；,.!?\s]/g, '');
-            if (!cleanHeard) {
-                return { pass: false, feedback: "I didn't catch that. Tap the microphone and try reading the line again!" };
-            }
-            let matchCount = 0;
-            for (const ch of cleanTarget) {
-                if (cleanHeard.includes(ch)) matchCount++;
-            }
-            const score = cleanTarget.length > 0 ? matchCount / cleanTarget.length : 1;
-            const pct = Math.round(score * 100);
-            if (score >= cfg.passThreshold) {
-                return { pass: true, feedback: `Awesome (${pct}% match)! I heard "${heardZh}". Your ${cfg.label} pronunciation is clear!` };
-            }
-            return { pass: false, feedback: `Good try! I heard "${heardZh}". Tap 'Hear Hint' and try reading "${targetZh}" again!` };
-        }
-
-        async function evaluateSpeech(targetZh, targetPy, heardZh) {
+        async function evaluateSpeech(targetZh, targetPy, heardZh, alternatives = []) {
             const lvlId = state.activeScenario ? (state.activeScenario.level || 'P1') : 'P1';
-            const cfg = LEVEL_CONFIG[lvlId] || LEVEL_CONFIG.P1;
+            const diagnostic = analyzePronunciationDetailed(targetZh, targetPy, heardZh, alternatives, lvlId);
 
             if (!state.apiKey) {
-                const localResult = localEvaluateSpeech(targetZh, heardZh, lvlId);
-                handleEvaluationResult(localResult.pass, localResult.feedback);
+                handleEvaluationResult(diagnostic);
                 return;
             }
 
-            const prompt = `You are a friendly primary school Chinese teacher in Singapore grading a ${cfg.label} student.
-The student was supposed to read: "${targetZh}" (${targetPy}).
-The speech recognition heard: "${heardZh}".
-For ${cfg.label}, required accuracy threshold is ${Math.round(cfg.passThreshold * 100)}%.
-If pass, give short, enthusiastic feedback in English (1-2 sentences).
-If fail, gently point out the missing words and encourage them to try again.
-Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
+            const missedSummary = diagnostic.charDiagnostics
+                .filter(c => c.status !== 'exact')
+                .map(c => `${c.char}(${c.py})`)
+                .join(', ');
+
+            const prompt = `You are a warm, encouraging Singapore primary school Chinese oral coach grading a ${LEVEL_CONFIG[lvlId].label} student.
+Target sentence: "${targetZh}" (Pinyin: ${targetPy})
+Speech recognition heard: "${heardZh}"
+Phonetic accuracy score: ${diagnostic.accuracyPct}% (Pass threshold: ${Math.round(LEVEL_CONFIG[lvlId].passThreshold * 100)}%).
+Characters needing attention: ${missedSummary || 'None - all characters pronounced accurately!'}.
+
+Provide:
+1. "feedback": A warm 1-2 sentence bilingual (Chinese + English) summary of how they did.
+2. "tips": An array of 2 specific, kid-friendly pronunciation recommendations focusing on the Pinyin initials/finals/tones of any missed or close words (or an expressive intonation tip if 100% accurate).
+Return STRICT JSON: { "feedback": "string", "tips": ["tip 1", "tip 2"] }`;
 
             try {
                 const resultText = await fetchOpenRouter([{ role: "system", content: prompt }]);
                 const cleanJson = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
-                const evaluation = JSON.parse(cleanJson);
-                handleEvaluationResult(Boolean(evaluation.pass), evaluation.feedback || "Good effort!");
+                const aiCoaching = JSON.parse(cleanJson);
+                if (aiCoaching.feedback) diagnostic.feedback = aiCoaching.feedback;
+                if (Array.isArray(aiCoaching.tips) && aiCoaching.tips.length > 0) {
+                    diagnostic.tips = aiCoaching.tips.slice(0, 3);
+                }
+                handleEvaluationResult(diagnostic);
             } catch (err) {
-                console.warn("Falling back to local speech evaluation:", err);
-                const localResult = localEvaluateSpeech(targetZh, heardZh, lvlId);
-                handleEvaluationResult(localResult.pass, localResult.feedback);
+                console.warn("Using built-in phonetic diagnostic coach:", err);
+                handleEvaluationResult(diagnostic);
             }
         }
 
-        function handleEvaluationResult(isPass, feedbackText) {
+        function handleEvaluationResult(diagnostic) {
             const sc = state.activeScenario;
             const cfg = sc ? (LEVEL_CONFIG[sc.level || 'P1'] || LEVEL_CONFIG.P1) : LEVEL_CONFIG.P1;
+            const isPass = diagnostic.pass;
 
             if (isPass) {
                 state.game.streak += 1;
@@ -3370,23 +3816,103 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
                 saveGameData();
                 updateGameHeaderUI();
                 playGameSound('pass');
-                showFeedbackModal(true, feedbackText, gainedXp);
+                showFeedbackModal(diagnostic, gainedXp);
             } else {
                 state.mistakesThisRun += 1;
                 state.game.streak = 0;
                 saveGameData();
                 updateGameHeaderUI();
                 playGameSound('retry');
-                showFeedbackModal(false, feedbackText, 0);
+                showFeedbackModal(diagnostic, 0);
             }
         }
 
-        function showFeedbackModal(isPass, feedbackText, gainedXp = 0) {
+        // Helper to pronounce a single character or slow demo directly from the Feedback Modal
+        function speakSingleCharForCoach(charText) {
+            if (!('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(charText);
+                window._activeUtterance = u;
+                u.lang = 'zh-CN';
+                if (state.zhVoice) u.voice = state.zhVoice;
+                u.rate = 0.65;
+                window.speechSynthesis.speak(u);
+            } catch (e) {}
+        }
+
+        function speakSlowDemoCurrentLine() {
+            if (!state.activeScenario) return;
+            const line = state.activeScenario.lines[state.currentLineIndex];
+            if (!line || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(line.zh);
+                window._activeUtterance = u;
+                u.lang = 'zh-CN';
+                if (state.zhVoice) u.voice = state.zhVoice;
+                u.rate = 0.60;
+                window.speechSynthesis.speak(u);
+            } catch (e) {}
+        }
+
+        function showFeedbackModal(diagnostic, gainedXp = 0) {
+            const isPass = Boolean(diagnostic && diagnostic.pass);
+            const feedbackText = (diagnostic && diagnostic.feedback) ? diagnostic.feedback : String(diagnostic || '');
+            const accuracyPct = (diagnostic && typeof diagnostic.accuracyPct === 'number') ? diagnostic.accuracyPct : (isPass ? 100 : 0);
+            const heardDisplay = (diagnostic && diagnostic.heardDisplay) ? diagnostic.heardDisplay : '';
+            const charList = (diagnostic && Array.isArray(diagnostic.charDiagnostics)) ? diagnostic.charDiagnostics : [];
+            const tipsList = (diagnostic && Array.isArray(diagnostic.tips)) ? diagnostic.tips : [];
+
             const modal = document.getElementById('modal-feedback');
-            document.getElementById('feedback-emoji').textContent = isPass ? '🌟' : '💡';
-            document.getElementById('feedback-title').textContent = isPass ? 'Great Job! 太棒了!' : 'Almost There! 再试一次!';
-            document.getElementById('feedback-title').className = `text-2xl font-black mb-2 ${isPass ? 'text-amber-500' : 'text-indigo-500'}`;
+            document.getElementById('feedback-emoji').textContent = isPass ? (accuracyPct >= 90 ? '🌟' : '⭐') : '💡';
+            document.getElementById('feedback-title').textContent = isPass ? 'Great Job! 闯关通过!' : 'Keep Trying! 继续加油!';
+            document.getElementById('feedback-title').className = `text-xl sm:text-2xl font-black mb-1 ${isPass ? 'text-amber-500' : 'text-indigo-600'}`;
             document.getElementById('feedback-message').textContent = feedbackText;
+
+            const accPill = document.getElementById('feedback-accuracy-pill');
+            if (accPill) {
+                accPill.textContent = `🎯 准确度 Accuracy: ${accuracyPct}%`;
+                accPill.className = `text-xs font-black px-3 py-1 rounded-full ${accuracyPct >= 80 ? 'bg-emerald-600 text-white' : (isPass ? 'bg-amber-500 text-white' : 'bg-rose-500 text-white')}`;
+            }
+
+            const heardEl = document.getElementById('feedback-heard');
+            if (heardEl) {
+                heardEl.textContent = heardDisplay ? `🎤 识别到的读音 (Heard): "${heardDisplay}"` : '';
+            }
+
+            // Render interactive character-by-character diagnostic tiles
+            const breakdownEl = document.getElementById('feedback-char-breakdown');
+            if (breakdownEl) {
+                if (charList.length > 0) {
+                    breakdownEl.innerHTML = charList.map(item => {
+                        let styleClass = 'bg-emerald-50 border-emerald-400 text-emerald-900';
+                        let badgeIcon = '✓';
+                        if (item.status === 'close') {
+                            styleClass = 'bg-amber-50 border-amber-400 text-amber-900';
+                            badgeIcon = '~';
+                        } else if (item.status === 'missed') {
+                            styleClass = 'bg-rose-50 border-rose-400 text-rose-900 animate-pulse';
+                            badgeIcon = '🔊';
+                        }
+                        return `
+                            <button type="button" onclick="speakSingleCharForCoach('${item.char}')" class="px-2.5 py-1.5 rounded-xl border-2 ${styleClass} flex flex-col items-center min-w-[46px] shadow-2xs hover:scale-105 transition-transform" title="Tap to hear ${item.char} (${item.py})">
+                                <span class="text-[10px] font-extrabold opacity-85">${item.py}</span>
+                                <span class="text-lg font-black leading-tight">${item.char}</span>
+                                <span class="text-[9px] font-black">${badgeIcon}</span>
+                            </button>
+                        `;
+                    }).join('');
+                } else {
+                    breakdownEl.innerHTML = `<span class="text-xs font-bold text-slate-400">点「🐢 慢速示范」听标准发音</span>`;
+                }
+            }
+
+            // Render actionable coaching tips
+            const tipsEl = document.getElementById('feedback-tips-list');
+            if (tipsEl) {
+                tipsEl.innerHTML = tipsList.map(t => `<li class="bg-white/90 p-2 rounded-xl border border-indigo-100 shadow-2xs">${t}</li>`).join('');
+            }
 
             const xpPill = document.getElementById('feedback-xp-pill');
             if (isPass) {
@@ -3396,19 +3922,29 @@ Return STRICT JSON: { "pass": boolean, "feedback": "string" }`;
                 xpPill.classList.add('hidden');
             }
             
-            const btn = modal.querySelector('button');
-            btn.className = `w-full py-3.5 text-white text-lg rounded-xl font-black shadow-md transition-transform hover:scale-105 ${isPass ? 'bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600' : 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600'}`;
-            btn.textContent = isPass ? 'Continue ➤' : 'Try Again 🎙️';
+            const primaryBtn = document.getElementById('feedback-primary-btn');
+            const retryBtn = document.getElementById('feedback-retry-btn');
 
-            btn.onclick = () => {
-                modal.classList.add('hidden');
-                if (isPass) {
-                    state.currentLineIndex++;
-                    processPracticeLine();
-                } else {
+            if (retryBtn) {
+                retryBtn.onclick = () => {
+                    modal.classList.add('hidden');
                     setupRecordingUI();
-                }
-            };
+                };
+            }
+
+            if (primaryBtn) {
+                primaryBtn.className = `w-full py-3.5 text-white text-base sm:text-lg rounded-xl font-black shadow-md transition-transform hover:scale-[1.02] ${isPass ? 'bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600' : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700'}`;
+                primaryBtn.textContent = isPass ? '下一句 Continue ➤' : '🎙️ 再读一次 Try Again';
+                primaryBtn.onclick = () => {
+                    modal.classList.add('hidden');
+                    if (isPass) {
+                        state.currentLineIndex++;
+                        processPracticeLine();
+                    } else {
+                        setupRecordingUI();
+                    }
+                };
+            }
             
             modal.classList.remove('hidden');
         }
